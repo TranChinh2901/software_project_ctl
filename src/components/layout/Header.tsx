@@ -2,18 +2,39 @@
 "use client"
 
 import React from 'react'
-import styles from '../../styles/Header/header.module.css'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation, Autoplay } from 'swiper/modules'
 
 import 'swiper/css'
 import 'swiper/css/navigation'
-import { FaHeart, FaUser, FaShoppingCart, FaSearch, FaRegHeart, FaRegUserCircle } from "react-icons/fa"
+import styles from '../../styles/Header/header.module.css'
+import { FaSearch, FaRegHeart, FaRegUserCircle } from "react-icons/fa"
 import Image from "next/image";
 import Link from 'next/link'
 import { VscInbox } from 'react-icons/vsc'
+import { useEffect, useState } from 'react'
+import { getToken, logout as authLogout } from '../../services/auth'
+import { useRouter } from 'next/navigation'
 
 export default function Header() {
+  const [logged, setLogged] = useState<boolean>(false)
+  const router = useRouter()
+
+  useEffect(() => {
+    setLogged(Boolean(getToken()))
+    function onStorage(e: StorageEvent) {
+      if (e.key === 'nd_token') setLogged(Boolean(e.newValue))
+    }
+    window.addEventListener('storage', onStorage)
+    return () => window.removeEventListener('storage', onStorage)
+  }, [])
+
+  function handleLogout(e: React.MouseEvent) {
+    e.preventDefault()
+    try { authLogout() } catch {}
+    setLogged(false)
+    router.push('/')
+  }
   return (
     <div className={styles.headerRoot}>
       {/* Header Top */}
@@ -36,7 +57,6 @@ export default function Header() {
         </div>
       </div>
 
-      {/* ==== HEADER BOTTOM ==== */}
       <div className={styles.headerBottom}>
         <div className={styles.headerBottomContainer}>
           {/* Logo */}
@@ -45,8 +65,8 @@ export default function Header() {
               <Image
                 src="https://bizweb.dktcdn.net/100/534/571/themes/972900/assets/logo.png?1749442635129"
                 alt="Logo"
-                width={120}
-                height={50}
+                width={200}
+                height={70}
               />
             </Link>
           </div>
@@ -65,19 +85,34 @@ export default function Header() {
 
           {/* Icons */}
           <div className={styles.icons}>
-            <div className={styles.iconItem}>
-             <FaRegHeart />
+            <Link href="/wishlist" className={styles.iconItem}>
+              <FaRegHeart className={styles.iconBottom} />
               <span>Yêu thích</span>
+            </Link>
+            <div className={styles.accountDropdown}>
+              <Link href="/account" className={styles.iconItem}>
+                <FaRegUserCircle className={styles.iconBottom} />
+                <span>Tài khoản</span>
+              </Link>
+              <div className={styles.dropdownMenu}>
+                {logged ? (
+                  <>
+                    <Link href="/account/profile">Hồ sơ</Link>
+                    <a href="#logout" onClick={handleLogout}>Đăng xuất</a>
+                  </>
+                ) : (
+                  <>
+                    <Link href="/account/login">Đăng nhập</Link>
+                    <Link href="/account/register">Đăng ký</Link>
+                  </>
+                )}
+              </div>
             </div>
-            <div className={styles.iconItem}>
-              <FaRegUserCircle />
-              <span>Tài khoản</span>
-            </div>
-            <div className={styles.iconItem}>
-            <VscInbox />
+            <Link href="/cart" className={styles.iconItem}>
+              <VscInbox className={styles.iconBottom} />
               <span>Giỏ hàng</span>
               <span className={styles.cartBadge}>3</span>
-            </div>
+            </Link>
           </div>
         </div>
 

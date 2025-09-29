@@ -3,6 +3,7 @@ import { Inter, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
+import { Toaster } from "react-hot-toast";
 
 const inter = Inter({
   variable: '--font-sans',
@@ -30,6 +31,7 @@ export default function RootLayout({
       <body className={`${inter.variable} ${robotoMono.variable}`}>
         <Header />
         <main style={{padding: '1rem', minHeight: '70vh'}}>{children}</main>
+        <Toaster /> 
         <Footer />
       </body>
     </html>

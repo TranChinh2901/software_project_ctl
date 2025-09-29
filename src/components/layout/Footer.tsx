@@ -6,7 +6,9 @@ export default function Footer() {
     <footer className={styles.footerRoot}>
       <div className={styles.container}>
         <div className={styles.brandBox}>
-          <div className={styles.brandLogo}>ND Style</div>
+          <div className={styles.brandLogo}>
+            ND Style
+            </div>
           <div className={styles.social} aria-hidden>
             <span>🎵</span>
             <span>📸</span>
