@@ -2,7 +2,10 @@
 import React, { useState } from "react";
 import { register as apiRegister, saveToken } from "../../services/auth";
 import { useRouter } from "next/navigation";
+import styles from '../../styles/auth/RegisterForm.module.css';
 import { toast } from "react-hot-toast";
+import Breadcrumb from "../Breadcrumb/Breadcrumb";
+import Link from "next/link";
 
 export default function RegisterForm() {
   const [fullname, setFullname] = useState("");
@@ -54,24 +57,27 @@ export default function RegisterForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} style={{ maxWidth: 520, margin: "0 auto" }}>
-      <h2>Đăng ký</h2>
-      {error && <div style={{ color: "red", marginBottom: 8 }}>{error}</div>}
-      <div style={{ marginBottom: 8 }}>
+    <div className={styles.registerContainer}>
+      <Breadcrumb items={[{ label: "Trang chủ", href: "/" }, { label: "Register" }]} />
+      <form onSubmit={onSubmit} className={styles.registerForm}>
+     <div className={styles.mainForm}>
+       <h2>Đăng ký</h2>
+       <p>Đã có tài khoản, đăng nhập <Link style={{ color: '#ff6347' }} href="/account/login">tại đây</Link></p>
+      <div>
         <input
           value={fullname}
           onChange={(e) => setFullname(e.target.value)}
           placeholder="Họ tên"
         />
       </div>
-      <div style={{ marginBottom: 8 }}>
+      <div>
         <input
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Email"
         />
       </div>
-      <div style={{ marginBottom: 8 }}>
+      <div>
         <input
           type="password"
           value={password}
@@ -79,37 +85,40 @@ export default function RegisterForm() {
           placeholder="Mật khẩu"
         />
       </div>
-      <div style={{ marginBottom: 8 }}>
+      <div>
         <input
           value={phone_number}
           onChange={(e) => setPhoneNumber(e.target.value)}
           placeholder="Số điện thoại"
         />
       </div>
-      <div style={{ marginBottom: 8 }}>
+      <div>
         <input
           value={gender}
           onChange={(e) => setGender(e.target.value)}
           placeholder="Giới tính"
         />
       </div>
-      <div style={{ marginBottom: 8 }}>
+      <div>
         <input
           value={date_of_birth}
           onChange={(e) => setDateOfBirth(e.target.value)}
           placeholder="Ngày sinh"
         />
       </div>
-      <div style={{ marginBottom: 8 }}>
+      <div>
         <input
           value={address}
           onChange={(e) => setAddress(e.target.value)}
           placeholder="Địa chỉ"
         />
       </div>
-      <button disabled={loading} type="submit">
+       <button disabled={loading} type="submit" className={styles.buttonRegister}>
         {loading ? "Đang..." : "Đăng ký"}
       </button>
+     </div>
+     
     </form>
+    </div>
   );
 }

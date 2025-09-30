@@ -90,10 +90,10 @@ export default function Header() {
               <span>Yêu thích</span>
             </Link>
             <div className={styles.accountDropdown}>
-              <Link href="/account" className={styles.iconItem}>
+              <div className={styles.iconItem}>
                 <FaRegUserCircle className={styles.iconBottom} />
                 <span>Tài khoản</span>
-              </Link>
+              </div>
               <div className={styles.dropdownMenu}>
                 {logged ? (
                   <>

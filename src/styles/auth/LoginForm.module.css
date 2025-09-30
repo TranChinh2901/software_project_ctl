@@ -1,0 +1,44 @@
+.loginContainer{
+    max-width: 1200px;
+    margin: 0 auto;
+}
+.loginForm{
+    max-width: 400px;
+    margin: 0 auto;
+}
+.mainForm{
+    width: 100%;
+    border: 1px solid #ddd;
+   padding: 10px;
+   border-radius: 8px;
+   background-color: #fff;  
+}
+.mainForm h2{
+    text-align: center;
+    margin-bottom: 6px;
+}
+.mainForm p{
+    text-align: center;
+    margin-bottom: 10px;
+}
+.mainForm input {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+.mainForm button {
+    margin-top: 20px;
+    width: 100%;
+    background-color: #ff6347;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 15px;
+    margin-bottom: 10px;
+}
+
