@@ -18,6 +18,7 @@ import { useRouter } from 'next/navigation'
 
 export default function Header() {
   const [logged, setLogged] = useState<boolean>(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false)
   const router = useRouter()
 
   useEffect(() => {
@@ -34,10 +35,18 @@ export default function Header() {
     try { authLogout() } catch {}
     setLogged(false)
     router.push('/')
+    setMobileMenuOpen(false) 
+  }
+
+  function toggleMobileMenu() {
+    setMobileMenuOpen(!mobileMenuOpen)
+  }
+
+  function closeMobileMenu() {
+    setMobileMenuOpen(false)
   }
   return (
     <div className={styles.headerRoot}>
-      {/* Header Top */}
       <div className={styles.headerTop}>
         <div className={styles.headerTopContainer}>
           <div className={styles.headerSlider}>
@@ -59,7 +68,6 @@ export default function Header() {
 
       <div className={styles.headerBottom}>
         <div className={styles.headerBottomContainer}>
-          {/* Logo */}
           <div className={styles.logo}>
             <Link href="/">
               <Image
@@ -70,8 +78,6 @@ export default function Header() {
               />
             </Link>
           </div>
-
-          {/* Search */}
           <div className={styles.searchBox}>
             <input
               type="text"
@@ -82,8 +88,15 @@ export default function Header() {
               <FaSearch />
             </button>
           </div>
-
-          {/* Icons */}
+          <button 
+            className={`${styles.mobileMenuBtn} ${mobileMenuOpen ? styles.open : ''}`}
+            onClick={toggleMobileMenu}
+            aria-label="Toggle menu"
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
           <div className={styles.icons}>
             <Link href="/wishlist" className={styles.iconItem}>
               <FaRegHeart className={styles.iconBottom} />
@@ -115,8 +128,6 @@ export default function Header() {
             </Link>
           </div>
         </div>
-
-        {/* Menu */}
         <nav className={styles.navMenu}>
           <ul>
             <li><Link href="/">Trang chủ</Link></li>
@@ -129,6 +140,86 @@ export default function Header() {
             <li><Link href="/chi-tiet">Chi tiết sản phẩm</Link></li>
           </ul>
         </nav>
+        <div 
+          className={`${styles.mobileMenuOverlay} ${mobileMenuOpen ? styles.open : ''}`}
+          onClick={closeMobileMenu}
+        ></div>
+        <div className={`${styles.mobileMenu} ${mobileMenuOpen ? styles.open : ''}`}>
+          <div className={styles.mobileMenuContent}>
+            
+            <div className={styles.mobileMenuHeader}>
+              <h2>ND Style</h2>
+              <p>Thời trang cho mọi phong cách</p>
+            </div>
+            <div className={styles.mobileAuthSection}>
+              {logged ? (
+                <>
+                  <Link href="/account/profile" className={styles.profileBtn} onClick={closeMobileMenu}>
+                    Hồ sơ của tôi
+                  </Link>
+                  <button className={styles.logoutBtn} onClick={handleLogout}>
+                    Đăng xuất
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link href="/account/login" className={styles.loginBtn} onClick={closeMobileMenu}>
+                    Đăng nhập
+                  </Link>
+                  <Link href="/account/register" className={styles.registerBtn} onClick={closeMobileMenu}>
+                    Đăng ký
+                  </Link>
+                </>
+              )}
+            </div>
+            <div className={styles.mobileSearchSection}>
+              <h3>Tìm kiếm</h3>
+              <div className={styles.searchBox}>
+                <input
+                  type="text"
+                  placeholder="Tìm kiếm sản phẩm..."
+                  className={styles.searchInput}
+                />
+                <button className={styles.searchBtn}>
+                  <FaSearch />
+                </button>
+              </div>
+            </div>
+
+            <div className={styles.mobileMenuSection}>
+              <h3>Danh mục</h3>
+              <ul className={styles.mobileMenuLinks}>
+                <li><Link href="/" onClick={closeMobileMenu}>Trang chủ</Link></li>
+                <li><Link href="/products" onClick={closeMobileMenu}>Thời trang Nữ</Link></li>
+                <li><Link href="/nam" onClick={closeMobileMenu}>Thời trang Nam</Link></li>
+                <li><Link href="/tin-tuc" onClick={closeMobileMenu}>Tin tức</Link></li>
+                <li><Link href="/lien-he" onClick={closeMobileMenu}>Liên hệ</Link></li>
+              </ul>
+            </div>
+
+            <div className={styles.mobileMenuSection}>
+              <h3>Dịch vụ</h3>
+              <ul className={styles.mobileMenuLinks}>
+                <li><Link href="/he-thong" onClick={closeMobileMenu}>Hệ thống cửa hàng</Link></li>
+                <li><Link href="/kiem-tra" onClick={closeMobileMenu}>Kiểm tra đơn hàng</Link></li>
+                <li>
+                  <Link href="/wishlist" onClick={closeMobileMenu} className={styles.iconLink}>
+                    <FaRegHeart className={styles.mobileIcon} />
+                    Yêu thích
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/cart" onClick={closeMobileMenu} className={styles.iconLink}>
+                    <VscInbox className={styles.mobileIcon} />
+                    Giỏ hàng
+                    <span className={styles.mobileBadge}>3</span>
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+          </div>
+        </div>
       </div>
     </div>
   )

@@ -6,51 +6,54 @@ import styles from '../../styles/auth/RegisterForm.module.css';
 import { toast } from "react-hot-toast";
 import Breadcrumb from "../Breadcrumb/Breadcrumb";
 import Link from "next/link";
+import { RegisterDto, GenderType } from "../../types/auth";
 
 export default function RegisterForm() {
   const [fullname, setFullname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [phone_number, setPhoneNumber] = useState("");
-  const [gender, setGender] = useState("");
+  const [gender, setGender] = useState<GenderType>(GenderType.MALE);
   const [date_of_birth, setDateOfBirth] = useState("");
   const [address, setAddress] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setError(null);
+    if (!fullname.trim() || !email.trim() || !password.trim() || !date_of_birth) {
+      toast.error("Vui lòng điền đầy đủ thông tin bắt buộc");
+      return;
+    }
+    
     setLoading(true);
+    
     try {
-      const payload = {
-        fullname,
-        email,
+      const registerData: RegisterDto = {
+        fullname: fullname.trim(),
+        email: email.trim(),
         password,
-        phone_number,
+        phone_number: phone_number.trim() || undefined,
         gender,
-        date_of_birth,
-        address,
+        date_of_birth: new Date(date_of_birth),
+        address: address.trim() || undefined,
       };
-      const res = await apiRegister(payload);
-      if (res?.token) saveToken(res.token);
-      toast.success("Đăng ký thành công! ");
-      router.push("/account/login");
-    } catch (err: unknown) {
-      let message: string | null = null;
-      if (err && typeof err === "object") {
-        const obj = err as Record<string, unknown>;
-        if (typeof obj.message === "string") message = obj.message;
-        else if (typeof obj.error === "string") message = obj.error;
-        else if (Array.isArray(obj.errors)) {
-          const first = obj.errors[0] as Record<string, unknown> | undefined;
-          if (first && typeof first.message === "string")
-            message = first.message;
-        }
+      const response = await apiRegister(registerData);
+      if (response.accessToken) {
+        saveToken(response.accessToken);
+        toast.success("Đăng ký thành công!");
+        router.push("/");
+      } else {
+        toast.success("Đăng ký thành công! Vui lòng đăng nhập.");
+        router.push("/account/login");
       }
-        toast.error(message || "Đăng ký thất bại");
-      setError(message || "Đăng ký thất bại");
+    } catch (error: unknown) {
+      let message = "Đăng ký thất bại";
+      if (error instanceof Error) {
+        message = error.message;
+      }
+      
+      toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -58,63 +61,86 @@ export default function RegisterForm() {
 
   return (
     <div className={styles.registerContainer}>
-      <Breadcrumb items={[{ label: "Trang chủ", href: "/" }, { label: "Register" }]} />
+      <Breadcrumb items={[{ label: "Trang chủ", href: "/" }, { label: "Đăng ký" }]} />
       <form onSubmit={onSubmit} className={styles.registerForm}>
      <div className={styles.mainForm}>
        <h2>Đăng ký</h2>
        <p>Đã có tài khoản, đăng nhập <Link style={{ color: '#ff6347' }} href="/account/login">tại đây</Link></p>
+      
       <div>
         <input
+          type="text"
           value={fullname}
           onChange={(e) => setFullname(e.target.value)}
-          placeholder="Họ tên"
+          placeholder="Họ tên *"
+          required
+          autoComplete="name"
         />
       </div>
+      
       <div>
         <input
+          type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="Email"
+          placeholder="Email *"
+          required
+          autoComplete="email"
         />
       </div>
+      
       <div>
         <input
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder="Mật khẩu"
+          placeholder="Mật khẩu *"
+          required
+          autoComplete="new-password"
         />
       </div>
+      
       <div>
         <input
+          type="tel"
           value={phone_number}
           onChange={(e) => setPhoneNumber(e.target.value)}
           placeholder="Số điện thoại"
+          autoComplete="tel"
         />
       </div>
       <div>
-        <input
+        <select
           value={gender}
-          onChange={(e) => setGender(e.target.value)}
-          placeholder="Giới tính"
-        />
+          onChange={(e) => setGender(e.target.value as GenderType)}
+          required
+        >
+          <option value={GenderType.MALE}>Nam</option>
+          <option value={GenderType.FEMALE}>Nữ</option>
+        </select>
       </div>
       <div>
         <input
+          type="date"
           value={date_of_birth}
           onChange={(e) => setDateOfBirth(e.target.value)}
-          placeholder="Ngày sinh"
+          placeholder="Ngày sinh *"
+          required
         />
       </div>
+      
       <div>
         <input
+          type="text"
           value={address}
           onChange={(e) => setAddress(e.target.value)}
           placeholder="Địa chỉ"
+          autoComplete="address-line1"
         />
       </div>
+      
        <button disabled={loading} type="submit" className={styles.buttonRegister}>
-        {loading ? "Đang..." : "Đăng ký"}
+        {loading ? "Đang xử lý..." : "Đăng ký"}
       </button>
      </div>
      
