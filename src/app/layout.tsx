@@ -30,7 +30,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.variable} ${robotoMono.variable}`}>
         <Header />
-        <main style={{padding: '1rem', minHeight: '70vh'}}>{children}</main>
+        <main style={{ minHeight: '50vh', padding: '7px 0' }}>{children}</main>
         <Toaster /> 
         <Footer />
       </body>

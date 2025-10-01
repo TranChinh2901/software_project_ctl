@@ -3,7 +3,7 @@ import LoginForm from '../../../components/auth/LoginForm'
 
 const page = () => {
   return (
-    <div style={{padding: 24}}>
+    <div >
       <LoginForm />
     </div>
   )

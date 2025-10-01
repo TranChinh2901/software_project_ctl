@@ -13,7 +13,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <strong>Admin Panel</strong>
         </div>
 
-        <main style={{padding: '20px'}}>
+        <main style={{padding: '0px'}}>
           {children}
         </main>
       </body>

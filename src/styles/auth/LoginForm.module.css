@@ -42,3 +42,36 @@
     margin-bottom: 10px;
 }
 
+@media (max-width: 768px) {
+  .loginContainer{
+    /* max-width: 1200px; */
+    padding: 0 5px;
+    width: 100%;
+    margin: 0 auto;
+}
+.mainForm{
+    width: 100%;
+    border:none;
+   padding: 10px;
+   border-radius: 8px;
+   background-color: #fff;  
+}
+.loginForm{
+    max-width: 400px;
+    width: 100%;
+    margin: 0 auto;
+}
+}
+@media (max-width: 480px) {
+    .mainForm{
+    width: 100%;
+    border:none;
+   padding: 10px;
+   border-radius: 8px;
+   background-color: #fff;  
+}
+.loginForm{
+    max-width: 300px;
+    width: 100%;
+    margin: 0 auto;
+}}

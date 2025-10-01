@@ -13,7 +13,7 @@ export default function RegisterForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [phone_number, setPhoneNumber] = useState("");
-  const [gender, setGender] = useState<GenderType>(GenderType.MALE);
+  const [gender, setGender] = useState<string>(""); // Để trống mặc định
   const [date_of_birth, setDateOfBirth] = useState("");
   const [address, setAddress] = useState("");
   const [loading, setLoading] = useState(false);
@@ -21,7 +21,9 @@ export default function RegisterForm() {
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!fullname.trim() || !email.trim() || !password.trim() || !date_of_birth) {
+    
+    // Basic validation - server sẽ handle chi tiết
+    if (!fullname.trim() || !email.trim() || !password.trim() || !date_of_birth || !gender) {
       toast.error("Vui lòng điền đầy đủ thông tin bắt buộc");
       return;
     }
@@ -34,7 +36,7 @@ export default function RegisterForm() {
         email: email.trim(),
         password,
         phone_number: phone_number.trim() || undefined,
-        gender,
+        gender: gender as GenderType, // Cast về GenderType
         date_of_birth: new Date(date_of_birth),
         address: address.trim() || undefined,
       };
@@ -58,7 +60,6 @@ export default function RegisterForm() {
       setLoading(false);
     }
   }
-
   return (
     <div className={styles.registerContainer}>
       <Breadcrumb items={[{ label: "Trang chủ", href: "/" }, { label: "Đăng ký" }]} />
@@ -97,7 +98,7 @@ export default function RegisterForm() {
           placeholder="Mật khẩu *"
           required
           autoComplete="new-password"
-        />
+        />  
       </div>
       
       <div>
@@ -109,12 +110,14 @@ export default function RegisterForm() {
           autoComplete="tel"
         />
       </div>
-      <div>
-        <select
+      <div className={styles.genderSelectContainer}>
+        <select 
+          className={styles.genderSelect}
           value={gender}
-          onChange={(e) => setGender(e.target.value as GenderType)}
+          onChange={(e) => setGender(e.target.value)}
           required
         >
+          <option value="" disabled>Chọn giới tính *</option>
           <option value={GenderType.MALE}>Nam</option>
           <option value={GenderType.FEMALE}>Nữ</option>
         </select>

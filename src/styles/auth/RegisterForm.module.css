@@ -38,10 +38,59 @@
     width: 100%;
     background-color: #ff6347;
     color: white;
-    padding: 10px;
+    padding: 8px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     font-size: 15px;
 }
+.genderSelectContainer{
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+.genderSelect{
+    width: 100%;
+    /* margin-right: 10px; */
+    border: none;
+    outline: none;
+    font-size: 14px;
+    background-color: white;
+}
 
+@media (max-width: 768px) {
+  .registerContainer{
+    /* max-width: 1200px; */
+    padding: 0 5px;
+    width: 100%;
+    margin: 0 auto;
+}
+.mainForm{
+    width: 100%;
+    border:none;
+   padding: 10px;
+   border-radius: 8px;
+   background-color: #fff;  
+}
+.registerForm{
+    max-width: 400px;
+    width: 100%;
+    margin: 0 auto;
+}
+}
+@media (max-width: 480px) {
+    .mainForm{
+    width: 100%;
+    border:none;
+   padding: 10px;
+   border-radius: 8px;
+   background-color: #fff;  
+}
+.registerForm{
+    max-width: 300px;
+    width: 100%;
+    margin: 0 auto;
+}}
