@@ -3,10 +3,20 @@ import {
   RegisterDto, 
   ApiResponse, 
   LoginResponse, 
-  RegisterResponse 
+  RegisterResponse,
+  User,
+  RoleType 
 } from "../../types/auth";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE ?? "http://localhost:4001";
+
+interface DecodedToken {
+  id: string;
+  email: string;
+  role: RoleType;
+  exp: number;
+  iat: number;
+}
 
 export async function register(data: RegisterDto): Promise<RegisterResponse> {
   const res = await fetch(`${API_BASE}/api/v1/auth/register`, {
@@ -43,8 +53,18 @@ export async function login(data: LoginDto): Promise<LoginResponse> {
 export function saveToken(token: string): void {
   try {
     localStorage.setItem("nd_token", token);
+    // Cũng lưu vào cookies để middleware có thể đọc
+    document.cookie = `nd_token=${token}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax`;
   } catch (error) {
     console.error("Failed to save token:", error);
+  }
+}
+
+export function saveUser(user: User): void {
+  try {
+    localStorage.setItem("nd_user", JSON.stringify(user));
+  } catch (error) {
+    console.error("Failed to save user:", error);
   }
 }
 
@@ -57,11 +77,59 @@ export function getToken(): string | null {
   }
 }
 
+export function getUser(): User | null {
+  try {
+    const userStr = localStorage.getItem("nd_user");
+    return userStr ? JSON.parse(userStr) : null;
+  } catch (error) {
+    console.error("Failed to get user:", error);
+    return null;
+  }
+}
+
 export function logout(): void {
   try {
     localStorage.removeItem("nd_token");
+    localStorage.removeItem("nd_user");
+    // Xóa cookies
+    document.cookie = "nd_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
   } catch (error) {
-    console.error("Failed to remove token:", error);
+    console.error("Failed to remove auth data:", error);
+  }
+}
+
+export function decodeToken(token: string): DecodedToken | null {
+  try {
+    const payload = token.split('.')[1];
+    const decoded = JSON.parse(atob(payload));
+    return decoded as DecodedToken;
+  } catch (error) {
+    console.error("Failed to decode token:", error);
+    return null;
+  }
+}
+
+export function isTokenValid(token: string): boolean {
+  try {
+    const decoded = decodeToken(token);
+    if (!decoded) return false;
+    
+    // Kiểm tra token có hết hạn không
+    return decoded.exp * 1000 > Date.now();
+  } catch {
+    return false;
+  }
+}
+
+export function getUserRole(): RoleType | null {
+  try {
+    const token = getToken();
+    if (!token) return null;
+    
+    const decoded = decodeToken(token);
+    return decoded?.role || null;
+  } catch {
+    return null;
   }
 }
 
@@ -81,5 +149,17 @@ export async function refreshToken(refreshToken: string): Promise<LoginResponse>
   return json.data;
 }
 
-const auth = { register, login, saveToken, getToken, logout, refreshToken };
+const auth = { 
+  register, 
+  login, 
+  saveToken, 
+  saveUser, 
+  getToken, 
+  getUser, 
+  logout, 
+  refreshToken, 
+  decodeToken, 
+  isTokenValid, 
+  getUserRole 
+};
 export default auth;

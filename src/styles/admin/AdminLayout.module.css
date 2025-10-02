@@ -1,0 +1,79 @@
+/* Admin Layout CSS Modules */
+
+.adminLayout {
+  display: flex;
+  min-height: 100vh;
+  background: #f7fafc;
+  box-sizing: border-box;
+}
+
+.adminContent {
+  margin-left: 280px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  transition: margin-left 0.3s ease;
+  box-sizing: border-box;
+}
+
+.adminContent.collapsed {
+  margin-left: 80px;
+}
+
+.adminMain {
+  flex: 1;
+  padding: 0;
+  background: #f7fafc;
+  overflow-x: auto;
+  box-sizing: border-box;
+}
+
+/* Responsive cho admin */
+@media (max-width: 768px) {
+  .adminContent {
+    margin-left: 0;
+  }
+  
+  .adminContent.collapsed {
+    margin-left: 0;
+  }
+  
+  .adminMain {
+    padding: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .adminContent {
+    margin-left: 0;
+  }
+}
+
+/* Admin specific typography */
+.adminMain h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1a202c;
+  margin: 0 0 1.5rem 0;
+}
+
+.adminMain h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin: 0 0 1rem 0;
+}
+
+.adminMain h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin: 0 0 0.75rem 0;
+}
+
+.adminMain p {
+  color: #4a5568;
+  line-height: 1.6;
+  margin: 0 0 1rem 0;
+}

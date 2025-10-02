@@ -1,0 +1,99 @@
+/* Admin Global Reset CSS */
+
+/* Reset cho admin body */
+.admin-reset,
+.admin-reset *,
+.admin-reset *::before,
+.admin-reset *::after {
+  box-sizing: border-box;
+}
+
+.admin-reset {
+  /* Typography */
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  
+  /* Base styles */
+  line-height: 1.5;
+  color: #1a202c;
+  background: #f7fafc;
+  
+  /* Remove default margins */
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+}
+
+/* Admin specific button reset */
+.admin-reset button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+}
+
+/* Admin specific link reset */
+.admin-reset a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Admin specific input reset */
+.admin-reset input, 
+.admin-reset textarea, 
+.admin-reset select {
+  font-family: inherit;
+  border: none;
+  outline: none;
+}
+
+/* Admin specific list reset */
+.admin-reset ul, 
+.admin-reset ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Admin specific heading reset */
+.admin-reset h1,
+.admin-reset h2,
+.admin-reset h3,
+.admin-reset h4,
+.admin-reset h5,
+.admin-reset h6 {
+  margin: 0;
+  font-weight: 600;
+}
+
+/* Admin specific table reset */
+.admin-reset table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.admin-reset th,
+.admin-reset td {
+  text-align: left;
+  padding: 8px;
+}
+
+/* Admin scrollbar */
+.admin-reset ::-webkit-scrollbar {
+  width: 8px;
+}
+
+.admin-reset ::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.admin-reset ::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.admin-reset ::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}

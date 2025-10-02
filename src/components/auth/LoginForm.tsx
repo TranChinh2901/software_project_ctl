@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { login as apiLogin, saveToken } from "../../services/auth";
+import { login as apiLogin, saveToken, saveUser } from "../../services/auth";
 import { useRouter } from "next/navigation";
 import styles from '../../styles/auth/LoginForm.module.css';
 import toast from "react-hot-toast";
@@ -30,11 +30,19 @@ export default function LoginForm() {
       const response = await apiLogin(loginData);
       console.log('Login response:', response);
       
-      if (response.accessToken) {
+      if (response.accessToken && response.user) {
         saveToken(response.accessToken);
+        saveUser(response.user);
         toast.success("Đăng nhập thành công!");
-        const returnUrl = new URLSearchParams(window.location.search).get('returnUrl') || '/';
-        router.push(returnUrl);
+        
+        // Redirect theo role
+        const returnUrl = new URLSearchParams(window.location.search).get('returnUrl');
+        
+        if (response.user.role === 'ADMIN') {
+          router.push(returnUrl || '/admin');
+        } else {
+          router.push(returnUrl || '/');
+        }
       } else {
         toast.error("Không nhận được token từ server");
       }

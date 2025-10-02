@@ -52,7 +52,7 @@ export default function RegisterForm() {
     } catch (error: unknown) {
       let message = "Đăng ký thất bại";
       if (error instanceof Error) {
-        message = error.message;
+        message = error.message
       }
       
       toast.error(message);

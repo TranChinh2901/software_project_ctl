@@ -131,8 +131,7 @@ export default function Header() {
         <nav className={styles.navMenu}>
           <ul>
             <li><Link href="/">Trang chủ</Link></li>
-            <li><Link href="/products">Nữ</Link></li>
-            <li><Link href="/nam">Nam</Link></li>
+            <li><Link href="/products">Sản phẩm</Link></li>
             <li><Link href="/tin-tuc">Tin tức</Link></li>
             <li><Link href="/lien-he">Liên hệ</Link></li>
             <li><Link href="/he-thong">Hệ thống cửa hàng</Link></li>
@@ -190,8 +189,7 @@ export default function Header() {
               <h3>Danh mục</h3>
               <ul className={styles.mobileMenuLinks}>
                 <li><Link href="/" onClick={closeMobileMenu}>Trang chủ</Link></li>
-                <li><Link href="/products" onClick={closeMobileMenu}>Thời trang Nữ</Link></li>
-                <li><Link href="/nam" onClick={closeMobileMenu}>Thời trang Nam</Link></li>
+                <li><Link href="/products" onClick={closeMobileMenu}>Sản phẩm</Link></li>
                 <li><Link href="/tin-tuc" onClick={closeMobileMenu}>Tin tức</Link></li>
                 <li><Link href="/lien-he" onClick={closeMobileMenu}>Liên hệ</Link></li>
               </ul>
