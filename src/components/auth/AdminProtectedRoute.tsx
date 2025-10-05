@@ -29,19 +29,14 @@ const AdminProtectedRoute: React.FC<AdminProtectedRouteProps> = ({ children }) =
           router.replace('/?message=Vui lòng đăng nhập để truy cập trang quản trị');
           return;
         }
-
-        // Decode JWT token để lấy thông tin user
         const tokenPayload = JSON.parse(atob(token.split('.')[1])) as DecodedToken;
         
-        // Kiểm tra token có hết hạn không
         if (tokenPayload.exp * 1000 < Date.now()) {
           localStorage.removeItem('nd_token');
           document.cookie = 'nd_token=; Max-Age=0; path=/';
           router.replace('/?message=Phiên đăng nhập đã hết hạn');
           return;
         }
-
-        // Kiểm tra role có phải ADMIN không
         if (tokenPayload.role !== RoleType.ADMIN) {
           router.replace('/?message=Bạn không có quyền truy cập trang quản trị');
           return;
@@ -56,8 +51,6 @@ const AdminProtectedRoute: React.FC<AdminProtectedRouteProps> = ({ children }) =
 
     checkAuthorization();
   }, [router]);
-
-  // Hiển thị loading trong khi kiểm tra quyền
   if (isAuthorized === null) {
     return (
       <div style={{
@@ -95,8 +88,6 @@ const AdminProtectedRoute: React.FC<AdminProtectedRouteProps> = ({ children }) =
       </div>
     );
   }
-
-  // Nếu đã được ủy quyền, hiển thị children
   return <>{children}</>;
 };
 

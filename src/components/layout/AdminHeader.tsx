@@ -12,23 +12,19 @@ const AdminHeader = () => {
   useEffect(() => {
     const loadUserInfo = () => {
       try {
-        // Lấy thông tin user từ localStorage
         const user = getUser();
         const role = getUserRole();
-        
-        // Nếu không có user trong localStorage, thử decode từ token
         if (!user && !role) {
           const token = getToken();
           if (token) {
             const decoded = decodeToken(token);
             if (decoded) {
               setUserRole(decoded.role);
-              // Tạo user object từ token
               setCurrentUser({
                 id: decoded.id,
                 email: decoded.email,
                 role: decoded.role,
-                fullname: decoded.email.split('@')[0], // Tạm thời dùng email
+                fullname: decoded.email.split('@')[0], 
                 gender: GenderType.MALE,
                 date_of_birth: new Date(),
                 is_verified: true

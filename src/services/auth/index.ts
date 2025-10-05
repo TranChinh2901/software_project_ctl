@@ -53,7 +53,6 @@ export async function login(data: LoginDto): Promise<LoginResponse> {
 export function saveToken(token: string): void {
   try {
     localStorage.setItem("nd_token", token);
-    // Cũng lưu vào cookies để middleware có thể đọc
     document.cookie = `nd_token=${token}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax`;
   } catch (error) {
     console.error("Failed to save token:", error);
@@ -91,7 +90,6 @@ export function logout(): void {
   try {
     localStorage.removeItem("nd_token");
     localStorage.removeItem("nd_user");
-    // Xóa cookies
     document.cookie = "nd_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
   } catch (error) {
     console.error("Failed to remove auth data:", error);
@@ -113,8 +111,6 @@ export function isTokenValid(token: string): boolean {
   try {
     const decoded = decodeToken(token);
     if (!decoded) return false;
-    
-    // Kiểm tra token có hết hạn không
     return decoded.exp * 1000 > Date.now();
   } catch {
     return false;
