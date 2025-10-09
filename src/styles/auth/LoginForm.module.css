@@ -74,4 +74,12 @@
     max-width: 300px;
     width: 100%;
     margin: 0 auto;
-}}
+}
+
+.error {
+    color: #e53e3e;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: block;
+}
+}

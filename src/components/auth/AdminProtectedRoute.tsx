@@ -1,57 +1,23 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { getToken } from '../../services/auth';
-import { RoleType } from '../../types/auth';
 
 interface AdminProtectedRouteProps {
   children: React.ReactNode;
 }
 
-interface DecodedToken {
-  id: string;
-  email: string;
-  role: RoleType;
-  exp: number;
-}
-
 const AdminProtectedRoute: React.FC<AdminProtectedRouteProps> = ({ children }) => {
-  const router = useRouter();
-  const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const checkAuthorization = () => {
-      try {
-        const token = getToken();
-        
-        if (!token) {
-          router.replace('/?message=Vui lòng đăng nhập để truy cập trang quản trị');
-          return;
-        }
-        const tokenPayload = JSON.parse(atob(token.split('.')[1])) as DecodedToken;
-        
-        if (tokenPayload.exp * 1000 < Date.now()) {
-          localStorage.removeItem('nd_token');
-          document.cookie = 'nd_token=; Max-Age=0; path=/';
-          router.replace('/?message=Phiên đăng nhập đã hết hạn');
-          return;
-        }
-        if (tokenPayload.role !== RoleType.ADMIN) {
-          router.replace('/?message=Bạn không có quyền truy cập trang quản trị');
-          return;
-        }
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 100);
 
-        setIsAuthorized(true);
-      } catch (error) {
-        console.error('Error checking authorization:', error);
-        router.replace('/?message=Có lỗi xảy ra khi xác thực');
-      }
-    };
+    return () => clearTimeout(timer);
+  }, []);
 
-    checkAuthorization();
-  }, [router]);
-  if (isAuthorized === null) {
+  if (isLoading) {
     return (
       <div style={{
         display: 'flex',
@@ -76,7 +42,7 @@ const AdminProtectedRoute: React.FC<AdminProtectedRouteProps> = ({ children }) =
             animation: 'spin 1s linear infinite'
           }}></div>
           <p style={{ color: '#4a5568', fontSize: '16px' }}>
-            Đang kiểm tra quyền truy cập...
+            Đang tải...
           </p>
         </div>
         <style jsx>{`
@@ -88,6 +54,7 @@ const AdminProtectedRoute: React.FC<AdminProtectedRouteProps> = ({ children }) =
       </div>
     );
   }
+
   return <>{children}</>;
 };
 

@@ -4,19 +4,11 @@ import {
   ApiResponse, 
   LoginResponse, 
   RegisterResponse,
-  User,
-  RoleType 
+  User
 } from "../../types/auth";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE ?? "http://localhost:4001";
 
-interface DecodedToken {
-  id: string;
-  email: string;
-  role: RoleType;
-  exp: number;
-  iat: number;
-}
 
 export async function register(data: RegisterDto): Promise<RegisterResponse> {
   const res = await fetch(`${API_BASE}/api/v1/auth/register`, {
@@ -96,39 +88,6 @@ export function logout(): void {
   }
 }
 
-export function decodeToken(token: string): DecodedToken | null {
-  try {
-    const payload = token.split('.')[1];
-    const decoded = JSON.parse(atob(payload));
-    return decoded as DecodedToken;
-  } catch (error) {
-    console.error("Failed to decode token:", error);
-    return null;
-  }
-}
-
-export function isTokenValid(token: string): boolean {
-  try {
-    const decoded = decodeToken(token);
-    if (!decoded) return false;
-    return decoded.exp * 1000 > Date.now();
-  } catch {
-    return false;
-  }
-}
-
-export function getUserRole(): RoleType | null {
-  try {
-    const token = getToken();
-    if (!token) return null;
-    
-    const decoded = decodeToken(token);
-    return decoded?.role || null;
-  } catch {
-    return null;
-  }
-}
-
 export async function refreshToken(refreshToken: string): Promise<LoginResponse> {
   const res = await fetch(`${API_BASE}/api/v1/auth/refresh-token`, {
     method: "POST",
@@ -153,9 +112,6 @@ const auth = {
   getToken, 
   getUser, 
   logout, 
-  refreshToken, 
-  decodeToken, 
-  isTokenValid, 
-  getUserRole 
+  refreshToken 
 };
 export default auth;

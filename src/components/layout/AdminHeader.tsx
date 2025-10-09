@@ -1,46 +1,17 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { getUser, getUserRole, decodeToken, getToken } from '../../services/auth';
-import { User, RoleType, GenderType } from '../../types/auth';
+import { getUser } from '../../services/auth';
+import { User } from '../../types/auth';
 import styles from '../../styles/admin/AdminHeader.module.css';
 
 const AdminHeader = () => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [userRole, setUserRole] = useState<RoleType | null>(null);
 
   useEffect(() => {
-    const loadUserInfo = () => {
-      try {
-        const user = getUser();
-        const role = getUserRole();
-        if (!user && !role) {
-          const token = getToken();
-          if (token) {
-            const decoded = decodeToken(token);
-            if (decoded) {
-              setUserRole(decoded.role);
-              setCurrentUser({
-                id: decoded.id,
-                email: decoded.email,
-                role: decoded.role,
-                fullname: decoded.email.split('@')[0], 
-                gender: GenderType.MALE,
-                date_of_birth: new Date(),
-                is_verified: true
-              });
-            }
-          }
-        } else {
-          setCurrentUser(user);
-          setUserRole(role);
-        }
-      } catch (error) {
-        console.error('Error loading user info:', error);
-      }
-    };
-
-    loadUserInfo();
+    // Chỉ lấy user từ localStorage, đơn giản hơn
+    const user = getUser();
+    setCurrentUser(user);
   }, []);
 
   return (
@@ -60,8 +31,8 @@ const AdminHeader = () => {
                 <span className={styles.userName}>
                   {currentUser.fullname || currentUser.email}
                 </span>
-                <span className={`${styles.userRole} ${userRole === RoleType.ADMIN ? styles.admin : styles.user}`}>
-                  {userRole || 'USER'}
+                <span className={`${styles.userRole} ${currentUser.role === 'ADMIN' ? styles.admin : styles.user}`}>
+                  {currentUser.role}
                 </span>
               </div>
             </div>
