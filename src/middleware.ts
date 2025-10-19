@@ -15,6 +15,8 @@ interface DecodedToken {
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  
+  // Bảo vệ trang admin
   if (pathname.startsWith('/admin')) {
     const token = request.cookies.get('nd_token')?.value || 
                  request.headers.get('authorization')?.replace('Bearer ', '');
@@ -46,11 +48,43 @@ export function middleware(request: NextRequest) {
     }
   }
   
+  // Bảo vệ trang profile - yêu cầu đăng nhập
+  if (pathname.startsWith('/account/profile')) {
+    const token = request.cookies.get('nd_token')?.value || 
+                 request.headers.get('authorization')?.replace('Bearer ', '');
+    
+    if (!token) {
+      const loginUrl = new URL('/account/login', request.url);
+      loginUrl.searchParams.set('returnUrl', pathname);
+      loginUrl.searchParams.set('message', 'Vui lòng đăng nhập để xem hồ sơ');
+      return NextResponse.redirect(loginUrl);
+    }
+
+    try {
+      const tokenPayload = JSON.parse(atob(token.split('.')[1])) as DecodedToken;
+      if (tokenPayload.exp * 1000 < Date.now()) {
+        const loginUrl = new URL('/account/login', request.url);
+        loginUrl.searchParams.set('returnUrl', pathname);
+        loginUrl.searchParams.set('message', 'Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại');
+        return NextResponse.redirect(loginUrl);
+      }
+      
+      console.log(`Profile access granted: ${pathname}, user: ${tokenPayload.email}`);
+    } catch (error) {
+      console.error('Token validation error:', error);
+      const loginUrl = new URL('/account/login', request.url);
+      loginUrl.searchParams.set('returnUrl', pathname);
+      loginUrl.searchParams.set('message', 'Phiên đăng nhập không hợp lệ');
+      return NextResponse.redirect(loginUrl);
+    }
+  }
+  
   return NextResponse.next();
 }
 
 export const config = {
   matcher: [
     '/admin/:path*',
+    '/account/profile/:path*',
   ],
 };

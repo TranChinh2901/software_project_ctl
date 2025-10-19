@@ -24,6 +24,22 @@ export interface RegisterDto {
   role?: RoleType;
 }
 
+export interface Profile {
+  id: string;
+  fullname: string;
+  email: string;
+  role: RoleType;
+  phone_number?: string;
+  gender?: GenderType;
+}
+export interface UpdateProfileDto {
+  fullname?: string;
+  phone_number?: string;
+  address?: string;
+  gender?: GenderType;
+  date_of_birth?: Date;
+}
+
 export interface User {
   id: string;
   fullname: string;

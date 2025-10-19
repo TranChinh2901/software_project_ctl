@@ -36,16 +36,11 @@ export const useAuthForm = () => {
   const handleRegister = async (data: RegisterDto) => {
     setLoading(true);
     try {
-      const response = await apiRegister(data);
-      
-      if (response.accessToken) {
-        saveToken(response.accessToken);
-        toast.success("Đăng ký thành công!");
-        router.push("/");
-      } else {
-        toast.success("Đăng ký thành công! Vui lòng đăng nhập.");
-        router.push("/account/login");
-      }
+      await apiRegister(data);
+      // Register không bao giờ trả về token nữa
+      // Luôn luôn chuyển về trang login
+      toast.success("Đăng ký thành công! Vui lòng đăng nhập.");
+      router.push("/account/login");
     } catch (error) {
       const message = error instanceof Error ? error.message : "Đăng ký thất bại";
       toast.error(message);
