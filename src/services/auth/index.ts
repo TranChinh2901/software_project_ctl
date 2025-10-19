@@ -104,6 +104,34 @@ export async function refreshToken(refreshToken: string): Promise<LoginResponse>
   return json.data;
 }
 
+export async function getProfile(): Promise<User> {
+  const token = getToken();
+  console.log("Token from localStorage:", token);
+  
+  if (!token) {
+    throw new Error("No authentication token found");
+  }
+
+  const res = await fetch(`${API_BASE}/api/v1/auth/profile`, {
+    method: "GET",
+    headers: { 
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json" 
+    },
+  });
+  
+  console.log("Profile API response status:", res.status);
+  
+  const json: ApiResponse<User> = await res.json();
+  console.log("Profile API response:", json);
+  
+  if (!res.ok) {
+    throw new Error(json.message || "Failed to get profile");
+  }
+  
+  return json.data;
+}
+
 const auth = { 
   register, 
   login, 
@@ -112,6 +140,7 @@ const auth = {
   getToken, 
   getUser, 
   logout, 
-  refreshToken 
+  refreshToken,
+  getProfile
 };
 export default auth;

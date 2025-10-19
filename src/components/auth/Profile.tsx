@@ -24,19 +24,17 @@ export default function Profile() {
   useEffect(() => {
     const loadProfile = async () => {
       try {
-        // Get user from localStorage
-        const userData = auth.getUser();
         const token = auth.getToken();
         
-        // Debug log để kiểm tra dữ liệu
-        console.log("User data from localStorage:", userData);
-        console.log("Token:", token);
-        
-        // Nếu không có token hoặc user, redirect về login
-        if (!token || !userData) {
+        // Nếu không có token, redirect về login
+        if (!token) {
           router.push('/account/login?message=Vui lòng đăng nhập để xem hồ sơ');
           return;
         }
+        
+        // Gọi API để lấy thông tin profile mới nhất
+        const userData = await auth.getProfile();
+        console.log("Profile data from API:", userData);
         
         setUser(userData);
       } catch (err) {
