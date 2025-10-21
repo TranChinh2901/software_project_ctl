@@ -1,52 +1,41 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { User } from "@/types/auth";
-import auth from "@/services/auth";
-import styles from "./Profile.module.css";
+import { useAuth } from "@/contexts/AuthContext";
+import styles from "../../styles/profile/Profile.module.css";
 
-const sidebarItems = [
-  { id: "account", label: "Trang tài khoản", active: false },
-  { id: "profile", label: "Thông tin tài khoản", active: true },
-  { id: "orders", label: "Đơn hàng của bạn", active: false },
-  { id: "password", label: "Đổi mật khẩu", active: false },
-  { id: "addresses", label: "Số địa chỉ (0)", active: false },
-];
+const SIDEBAR_ITEMS = [
+  // { id: "account", label: "Trang tài khoản" },
+  { id: "profile", label: "Thông tin tài khoản" },
+  { id: "orders", label: "Đơn hàng của bạn" },
+  { id: "password", label: "Đổi mật khẩu" },
+  { id: "addresses", label: "Số địa chỉ (0)" },
+] as const;
+
+interface InfoFieldProps {
+  label: string;
+  value: string | undefined;
+  defaultText?: string;
+}
+
+const InfoField = ({ label, value, defaultText = "Chưa cập nhật" }: InfoFieldProps) => (
+  <div className={styles.infoField}>
+    <label className={styles.fieldLabel}>{label}:</label>
+    <div className={styles.fieldValue}>{value || defaultText}</div>
+  </div>
+);
 
 export default function Profile() {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("profile");
   const router = useRouter();
+  const { user, isAuthenticated, loading } = useAuth();
 
-  useEffect(() => {
-    const loadProfile = async () => {
-      try {
-        const token = auth.getToken();
-        
-        // Nếu không có token, redirect về login
-        if (!token) {
-          router.push('/account/login?message=Vui lòng đăng nhập để xem hồ sơ');
-          return;
-        }
-        
-        // Gọi API để lấy thông tin profile mới nhất
-        const userData = await auth.getProfile();
-        console.log("Profile data from API:", userData);
-        
-        setUser(userData);
-      } catch (err) {
-        console.error("Failed to load profile:", err);
-        router.push('/account/login?message=Có lỗi xảy ra, vui lòng đăng nhập lại');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadProfile();
-  }, [router]);
+  if (!loading && !isAuthenticated) {
+    router.push('/account/login?message=Vui lòng đăng nhập để xem hồ sơ');
+    return null;
+  }
 
   if (loading) {
     return (
@@ -80,7 +69,7 @@ export default function Profile() {
             </div>
             <nav className={styles.sidebarNav}>
               <ul className={styles.navList}>
-                {sidebarItems.map((item) => (
+                {SIDEBAR_ITEMS.map((item) => (
                   <li key={item.id}>
                     <button
                       onClick={() => setActiveTab(item.id)}
@@ -107,42 +96,23 @@ export default function Profile() {
                 <div className={styles.profileInfo}>
                   <div className={styles.infoGrid}>
                     <div className={styles.infoColumn}>
-                      <div className={styles.infoField}>
-                        <label className={styles.fieldLabel}>Họ tên:</label>
-                        <div className={styles.fieldValue}>{user.fullname}</div>
-                      </div>
-                      
-                      <div className={styles.infoField}>
-                        <label className={styles.fieldLabel}>Email:</label>
-                        <div className={styles.fieldValue}>{user.email}</div>
-                      </div>
-                      
-                      <div className={styles.infoField}>
-                        <label className={styles.fieldLabel}>Điện thoại:</label>
-                        <div className={styles.fieldValue}>
-                          {user.phone_number || "Chưa cập nhật"}
-                        </div>
-                      </div>
+                      <InfoField label="Họ tên" value={user.fullname} />
+                      <InfoField label="Email" value={user.email} />
+                      <InfoField label="Điện thoại" value={user.phone_number} />
                     </div>
 
                     <div className={styles.infoColumn}>
-                      <div className={styles.infoField}>
-                        <label className={styles.fieldLabel}>Giới tính:</label>
-                        <div className={styles.fieldValue}>
-                          {user.gender ? (user.gender === "male" ? "Nam" : "Nữ") : "Chưa cập nhật"}
-                        </div>
-                      </div>
-                      
-                      <div className={styles.infoField}>
-                        <label className={styles.fieldLabel}>Ngày sinh:</label>
-                        <div className={styles.fieldValue}>
-                          {user.date_of_birth 
-                            ? new Date(user.date_of_birth).toLocaleDateString("vi-VN")
-                            : "Chưa cập nhật"
-                          }
-                        </div>
-                      </div>
-                      
+                      <InfoField 
+                        label="Giới tính" 
+                        value={user.gender ? (user.gender === "male" ? "Nam" : "Nữ") : undefined} 
+                      />
+                      <InfoField 
+                        label="Ngày sinh" 
+                        value={user.date_of_birth 
+                          ? new Date(user.date_of_birth).toLocaleDateString("vi-VN")
+                          : undefined
+                        } 
+                      />
                       <div className={styles.infoField}>
                         <label className={styles.fieldLabel}>Trạng thái:</label>
                         <div className={styles.fieldValue}>
@@ -157,10 +127,7 @@ export default function Profile() {
                   </div>
                   
                   <div className={styles.addressSection}>
-                    <label className={styles.fieldLabel}>Địa chỉ:</label>
-                    <div className={styles.fieldValue}>
-                      {user.address || "Chưa cập nhật"}
-                    </div>
+                    <InfoField label="Địa chỉ" value={user.address} />
                   </div>
                 </div>
               ) : (

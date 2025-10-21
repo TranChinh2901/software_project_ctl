@@ -1,14 +1,13 @@
-/* Profile.module.css */
 
 .profilePage {
-  min-height: 100vh;
+  min-height: 70vh;
   background-color: #f9fafb;
 }
 
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 24px 16px;
+  /* padding: 24px 16px; */
 }
 
 /* Loading */
@@ -174,7 +173,6 @@
   padding: 24px;
 }
 
-/* Profile Info */
 .profileInfo {
   display: flex;
   flex-direction: column;
@@ -191,6 +189,9 @@
   .infoGrid {
     grid-template-columns: 1fr 1fr;
   }
+  .profilePage  {
+  padding: 7px 5px;
+} 
 }
 
 .infoColumn {

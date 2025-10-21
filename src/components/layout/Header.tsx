@@ -12,28 +12,18 @@ import { FaSearch, FaRegHeart, FaRegUserCircle } from "react-icons/fa"
 import Image from "next/image";
 import Link from 'next/link'
 import { VscInbox } from 'react-icons/vsc'
-import { useEffect, useState } from 'react'
-import { getToken, logout as authLogout } from '../../services/auth'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useAuth } from '@/contexts/AuthContext'
 
 export default function Header() {
-  const [logged, setLogged] = useState<boolean>(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false)
   const router = useRouter()
-
-  useEffect(() => {
-    setLogged(Boolean(getToken()))
-    function onStorage(e: StorageEvent) {
-      if (e.key === 'nd_token') setLogged(Boolean(e.newValue))
-    }
-    window.addEventListener('storage', onStorage)
-    return () => window.removeEventListener('storage', onStorage)
-  }, [])
+  const { user, isAuthenticated, logout } = useAuth()
 
   function handleLogout(e: React.MouseEvent) {
     e.preventDefault()
-    try { authLogout() } catch {}
-    setLogged(false)
+    logout()
     router.push('/')
     setMobileMenuOpen(false) 
   }
@@ -108,7 +98,7 @@ export default function Header() {
                 <span>Tài khoản</span>
               </div>
               <div className={styles.dropdownMenu}>
-                {logged ? (
+                {isAuthenticated ? (
                   <>
                     <Link href="/account/profile">Hồ sơ</Link>
                     <a href="#logout" onClick={handleLogout}>Đăng xuất</a>
@@ -151,7 +141,7 @@ export default function Header() {
               <p>Thời trang cho mọi phong cách</p>
             </div>
             <div className={styles.mobileAuthSection}>
-              {logged ? (
+              {isAuthenticated ? (
                 <>
                   <Link href="/account/profile" className={styles.profileBtn} onClick={closeMobileMenu}>
                     Hồ sơ của tôi

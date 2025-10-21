@@ -10,7 +10,6 @@ import AdminHeader from '../../components/layout/AdminHeader';
 import AdminProtectedRoute from '../../components/auth/AdminProtectedRoute';
 import styles from '../../styles/admin/AdminLayout.module.css';
 import '../../styles/admin/admin-reset.css';
-import { Toaster } from 'react-hot-toast';
 
 interface AdminLayoutProps {
   children: ReactNode;
@@ -47,16 +46,6 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             </div>
           </div>
         </AdminProtectedRoute>
-        <Toaster 
-          position="top-right"
-          toastOptions={{
-            duration: 3000,
-            style: {
-              background: '#363636',
-              color: '#fff',
-            },
-          }}
-        />
       </body>
     </html>
   );

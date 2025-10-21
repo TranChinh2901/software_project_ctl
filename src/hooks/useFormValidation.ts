@@ -37,7 +37,6 @@ export const useFormValidation = <T extends Record<string, unknown>>(
   const setValue = (name: keyof T, value: T[keyof T]) => {
     setValues(prev => ({ ...prev, [name]: value }));
     
-    // Validate on change if field was touched
     if (touched[name]) {
       const error = validateField(name, value);
       setErrors(prev => ({ ...prev, [name]: error }));
@@ -47,7 +46,6 @@ export const useFormValidation = <T extends Record<string, unknown>>(
   const setTouched = (name: keyof T) => {
     setTouchedState(prev => ({ ...prev, [name]: true }));
     
-    // Validate on blur
     const error = validateField(name, values[name]);
     setErrors(prev => ({ ...prev, [name]: error }));
   };

@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { logout } from '../../services/auth';
 import { useRouter } from 'next/navigation';
-import toast from 'react-hot-toast';
+import { useToast } from '@/hooks/useToast';
 import styles from '../../styles/admin/AdminSidebar.module.css';
 
 const AdminSidebar = () => {
@@ -13,6 +13,7 @@ const AdminSidebar = () => {
   const router = useRouter();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const toast = useToast();
 
   const menuItems = [
     {
@@ -59,11 +60,11 @@ const AdminSidebar = () => {
 
   const handleLogout = async () => {
     try {
-      await logout();
-      toast.success('Đăng xuất thành công!');
-      router.push('/'); // Redirect về trang chủ thay vì login
+      logout(); // Sử dụng AuthContext logout
+      toast.success('Đăng xuất thành công!', 'LOGOUT_SUCCESS');
+      router.push('/'); // Redirect về trang chủ
     } catch {
-      toast.error('Có lỗi xảy ra khi đăng xuất');
+      toast.error('Có lỗi xảy ra khi đăng xuất', 'LOGOUT_ERROR');
     }
   };
 

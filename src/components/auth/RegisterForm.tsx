@@ -1,34 +1,30 @@
 "use client";
 import React, { useState } from "react";
-import { register as apiRegister, saveToken } from "../../services/auth";
-import { useRouter } from "next/navigation";
 import styles from '../../styles/auth/RegisterForm.module.css';
-import { toast } from "react-hot-toast";
 import Breadcrumb from "../Breadcrumb/Breadcrumb";
 import Link from "next/link";
 import { RegisterDto, GenderType } from "../../types/auth";
+import { useAuthForm } from "../../hooks/useAuthForm";
+import { useToast } from "../../hooks/useToast";
 
 export default function RegisterForm() {
   const [fullname, setFullname] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [password, setPassword] = useState(""); 
   const [phone_number, setPhoneNumber] = useState("");
-  const [gender, setGender] = useState<string>(""); // Để trống mặc định
+  const [gender, setGender] = useState<string>(""); 
   const [date_of_birth, setDateOfBirth] = useState("");
   const [address, setAddress] = useState("");
-  const [loading, setLoading] = useState(false);
-  const router = useRouter();
+  const { handleRegister, loading } = useAuthForm();
+  const toast = useToast();
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     
-    // Basic validation - server sẽ handle chi tiết
     if (!fullname.trim() || !email.trim() || !password.trim() || !date_of_birth || !gender) {
-      toast.error("Vui lòng điền đầy đủ thông tin bắt buộc");
+      toast.error("Vui lòng điền đầy đủ thông tin bắt buộc", "REGISTER_ERROR");
       return;
     }
-    
-    setLoading(true);
     
     try {
       const registerData: RegisterDto = {
@@ -36,30 +32,16 @@ export default function RegisterForm() {
         email: email.trim(),
         password,
         phone_number: phone_number.trim() || undefined,
-        gender: gender as GenderType, // Cast về GenderType
+        gender: gender as GenderType, 
         date_of_birth: new Date(date_of_birth),
         address: address.trim() || undefined,
       };
-      const response = await apiRegister(registerData);
-      if (response.accessToken) {
-        saveToken(response.accessToken);
-        toast.success("Đăng ký thành công!");
-        router.push("/");
-      } else {
-        toast.success("Đăng ký thành công! Vui lòng đăng nhập.");
-        router.push("/account/login");
-      }
-    } catch (error: unknown) {
-      let message = "Đăng ký thất bại";
-      if (error instanceof Error) {
-        message = error.message
-      }
       
-      toast.error(message);
-    } finally {
-      setLoading(false);
+      await handleRegister(registerData);
+    } catch {
     }
   }
+  
   return (
     <div className={styles.registerContainer}>
       <Breadcrumb items={[{ label: "Trang chủ", href: "/" }, { label: "Đăng ký" }]} />

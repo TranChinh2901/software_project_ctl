@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Roboto_Mono } from "next/font/google";
+import { AuthProvider } from "@/contexts/AuthContext";
+import { ToastProvider } from "@/components/providers/ToastProvider";
 import "./globals.css";
 
 const inter = Inter({
@@ -26,7 +28,10 @@ export default function RootLayout({
   return (
     <html lang="vi">
       <body className={`${inter.variable} ${robotoMono.variable}`}>
-        {children}
+        <AuthProvider>
+          {children}
+          <ToastProvider />
+        </AuthProvider>
       </body>
     </html>
   );

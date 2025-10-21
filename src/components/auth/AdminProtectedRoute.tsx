@@ -1,23 +1,33 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/contexts/AuthContext';
+import { RoleType } from '@/types/auth';
 
 interface AdminProtectedRouteProps {
   children: React.ReactNode;
 }
 
 const AdminProtectedRoute: React.FC<AdminProtectedRouteProps> = ({ children }) => {
-  const [isLoading, setIsLoading] = useState(true);
+  const { user, isAuthenticated, loading } = useAuth();
+  const router = useRouter();
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 100);
+    if (!loading) {
+      if (!isAuthenticated) {
+        router.push('/account/login?message=Vui lòng đăng nhập để truy cập trang admin');
+        return;
+      }
+      
+      if (user?.role !== RoleType.ADMIN) {
+        router.push('/?message=Bạn không có quyền truy cập trang admin');
+        return;
+      }
+    }
+  }, [loading, isAuthenticated, user, router]);
 
-    return () => clearTimeout(timer);
-  }, []);
-
-  if (isLoading) {
+  if (loading) {
     return (
       <div style={{
         display: 'flex',
