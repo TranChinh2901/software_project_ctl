@@ -1,14 +1,18 @@
-import React from 'react'
-import Breadcrumb from '@/components/Breadcrumb/Breadcrumb'
+import ProductList from '@/components/products/ProductList';
+import ProductFilter from '@/components/products/ProductFilter';
 
-const page = () => {
+export default function ProductsPage() {
   return (
-    <div style={{maxWidth: 1200, margin: '0 auto'}}>
-      <Breadcrumb items={[{ label: 'Trang chủ', href: '/' }, { label: 'Products' }]} />
-      <h1>Danh sách sản phẩm</h1>
-      <p>Hello product pages page</p>
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold mb-8">Sản phẩm</h1>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <aside className="md:col-span-1">
+          <ProductFilter />
+        </aside>
+        <div className="md:col-span-3">
+          <ProductList />
+        </div>
+      </div>
     </div>
-  )
+  );
 }
-
-export default page

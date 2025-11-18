@@ -1,40 +1,57 @@
 "use client";
-import React from "react";
-import styles from '../../styles/auth/LoginForm.module.css';
-import Breadcrumb from "../Breadcrumb/Breadcrumb";
+import React, { useState } from "react";
+import styles from '../../styles/auth/login/login.module.css';
 import Link from "next/link";
-import { useAuthForm } from "../../hooks/useAuthForm";
-import { useFormValidation } from "../../hooks/useFormValidation";
-import { loginValidationRules } from "../../utils/validation";
+import { useAuth } from "@/contexts/AuthContext";
+// import { authApi } from "@/lib/api";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
+import { RoleType } from "@/enums";
+import { authApi } from "@/lib/api";
+import Breadcrumb from "../breadcrumb/breadcrumb";
 
 export default function LoginForm() {
-  const { loading, handleLogin } = useAuthForm();
-  
-  const {
-    values,
-    errors,
-    setValue,
-    setTouched,
-    validateAll
-  } = useFormValidation(
-    { email: "", password: "" },
-    loginValidationRules
-  );
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const { login } = useAuth();
+  const router = useRouter();
 
-  const onSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!validateAll()) {
+    if (!email.trim() || !password.trim()) {
+      toast.error("Vui lòng điền đầy đủ thông tin");
       return;
     }
 
-    await handleLogin(values);
+    setLoading(true);
+    try {
+      const response = await authApi.login({ email, password });
+      login(response.accessToken, response.refreshToken, response.user);
+      toast.success("Đăng nhập thành công!");
+      if (response.user.role === RoleType.ADMIN) {
+        router.push('/admin');
+      } else {
+        router.push('/');
+      }
+    } catch (error: unknown) {
+    //   console.error('Login error:', error);
+      if (error && typeof error === 'object' && 'response' in error) {
+        // const err = error as { response?: { data?: { message?: string } } };
+        toast.error( "Đăng nhập thất bại");
+      } else {
+        toast.error("Đăng nhập thất bại");
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className={styles.loginContainer}>
-      <Breadcrumb items={[{ label: "Trang chủ", href: "/" }, { label: "Đăng nhập" }]} />
-      <form onSubmit={onSubmit} className={styles.loginForm}>
+          <Breadcrumb items={[{ label: "Trang chủ", href: "/" }, { label: "Đăng nhập" }]} />
+      <form onSubmit={handleSubmit} className={styles.loginForm}>
         <div className={styles.mainForm}>
           <h2>Đăng nhập</h2>
           <p>Nếu bạn chưa có tài khoản, đăng ký <Link style={{ color: '#ff6347' }} href="/account/register">tại đây</Link></p>
@@ -42,28 +59,26 @@ export default function LoginForm() {
           <div>
             <input
               type="email"
-              value={values.email}
-              onChange={(e) => setValue('email', e.target.value)}
-              onBlur={() => setTouched('email')}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder="Email"
               autoComplete="email"
+              required
             />
-            {errors.email && <span className={styles.error}>{errors.email}</span>}
           </div>
           
           <div>
             <input
               type="password"
-              value={values.password}
-              onChange={(e) => setValue('password', e.target.value)}
-              onBlur={() => setTouched('password')}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               placeholder="Mật khẩu"
               autoComplete="current-password"
+              required
             />
-            {errors.password && <span className={styles.error}>{errors.password}</span>}
           </div>
         
-          <button disabled={loading} type="submit">
+          <button type="submit" disabled={loading}>
             {loading ? "Đang xử lý..." : "Đăng nhập"}
           </button>
         </div>

@@ -1,81 +1,90 @@
-"use client";
+'use client';
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User } from '@/types/auth';
-import { getToken, getUser, logout as authLogout } from '@/services/auth';
+import { useRouter } from 'next/navigation';
 
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
-  loading: boolean;
-  login: (user: User, token: string) => void;
+  isLoading: boolean;
+  login: (accessToken: string, refreshToken: string, user: User) => void;
   logout: () => void;
   updateUser: (user: User) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function AuthProvider({ children }: { children: ReactNode }) {
+export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
 
+  // Load user from localStorage khi app khởi động
   useEffect(() => {
-    const initAuth = () => {
-      const token = getToken();
-      const savedUser = getUser();
-      
-      if (token && savedUser) setUser(savedUser);
-      setLoading(false);
-    };
-
-    initAuth();
-
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'nd_token' || e.key === 'nd_user') {
-        const savedUser = getUser();
-        setUser(e.newValue ? savedUser : null);
+    const loadUser = () => {
+      try {
+        const storedUser = localStorage.getItem('user');
+        const accessToken = localStorage.getItem('accessToken');
+        
+        if (storedUser && accessToken) {
+          setUser(JSON.parse(storedUser));
+        }
+      } catch (error) {
+        console.error('Error loading user from localStorage:', error);
+        // Nếu có lỗi, xóa dữ liệu cũ
+        localStorage.removeItem('user');
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
+    loadUser();
   }, []);
 
-  const login = (userData: User, token: string) => {
-    localStorage.setItem('nd_token', token);
-    localStorage.setItem('nd_user', JSON.stringify(userData));
-    document.cookie = `nd_token=${token}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax`;
+  const login = (accessToken: string, refreshToken: string, userData: User) => {
+    // Lưu vào localStorage
+    localStorage.setItem('accessToken', accessToken);
+    localStorage.setItem('refreshToken', refreshToken);
+    localStorage.setItem('user', JSON.stringify(userData));
     
+    // Cập nhật state
     setUser(userData);
   };
 
   const logout = () => {
-    authLogout();
+    // Xóa khỏi localStorage
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('user');
+    
+    // Reset state
     setUser(null);
+    
+    // Redirect về trang chủ
+    router.push('/');
   };
 
   const updateUser = (userData: User) => {
-    localStorage.setItem('nd_user', JSON.stringify(userData));
+    localStorage.setItem('user', JSON.stringify(userData));
     setUser(userData);
   };
 
-  return (
-    <AuthContext.Provider 
-      value={{
-        user,
-        isAuthenticated: !!user,
-        loading,
-        login,
-        logout,
-        updateUser,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
-  );
+  const value = {
+    user,
+    isAuthenticated: !!user,
+    isLoading,
+    login,
+    logout,
+    updateUser,
+  };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
-export function useAuth(): AuthContextType {
+export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');

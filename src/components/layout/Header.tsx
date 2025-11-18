@@ -7,7 +7,7 @@ import { Navigation, Autoplay } from 'swiper/modules'
 
 import 'swiper/css'
 import 'swiper/css/navigation'
-import styles from '../../styles/Header/header.module.css'
+import styles from '../../styles/header/header.module.css'
 import { FaSearch, FaRegHeart, FaRegUserCircle } from "react-icons/fa"
 import Image from "next/image";
 import Link from 'next/link'
@@ -15,6 +15,8 @@ import { VscInbox } from 'react-icons/vsc'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
+import { RoleType } from '@/enums'
+import toast from 'react-hot-toast'
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false)
@@ -24,6 +26,7 @@ export default function Header() {
   function handleLogout(e: React.MouseEvent) {
     e.preventDefault()
     logout()
+    toast.success("Đăng xuất thành công!")
     router.push('/')
     setMobileMenuOpen(false) 
   }
@@ -100,8 +103,17 @@ export default function Header() {
               <div className={styles.dropdownMenu}>
                 {isAuthenticated ? (
                   <>
-                    <Link href="/account/profile">Hồ sơ</Link>
-                    <a href="#logout" onClick={handleLogout}>Đăng xuất</a>
+                    {user?.role === RoleType.ADMIN ? (
+                      <>
+                        <Link href="/admin">Dashboard</Link>
+                        <a href="#logout" onClick={handleLogout}>Đăng xuất</a>
+                      </>
+                    ) : (
+                      <>
+                        <Link href="/profile">Hồ sơ</Link>
+                        <a href="#logout" onClick={handleLogout}>Đăng xuất</a>
+                      </>
+                    )}
                   </>
                 ) : (
                   <>
@@ -143,12 +155,25 @@ export default function Header() {
             <div className={styles.mobileAuthSection}>
               {isAuthenticated ? (
                 <>
-                  <Link href="/account/profile" className={styles.profileBtn} onClick={closeMobileMenu}>
-                    Hồ sơ của tôi
-                  </Link>
-                  <button className={styles.logoutBtn} onClick={handleLogout}>
-                    Đăng xuất
-                  </button>
+                  {user?.role === RoleType.ADMIN ? (
+                    <>
+                      <Link href="/admin" className={styles.loginBtn} onClick={closeMobileMenu}>
+                        Dashboard
+                      </Link>
+                      <button className={styles.registerBtn} onClick={handleLogout}>
+                        Đăng xuất
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <Link href="/profile" className={styles.loginBtn} onClick={closeMobileMenu}>
+                        Hồ sơ
+                      </Link>
+                      <button className={styles.registerBtn} onClick={handleLogout}>
+                        Đăng xuất
+                      </button>
+                    </>
+                  )}
                 </>
               ) : (
                 <>

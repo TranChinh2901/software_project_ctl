@@ -1,11 +1,17 @@
-import React from 'react'
+import ProductDetail from '@/components/products/ProductDetail';
+import RelatedProducts from '@/components/products/RelatedProducts';
 
-const page = () => {
+interface ProductPageProps {
+  params: {
+    id: string;
+  };
+}
+
+export default function ProductPage({ params }: ProductPageProps) {
   return (
-    <div>
-      Hello product page    
+    <div className="container mx-auto px-4 py-8">
+      <ProductDetail productId={params.id} />
+      <RelatedProducts productId={params.id} />
     </div>
-  )
-}   
-
-export default page
+  );
+}

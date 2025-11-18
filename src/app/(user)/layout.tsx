@@ -1,3 +1,22 @@
+// import Header from '@/components/layout/Header';
+// import Footer from '@/components/layout/Footer';
+
+// export default function UserLayout({
+//   children,
+// }: {
+//   children: React.ReactNode;
+// }) {
+//   return (
+//     <div className="min-h-screen flex flex-col">
+//       <Header />
+//       <main className="flex-1">
+//         {children}
+//       </main>
+//       <Footer />
+//     </div>
+//   );
+// }
+
 import type { Metadata } from "next";
 import { Inter, Roboto_Mono } from "next/font/google";
 import "../globals.css";
