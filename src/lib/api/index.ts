@@ -27,35 +27,15 @@ export const authApi = {
     const response = await apiClient.put('/auth/profile', data);
     return response;
   },
+  getAllUsers: () => {
+    return apiClient.get('/users');
+  },
   
   refreshToken: (refreshToken: string) => {
     return apiClient.post('/auth/refresh-token', { refreshToken });
   },
 };
 
-// ====================================
-// USER API
-// ====================================
-// export const userApi = {
-//   updateProfile: async (data: UpdateProfileDto) => {
-//     const response = await apiClient.put('/auth/profile', data);
-//     return response;
-//   },
-  
-//   changePassword: async (data: { currentPassword: string; newPassword: string }) => {
-//     const response = await apiClient.put('/auth/change-password', data);
-//     return response;
-//   },
-  
-//   uploadAvatar: async (file: File) => {
-//     const formData = new FormData();
-//     formData.append('avatar', file);
-//     const response = await apiClient.post('/auth/upload-avatar', formData, {
-//       headers: { 'Content-Type': 'multipart/form-data' },
-//     });
-//     return response;
-//   },
-// };
 
 
 

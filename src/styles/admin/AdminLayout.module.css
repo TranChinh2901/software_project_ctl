@@ -1,0 +1,44 @@
+.layoutContainer {
+  display: flex;
+  height: 100vh;
+  background: #f8f9fa;
+  overflow: hidden;
+}
+
+.mainWrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: margin-left 0.3s ease;
+}
+
+.mainContent {
+  flex: 1;
+  overflow-y: auto;
+  padding: 2rem;
+  background: #f8f9fa;
+}
+
+.contentInner {
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+/* Scrollbar styling */
+.mainContent::-webkit-scrollbar {
+  width: 8px;
+}
+
+.mainContent::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.mainContent::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.mainContent::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}

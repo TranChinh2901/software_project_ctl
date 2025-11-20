@@ -135,7 +135,7 @@ export default function Header() {
             <li><Link href="/">Trang chủ</Link></li>
             <li><Link href="/products">Sản phẩm</Link></li>
             <li><Link href="/tin-tuc">Tin tức</Link></li>
-            <li><Link href="/lien-he">Liên hệ</Link></li>
+            <li><Link href="/contact">Liên hệ</Link></li>
             <li><Link href="/he-thong">Hệ thống cửa hàng</Link></li>
             <li><Link href="/kiem-tra">Kiểm tra đơn hàng</Link></li>
             <li><Link href="/chi-tiet">Chi tiết sản phẩm</Link></li>
@@ -206,7 +206,7 @@ export default function Header() {
                 <li><Link href="/" onClick={closeMobileMenu}>Trang chủ</Link></li>
                 <li><Link href="/products" onClick={closeMobileMenu}>Sản phẩm</Link></li>
                 <li><Link href="/tin-tuc" onClick={closeMobileMenu}>Tin tức</Link></li>
-                <li><Link href="/lien-he" onClick={closeMobileMenu}>Liên hệ</Link></li>
+                <li><Link href="/contact" onClick={closeMobileMenu}>Liên hệ</Link></li>
               </ul>
             </div>
 

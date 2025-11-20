@@ -1,0 +1,320 @@
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.statCard {
+  transition: transform 0.2s ease;
+}
+
+.statCard:hover {
+  transform: translateY(-4px);
+}
+
+.statContent {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.statIcon {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.statInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.statLabel {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 0.25rem;
+}
+
+.statValue {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.25rem;
+}
+
+.statChange {
+  font-size: 0.875rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.statChange.up {
+  color: #10b981;
+}
+
+.statChange.down {
+  color: #ef4444;
+}
+
+.chartsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.chartCard {
+  min-height: 400px;
+}
+
+.chartPlaceholder {
+  height: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #f9fafb;
+  border-radius: 8px;
+  color: #9ca3af;
+}
+
+.chartIcon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  width: 48px;
+  height: 48px;
+  color: #9ca3af;
+}
+
+.ordersList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.orderItem {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: #f9fafb;
+  border-radius: 8px;
+  transition: background 0.2s ease;
+}
+
+.orderItem:hover {
+  background: #f3f4f6;
+}
+
+.orderIcon {
+  width: 40px;
+  height: 40px;
+  background: #ff634715;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+  color: #ff6347;
+}
+
+.orderIcon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.orderInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.orderTitle {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 0.25rem;
+}
+
+.orderDate {
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+.orderAmount {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-right: 1rem;
+}
+
+.orderStatus {
+  padding: 0.375rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.statusPending {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.bottomGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 1.5rem;
+}
+
+.productList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.productItem {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: #f9fafb;
+  border-radius: 8px;
+  transition: background 0.2s ease;
+}
+
+.productItem:hover {
+  background: #f3f4f6;
+}
+
+.productImage {
+  width: 48px;
+  height: 48px;
+  background: #ff634715;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+  color: #ff6347;
+}
+
+.productImage svg {
+  width: 24px;
+  height: 24px;
+}
+
+.productInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.productName {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 0.25rem;
+}
+
+.productCategory {
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+.productStats {
+  text-align: right;
+}
+
+.productSold {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-bottom: 0.25rem;
+}
+
+.productRevenue {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #ff6347;
+}
+
+.activityList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.activityItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem;
+  background: #f9fafb;
+  border-radius: 8px;
+}
+
+.activityIcon {
+  width: 40px;
+  height: 40px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.125rem;
+  flex-shrink: 0;
+  color: #6b7280;
+}
+
+.activityIcon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.activityInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.activityText {
+  font-size: 0.875rem;
+  color: #374151;
+  margin-bottom: 0.25rem;
+  line-height: 1.5;
+}
+
+.activityTime {
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .chartsGrid,
+  .bottomGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .orderAmount {
+    display: none;
+  }
+
+  .productStats {
+    display: none;
+  }
+}

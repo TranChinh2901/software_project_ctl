@@ -1,0 +1,292 @@
+.sidebar {
+  width: 280px;
+  background: #ffffff;
+  border-right: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  transition: width 0.3s ease, transform 0.3s ease;
+  position: relative;
+  z-index: 100;
+}
+
+.sidebarCollapsed {
+  width: 80px;
+}
+
+.logoSection {
+  padding: 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 72px;
+}
+
+.logoIcon {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #ff6347 0%, #ff4520 100%);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.25rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.logoText {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1f2937;
+  white-space: nowrap;
+  overflow: hidden;
+  transition: opacity 0.3s ease;
+}
+
+.sidebarCollapsed .logoText {
+  opacity: 0;
+  width: 0;
+}
+
+.toggleButton {
+  position: absolute;
+  top: 1.75rem;
+  right: -12px;
+  width: 24px;
+  height: 24px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 101;
+}
+
+.toggleButton:hover {
+  background: #f3f4f6;
+  transform: scale(1.1);
+}
+
+.toggleIcon {
+  font-size: 0.75rem;
+  color: #6b7280;
+  transition: transform 0.3s ease;
+}
+
+.sidebarCollapsed .toggleIcon {
+  transform: rotate(180deg);
+}
+
+.navigation {
+  flex: 1;
+  padding: 1rem 0;
+  overflow-y: auto;
+}
+
+.navigation::-webkit-scrollbar {
+  width: 4px;
+}
+
+.navigation::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.navigation::-webkit-scrollbar-thumb {
+  background: #e5e7eb;
+  border-radius: 4px;
+}
+
+.menuSection {
+  margin-bottom: 1.5rem;
+}
+
+.menuTitle {
+  padding: 0.5rem 1.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  overflow: hidden;
+  transition: opacity 0.3s ease;
+}
+
+.sidebarCollapsed .menuTitle {
+  opacity: 0;
+  height: 0;
+  padding: 0;
+}
+
+.menuList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.menuItem {
+  margin: 0.25rem 0.75rem;
+}
+
+.menuLink {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0.75rem;
+  color: #6b7280;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  position: relative;
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+
+.menuLink:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.menuLinkActive {
+  background: linear-gradient(135deg, rgba(255, 99, 71, 0.1) 0%, rgba(255, 69, 32, 0.1) 100%);
+  color: #ff6347;
+}
+
+.menuLinkActive::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 60%;
+  background: linear-gradient(135deg, #ff6347 0%, #ff4520 100%);
+  border-radius: 0 3px 3px 0;
+}
+
+.menuIcon {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 1.25rem;
+}
+
+.menuIcon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.menuLabel {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: opacity 0.3s ease;
+}
+
+.sidebarCollapsed .menuLabel {
+  opacity: 0;
+  width: 0;
+}
+
+.menuBadge {
+  margin-left: auto;
+  padding: 0.125rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: #ef4444;
+  color: white;
+  border-radius: 12px;
+  white-space: nowrap;
+  transition: opacity 0.3s ease;
+}
+
+.sidebarCollapsed .menuBadge {
+  opacity: 0;
+  width: 0;
+  padding: 0;
+}
+
+.userSection {
+  padding: 1rem;
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.userAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #ff6347 0%, #ff4520 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.userInfo {
+  flex: 1;
+  overflow: hidden;
+  transition: opacity 0.3s ease;
+}
+
+.sidebarCollapsed .userInfo {
+  opacity: 0;
+  width: 0;
+}
+
+.userName {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1f2937;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.userRole {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Tooltip for collapsed state */
+.sidebarCollapsed .menuLink {
+  position: relative;
+}
+
+.sidebarCollapsed .menuLink::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-left: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: #1f2937;
+  color: white;
+  font-size: 0.875rem;
+  border-radius: 6px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 1000;
+}
+
+.sidebarCollapsed .menuLink:hover::after {
+  opacity: 1;
+}

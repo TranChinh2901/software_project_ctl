@@ -2,38 +2,126 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { 
+  MdDashboard, 
+  MdAnalytics,
+  MdInventory,
+  MdShoppingCart,
+  MdPeople,
+  MdFolder,
+  MdLocalOffer,
+  MdStar,
+  MdArticle,
+  MdImage,
+  MdCardGiftcard,
+  MdSettings
+} from 'react-icons/md';
+import styles from '@/styles/admin/AdminSidebar.module.css';
 
-const menuItems = [
-  { href: '/admin', label: 'Dashboard', icon: '📊' },
-  { href: '/admin/products', label: 'Sản phẩm', icon: '📦' },
-  { href: '/admin/orders', label: 'Đơn hàng', icon: '🛒' },
-  { href: '/admin/users', label: 'Người dùng', icon: '👥' },
-  { href: '/admin/categories', label: 'Danh mục', icon: '📁' },
-  { href: '/admin/settings', label: 'Cài đặt', icon: '⚙️' },
+interface MenuSection {
+  title: string;
+  items: MenuItem[];
+}
+
+interface MenuItem {
+  href: string;
+  label: string;
+  icon: React.ReactNode;
+  badge?: number;
+}
+
+const menuSections: MenuSection[] = [
+  {
+    title: 'Tổng quan',
+    items: [
+      { href: '/admin', label: 'Dashboard', icon: <MdDashboard /> },
+      { href: '/admin/analytics', label: 'Phân tích', icon: <MdAnalytics /> },
+    ],
+  },
+  {
+    title: 'Quản lý',
+    items: [
+      { href: '/admin/products', label: 'Sản phẩm', icon: <MdInventory /> },
+      { href: '/admin/orders', label: 'Đơn hàng', icon: <MdShoppingCart />, badge: 5 },
+      { href: '/admin/users', label: 'Người dùng', icon: <MdPeople /> },
+      { href: '/admin/categories', label: 'Danh mục', icon: <MdFolder /> },
+      { href: '/admin/brands', label: 'Thương hiệu', icon: <MdLocalOffer /> },
+      { href: '/admin/reviews', label: 'Đánh giá', icon: <MdStar /> },
+    ],
+  },
+  {
+    title: 'Nội dung',
+    items: [
+      { href: '/admin/blogs', label: 'Blog', icon: <MdArticle /> },
+      { href: '/admin/banners', label: 'Banner', icon: <MdImage /> },
+    ],
+  },
+  {
+    title: 'Hệ thống',
+    items: [
+      { href: '/admin/vouchers', label: 'Voucher', icon: <MdCardGiftcard /> },
+      { href: '/admin/settings', label: 'Cài đặt', icon: <MdSettings /> },
+    ],
+  },
 ];
 
-export default function AdminSidebar() {
+interface AdminSidebarProps {
+  collapsed: boolean;
+  onToggle: () => void;
+}
+
+export default function AdminSidebar({ collapsed, onToggle }: AdminSidebarProps) {
   const pathname = usePathname();
 
   return (
-    <aside className="w-64 bg-gray-900 text-white">
-      <div className="p-4">
-        <h2 className="text-2xl font-bold">Admin Panel</h2>
+    <aside className={`${styles.sidebar} ${collapsed ? styles.sidebarCollapsed : ''}`}>
+      <div className={styles.logoSection}>
+        <div className={styles.logoIcon}>A</div>
+        <span className={styles.logoText}>Admin Panel</span>
+        <button 
+          className={styles.toggleButton}
+          onClick={onToggle}
+          aria-label="Toggle sidebar"
+        >
+          <span className={styles.toggleIcon}>◀</span>
+        </button>
       </div>
-      <nav className="mt-8">
-        {menuItems.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            className={`flex items-center px-6 py-3 hover:bg-gray-800 ${
-              pathname === item.href ? 'bg-gray-800 border-l-4 border-blue-500' : ''
-            }`}
-          >
-            <span className="mr-3">{item.icon}</span>
-            <span>{item.label}</span>
-          </Link>
+
+      <nav className={styles.navigation}>
+        {menuSections.map((section, sectionIndex) => (
+          <div key={sectionIndex} className={styles.menuSection}>
+            <div className={styles.menuTitle}>{section.title}</div>
+            <ul className={styles.menuList}>
+              {section.items.map((item) => {
+                const isActive = pathname === item.href;
+                return (
+                  <li key={item.href} className={styles.menuItem}>
+                    <Link
+                      href={item.href}
+                      className={`${styles.menuLink} ${isActive ? styles.menuLinkActive : ''}`}
+                      data-tooltip={item.label}
+                    >
+                      <span className={styles.menuIcon}>{item.icon}</span>
+                      <span className={styles.menuLabel}>{item.label}</span>
+                      {item.badge && (
+                        <span className={styles.menuBadge}>{item.badge}</span>
+                      )}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
         ))}
       </nav>
+
+      <div className={styles.userSection}>
+        <div className={styles.userAvatar}>AD</div>
+        <div className={styles.userInfo}>
+          <div className={styles.userName}>Admin User</div>
+          <div className={styles.userRole}>Quản trị viên</div>
+        </div>
+      </div>
     </aside>
   );
 }

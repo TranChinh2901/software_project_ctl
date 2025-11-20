@@ -1,5 +1,5 @@
-import CartItems from '@/components/cart/CartItems';
-import CartSummary from '@/components/cart/CartSummary';
+import CartItems from '@/components/user/cart/CartItems';
+import CartSummary from '@/components/user/cart/CartSummary';
 
 export default function CartPage() {
   return (

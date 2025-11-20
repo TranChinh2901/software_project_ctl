@@ -1,5 +1,5 @@
-import ProductDetail from '@/components/products/ProductDetail';
-import RelatedProducts from '@/components/products/RelatedProducts';
+import ProductDetail from '@/components/user/products/ProductDetail';
+import RelatedProducts from '@/components/user/products/RelatedProducts';
 
 interface ProductPageProps {
   params: {

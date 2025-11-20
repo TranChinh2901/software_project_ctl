@@ -1,0 +1,162 @@
+.contactContainer {
+    max-width: 1200px;
+    margin: 0 auto;
+    /* padding: 20px 15px;   */
+    padding-bottom: 15px;
+}
+
+.contactHeader {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.contactHeader h1 {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.contactHeader p {
+    color: #666;
+    font-size: 16px;
+}
+
+.infoGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    margin-bottom: 50px;
+}
+
+.infoBox {
+    background: #fff;
+    padding: 30px 20px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.infoBox:hover {
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transform: translateY(-5px);
+}
+
+.iconWrapper {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 50px;
+    color: #ff6347;
+}
+
+.infoBox h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.infoBox p {
+    color: #666;
+    font-size: 14px;
+}
+
+.contentSection {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+}
+
+.mapColumn {
+    flex: 1;
+    min-width: 300px;
+}
+
+.mapColumn iframe {
+    border-radius: 8px;
+    width: 100%;
+    height: 100%;
+    min-height: 350px;
+}
+
+.formColumn {
+    flex: 1;
+    min-width: 300px;
+}
+
+.contactForm {
+    background: #fff;
+}
+
+.formGroup {
+    margin-bottom: 20px;
+}
+
+.input, .textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #e1e1e1;
+    border-radius: 4px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.input:focus, .textarea:focus {
+    border-color: #ff4d4d;
+}
+
+.submitBtn {
+    background-color: #ff6347;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.submitBtn:hover {
+    background-color: #e60000;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .infoGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .contentSection {
+        flex-direction: column;
+    }
+
+    .mapColumn iframe {
+        min-height: 300px;
+    }
+    .iconWrapper {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 35px;
+    color: #ff6347;
+}
+.contactHeader h1 {
+    font-size: 23px;
+    font-weight: 700;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    color: #333;
+}
+.contactContainer{
+    margin: 0 15px;
+}
+}

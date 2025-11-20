@@ -1,5 +1,5 @@
-import ProductList from '@/components/products/ProductList';
-import ProductFilter from '@/components/products/ProductFilter';
+import ProductList from '@/components/user/products/ProductList';
+import ProductFilter from '@/components/user/products/ProductFilter';
 
 export default function ProductsPage() {
   return (
