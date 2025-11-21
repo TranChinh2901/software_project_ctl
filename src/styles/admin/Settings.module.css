@@ -1,0 +1,444 @@
+.settingsContainer {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Header */
+.header {
+  margin-bottom: 30px;
+}
+
+.backButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: transparent;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  color: #666;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 16px;
+}
+
+.backButton:hover {
+  background: #f5f5f5;
+  border-color: #ff6347;
+  color: #ff6347;
+}
+
+.backButton svg {
+  font-size: 20px;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+/* Settings Card */
+.settingsCard {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-bottom: 24px;
+  overflow: hidden;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 24px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.cardHeaderIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, #ff6347 0%, #ff4757 100%);
+  border-radius: 12px;
+  color: white;
+  font-size: 24px;
+}
+
+.cardTitle {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 4px 0;
+}
+
+.cardDescription {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+}
+
+.cardContent {
+  padding: 24px;
+}
+
+/* Setting Item */
+.settingItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.settingItem:last-child {
+  border-bottom: none;
+}
+
+.settingInfo {
+  flex: 1;
+}
+
+.settingLabel {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 4px 0;
+}
+
+.settingDescription {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Toggle Switch */
+.toggleSwitch {
+  position: relative;
+  display: inline-block;
+  width: 52px;
+  height: 28px;
+  cursor: pointer;
+}
+
+.toggleSwitch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggleSlider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .3s;
+  border-radius: 28px;
+}
+
+.toggleSlider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: .3s;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.toggleSwitch input:checked + .toggleSlider {
+  background: linear-gradient(135deg, #ff6347 0%, #ff4757 100%);
+}
+
+.toggleSwitch input:checked + .toggleSlider:before {
+  transform: translateX(24px);
+}
+
+.toggleSwitch input:disabled + .toggleSlider {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Select Input */
+.selectInput {
+  padding: 10px 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #1a1a1a;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-width: 150px;
+}
+
+.selectInput:hover {
+  border-color: #ff6347;
+}
+
+.selectInput:focus {
+  outline: none;
+  border-color: #ff6347;
+  box-shadow: 0 0 0 3px rgba(255, 99, 71, 0.1);
+}
+
+/* Info Box */
+.infoBox {
+  margin-top: 20px;
+  padding: 16px;
+  background: linear-gradient(135deg, rgba(255, 99, 71, 0.05) 0%, rgba(255, 71, 87, 0.05) 100%);
+  border-left: 4px solid #ff6347;
+  border-radius: 8px;
+}
+
+.infoTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: #ff6347;
+  margin: 0 0 12px 0;
+}
+
+.infoList {
+  margin: 0 0 16px 0;
+  padding-left: 20px;
+}
+
+.infoList li {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.8;
+}
+
+/* Sleep Button - Bật ngay */
+.sleepButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #ff6347 0%, #ff4757 100%);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(255, 99, 71, 0.3);
+}
+
+
+
+.sleepButton svg {
+  font-size: 18px;
+}
+
+/* Divider Line */
+.dividerLine {
+  height: 1px;
+  background: #f0f0f0;
+  margin: 20px 0;
+}
+
+/* Card Actions */
+.cardActions {
+  display: flex;
+  gap: 12px;
+  padding: 24px;
+  border-top: 1px solid #f0f0f0;
+  justify-content: flex-end;
+}
+
+.buttonPrimary,
+.buttonSecondary {
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.buttonPrimary {
+  background: linear-gradient(135deg, #ff6347 0%, #ff4757 100%);
+  color: white;
+}
+
+.buttonPrimary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 99, 71, 0.3);
+}
+
+.buttonPrimary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.buttonSecondary {
+  background: white;
+  color: #666;
+  border: 1px solid #e0e0e0;
+}
+
+.buttonSecondary:hover {
+  background: #f5f5f5;
+  border-color: #ff6347;
+  color: #ff6347;
+}
+
+.comingSoon {
+  text-align: center;
+  padding: 40px;
+  color: #999;
+  font-size: 14px;
+  font-style: italic;
+}
+
+/* Sleep Mode Overlay */
+.sleepOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #000000;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.sleepContent {
+  text-align: center;
+  color: white;
+  animation: slideUp 0.5s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.sleepIcon {
+  font-size: 80px;
+  color: #ff6347;
+  margin-bottom: 24px;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(0.95);
+  }
+}
+
+.sleepTitle {
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0 0 12px 0;
+  color: white;
+}
+
+.sleepDescription {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0 0 32px 0;
+}
+
+.wakeUpButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 32px;
+  background: linear-gradient(135deg, #ff6347 0%, #ff4757 100%);
+  border: none;
+  border-radius: 50px;
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  /* transition: all 0.3s ease; */
+  /* box-shadow: 0 8px 24px rgba(255, 99, 71, 0.4); */
+}
+
+/* .wakeUpButton:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(255, 99, 71, 0.6);
+} */
+
+.wakeUpButton:active {
+  transform: translateY(-1px);
+}
+
+.wakeUpButton svg {
+  font-size: 24px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .settingsContainer {
+    padding: 16px;
+  }
+
+  .title {
+    font-size: 24px;
+  }
+
+  .cardHeader {
+    padding: 20px;
+  }
+
+  .cardContent {
+    padding: 20px;
+  }
+
+  .settingItem {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .cardActions {
+    flex-direction: column;
+  }
+
+  .buttonPrimary,
+  .buttonSecondary {
+    width: 100%;
+  }
+}

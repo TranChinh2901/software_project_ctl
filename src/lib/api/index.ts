@@ -27,12 +27,38 @@ export const authApi = {
     const response = await apiClient.put('/auth/profile', data);
     return response;
   },
-  getAllUsers: () => {
-    return apiClient.get('/users');
-  },
-  
   refreshToken: (refreshToken: string) => {
     return apiClient.post('/auth/refresh-token', { refreshToken });
+  },
+};
+
+// ====================================
+// USER API
+// ====================================
+export const userApi = {
+  getAll: async (params?: Record<string, unknown>) => {
+    const response = await apiClient.get('/auth/users', { params });
+    return response; // apiClient đã trả về response.data rồi
+  },
+  
+  getById: async (id: number) => {
+    const response = await apiClient.get(`/auth/users/${id}`);
+    return response;
+  },
+  
+  create: async (data: Record<string, unknown>) => {
+    const response = await apiClient.post('/auth/users', data);
+    return response;
+  },
+  
+  update: async (id: number, data: Record<string, unknown>) => {
+    const response = await apiClient.put(`/auth/users/${id}`, data);
+    return response;
+  },
+  
+  delete: async (id: number) => {
+    const response = await apiClient.delete(`/auth/users/${id}`);
+    return response;
   },
 };
 

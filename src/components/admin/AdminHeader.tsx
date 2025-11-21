@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { 
   MdSearch, 
@@ -13,11 +13,15 @@ import {
   MdLogout
 } from 'react-icons/md';
 import styles from '@/styles/admin/AdminHeader.module.css';
+import { useAuth } from '@/contexts/AuthContext';
+import toast from 'react-hot-toast';
 
 export default function AdminHeader() {
   const pathname = usePathname();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
+   const {  logout } = useAuth()
+    const router = useRouter()
 
   const generateBreadcrumb = () => {
     const paths = pathname.split('/').filter(Boolean);
@@ -52,10 +56,14 @@ export default function AdminHeader() {
 
   const breadcrumbItems = generateBreadcrumb();
 
-  const handleLogout = () => {
-    // Implement logout logic
-    console.log('Logout clicked');
-  };
+  const handleLogout = (e: React.MouseEvent<HTMLButtonElement>) => {
+     e.preventDefault()
+      logout()
+      toast.success("Đăng xuất thành công!")
+      console.log("Logout success")
+    router.push('/')
+  }
+  
 
   return (
     <header className={styles.header}>

@@ -1,6 +1,4 @@
-// ====================================
-// AUTH ENUMS - Match với backend
-// ====================================
+
 
 export enum GenderType {
   MALE = 'male',
