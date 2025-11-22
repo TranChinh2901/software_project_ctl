@@ -20,6 +20,7 @@ import { RoleType } from '@/enums';
 import PageContainer from '@/components/admin/PageContainer';
 import Button from '@/components/admin/Button';
 import Card from '@/components/admin/Card';
+import EditUserModalOriginal from '@/components/admin/users/EditUserModalOriginal';
 import styles from '@/styles/admin/Users.module.css';
 import toast from 'react-hot-toast';
 
@@ -30,6 +31,8 @@ export default function Users() {
   const [filterRole, setFilterRole] = useState<string>('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
   const fetchUsers = async () => {
     try {
@@ -73,6 +76,20 @@ export default function Users() {
       console.error('Error deleting user:', error);
       toast.error('Không thể xóa người dùng');
     }
+  };
+
+  const handleEditUser = (user: User) => {
+    setSelectedUser(user);
+    setEditModalOpen(true);
+  };
+
+  const handleCloseEditModal = () => {
+    setEditModalOpen(false);
+    setSelectedUser(null);
+  };
+
+  const handleEditSuccess = () => {
+    fetchUsers();
   };
 
   const getRoleBadgeClass = (role: RoleType) => {
@@ -270,13 +287,19 @@ export default function Users() {
                     </td>
                     
                     <td className={styles.dateCell}>
-                      {new Date(user.created_at).toLocaleDateString('vi-VN')}
+                      {new Date(user.created_at).toLocaleString("vi-VN", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        second: "2-digit",
+                      })}{" "}
+                      - {new Date(user.created_at).toLocaleDateString("vi-VN")}
                     </td>
                     
                     <td>
                       <div className={styles.actions}>
                         <button 
                           className={styles.actionButton}
+                          onClick={() => handleEditUser(user)}
                           title="Chỉnh sửa"
                         >
                           <MdEdit />
@@ -322,6 +345,14 @@ export default function Users() {
           </div>
         )}
       </Card>
+
+      {/* Edit User Modal */}
+      <EditUserModalOriginal
+        isOpen={editModalOpen}
+        user={selectedUser}
+        onClose={handleCloseEditModal}
+        onSuccess={handleEditSuccess}
+      />
     </PageContainer>
   );
 }

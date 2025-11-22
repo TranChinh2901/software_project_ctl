@@ -5,13 +5,13 @@
   margin-bottom: 1.5rem;
 }
 
-.statCard {
-  transition: transform 0.2s ease;
-}
+  /* .statCard {
+    transition: transform 0.2s ease;
+  }
 
-.statCard:hover {
-  transform: translateY(-4px);
-}
+  .statCard:hover {
+    transform: translateY(-4px);
+  } */
 
 .statContent {
   display: flex;
