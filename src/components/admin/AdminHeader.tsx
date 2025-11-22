@@ -15,12 +15,14 @@ import {
 import styles from '@/styles/admin/AdminHeader.module.css';
 import { useAuth } from '@/contexts/AuthContext';
 import toast from 'react-hot-toast';
+import { User } from '@/types/user';
 
 export default function AdminHeader() {
   const pathname = usePathname();
+  const [users, setUsers] = useState<User[]>([]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
-   const {  logout } = useAuth()
+   const { user, logout } = useAuth()
     const router = useRouter()
 
   const generateBreadcrumb = () => {
@@ -83,7 +85,7 @@ export default function AdminHeader() {
           ))}
         </nav>
 
-        <div className={styles.searchWrapper}>
+        {/* <div className={styles.searchWrapper}>
           <MdSearch className={styles.searchIcon} />
           <input
             type="text"
@@ -92,7 +94,7 @@ export default function AdminHeader() {
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
           />
-        </div>
+        </div> */}
       </div>
 
       <div className={styles.rightSection}>
@@ -112,9 +114,13 @@ export default function AdminHeader() {
             className={styles.userMenu}
             onClick={() => setDropdownOpen(!dropdownOpen)}
           >
-            <div className={styles.userMenuAvatar}>AD</div>
+            <div className={styles.userMenuAvatar}>
+              {user?.fullname ? user.fullname.charAt(0).toUpperCase() : 'AD'}
+            </div>
             <div className={styles.userMenuInfo}>
-              <div className={styles.userMenuName}>Admin User</div>
+              <div className={styles.userMenuName}>
+                {user?.fullname || 'Admin User'}
+              </div>
               <div className={styles.userMenuRole}>Quản trị viên</div>
             </div>
             <MdKeyboardArrowDown className={styles.userMenuIcon} />

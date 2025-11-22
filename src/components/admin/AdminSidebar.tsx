@@ -17,6 +17,7 @@ import {
   MdSettings
 } from 'react-icons/md';
 import styles from '@/styles/admin/AdminSidebar.module.css';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface MenuSection {
   title: string;
@@ -71,6 +72,7 @@ interface AdminSidebarProps {
 }
 
 export default function AdminSidebar({ collapsed, onToggle }: AdminSidebarProps) {
+    const { user } = useAuth()
   const pathname = usePathname();
 
   return (
@@ -118,7 +120,7 @@ export default function AdminSidebar({ collapsed, onToggle }: AdminSidebarProps)
       <div className={styles.userSection}>
         <div className={styles.userAvatar}>AD</div>
         <div className={styles.userInfo}>
-          <div className={styles.userName}>Admin User</div>
+          <div className={styles.userName}> {user?.fullname || 'Admin User'}</div>
           <div className={styles.userRole}>Quản trị viên</div>
         </div>
       </div>

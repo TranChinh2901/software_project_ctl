@@ -1,12 +1,12 @@
 
-import AddProductButton from '@/components/admin/products/AddProductButton';
+import ProductForm from '@/components/admin/products/ProductForm';
 
 export default function AdminProductsPage() {
   return (
     <div>
      
         
-        <AddProductButton />
+        <ProductForm />
   
 
     </div>

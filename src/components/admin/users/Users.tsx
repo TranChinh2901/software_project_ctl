@@ -12,7 +12,8 @@ import {
   MdVerified,
   MdEmail,
   MdPhone,
-  MdLocationOn
+  MdLocationOn,
+  MdArrowBack
 } from 'react-icons/md';
 import { userApi } from '@/lib/api';
 import { User } from '@/types/user';
@@ -20,7 +21,7 @@ import { RoleType } from '@/enums';
 import PageContainer from '@/components/admin/PageContainer';
 import Button from '@/components/admin/Button';
 import Card from '@/components/admin/Card';
-import EditUserModalOriginal from '@/components/admin/users/EditUserModalOriginal';
+import EditForm from '@/components/admin/users/EditForm';
 import styles from '@/styles/admin/Users.module.css';
 import toast from 'react-hot-toast';
 
@@ -133,13 +134,20 @@ export default function Users() {
           >
             Làm mới
           </Button>
-          <Button 
+          {/* <Button 
             variant="primary" 
             size="md" 
             icon={<MdAdd />}
           >
             Thêm người dùng
-          </Button>
+          </Button> */}
+          <Button 
+  variant="primary" 
+  size="md" 
+  icon={<MdArrowBack />}
+>
+  Quay lại Dashboard
+</Button>
         </>
       }
     >
@@ -347,7 +355,7 @@ export default function Users() {
       </Card>
 
       {/* Edit User Modal */}
-      <EditUserModalOriginal
+      <EditForm
         isOpen={editModalOpen}
         user={selectedUser}
         onClose={handleCloseEditModal}
