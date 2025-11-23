@@ -2,23 +2,24 @@
 // PRODUCT TYPES
 // ====================================
 
+import { ProductStatus } from "@/enums/product.enum";
+
+
 export interface Product {
   id: number;
-  name: string;
-  slug: string;
-  description?: string;
+  name_product: string;
   price: number;
-  original_price?: number;
+  origin_price?: number;
+  small_description?: string;
+  meta_description?: string;
+  image_product?: string;
+  status: ProductStatus;
+  stock_quantity?: number;
   discount?: number;
-  stock: number;
-  images: string[];
-  category_id: number;
+  is_on_sale: boolean;
   category?: Category;
-  brand_id?: number;
   brand?: Brand;
-  specifications?: Record<string, unknown>;
-  rating?: number;
-  review_count?: number;
+  is_deleted: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -29,12 +30,10 @@ export interface Product {
 
 export interface Category {
   id: number;
-  name: string;
-  slug: string;
-  description?: string;
-  image?: string;
-  parent_id?: number;
-  created_at: string;
+  name_category: string;
+  image_category?: string;
+  description_category?: string;
+  brand?: Brand;
   updated_at: string;
 }
 
@@ -44,12 +43,41 @@ export interface Category {
 
 export interface Brand {
   id: number;
-  name: string;
-  slug: string;
-  logo?: string;
-  description?: string;
+  name_brand: string;
+  logo_url?: string;
+  description_brand?: string;
   created_at: string;
   updated_at: string;
+}
+
+export interface CreateBrandDto {
+  name_brand: string;
+  logo?: File;
+  description_brand?: string;
+}
+
+export interface UpdateBrandDto {
+  name_brand?: string;
+  logo?: File;
+  description_brand?: string;
+}
+
+// ====================================
+// CATEGORY DTOs
+// ====================================
+
+export interface CreateCategoryDto {
+  name_category: string;
+  image_category?: File;
+  description_category?: string;
+  brand_id?: number;
+}
+
+export interface UpdateCategoryDto {
+  name_category?: string;
+  image_category?: File;
+  description_category?: string;
+  brand_id?: number;
 }
 
 // ====================================
@@ -57,27 +85,31 @@ export interface Brand {
 // ====================================
 
 export interface CreateProductDto {
-  name: string;
-  description?: string;
+  name_product: string;
   price: number;
-  original_price?: number;
-  stock: number;
+  origin_price?: number;
+  small_description?: string;
+  meta_description?: string;
+  image_product?: File | string;
+  status: ProductStatus;
+  stock_quantity?: number;
+  discount?: number;
   category_id: number;
   brand_id?: number;
-  images: string[];
-  specifications?: Record<string, unknown>;
 }
 
 export interface UpdateProductDto {
-  name?: string;
-  description?: string;
+  name_product?: string;
   price?: number;
-  original_price?: number;
-  stock?: number;
+  origin_price?: number;
+  small_description?: string;
+  meta_description?: string;
+  image_product?: File | string;
+  status?: ProductStatus;
+  stock_quantity?: number;
+  discount?: number;
   category_id?: number;
   brand_id?: number;
-  images?: string[];
-  specifications?: Record<string, unknown>;
 }
 
 // ====================================

@@ -1,14 +1,5 @@
-
-import ProductForm from '@/components/admin/products/ProductForm';
+import Products from '@/components/admin/products/Products';
 
 export default function AdminProductsPage() {
-  return (
-    <div>
-     
-        
-        <ProductForm />
-  
-
-    </div>
-  );
+  return <Products />;
 }

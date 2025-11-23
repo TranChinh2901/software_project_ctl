@@ -74,12 +74,20 @@ export const productApi = {
     return apiClient.get(`/products/${id}`);
   },
   
-  create: (data: Record<string, unknown>) => {
-    return apiClient.post('/products', data);
+  create: (data: FormData) => {
+    return apiClient.post('/products', data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
   },
   
-  update: (id: number, data: Record<string, unknown>) => {
-    return apiClient.put(`/products/${id}`, data);
+  update: (id: number, data: FormData) => {
+    return apiClient.put(`/products/${id}`, data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
   },
   
   delete: (id: number) => {
@@ -87,6 +95,71 @@ export const productApi = {
   },
 };
 
+// ====================================
+// CATEGORY API
+// ====================================
+export const categoryApi = {
+  getAll: (params?: Record<string, unknown>) => {
+    return apiClient.get('/categories', { params });
+  },
+  
+  getById: (id: number) => {
+    return apiClient.get(`/categories/${id}`);
+  },
+
+  create: (data: FormData) => {
+    return apiClient.post('/categories', data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+  },
+  
+  update: (id: number, data: FormData) => {
+    return apiClient.put(`/categories/${id}`, data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+  },
+  
+  delete: (id: number) => {
+    return apiClient.delete(`/categories/${id}`);
+  },
+};
+
+// ====================================
+// BRAND API
+// ====================================
+export const brandApi = {
+  getAll: (params?: Record<string, unknown>) => {
+    return apiClient.get('/brands', { params });
+  },
+  
+  getById: (id: number) => {
+    return apiClient.get(`/brands/${id}`);
+  },
+
+  create: (data: FormData) => {
+    return apiClient.post('/brands', data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+  },
+  
+  update: (id: number, data: FormData) => {
+    return apiClient.put(`/brands/${id}`, data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+  },
+  
+  delete: (id: number) => {
+    return apiClient.delete(`/brands/${id}`);
+  },
+};
 
 // ====================================
 // ORDER API (Placeholder - tạo sau)
