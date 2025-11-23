@@ -3,6 +3,8 @@
 // ====================================
 
 import { ProductStatus } from "@/enums/product.enum";
+import { Brand } from "../brand";
+import { Category } from "../category";
 
 
 export interface Product {
@@ -24,61 +26,6 @@ export interface Product {
   updated_at: string;
 }
 
-// ====================================
-// CATEGORY TYPES
-// ====================================
-
-export interface Category {
-  id: number;
-  name_category: string;
-  image_category?: string;
-  description_category?: string;
-  brand?: Brand;
-  updated_at: string;
-}
-
-// ====================================
-// BRAND TYPES
-// ====================================
-
-export interface Brand {
-  id: number;
-  name_brand: string;
-  logo_url?: string;
-  description_brand?: string;
-  created_at: string;
-  updated_at: string;
-}
-
-export interface CreateBrandDto {
-  name_brand: string;
-  logo?: File;
-  description_brand?: string;
-}
-
-export interface UpdateBrandDto {
-  name_brand?: string;
-  logo?: File;
-  description_brand?: string;
-}
-
-// ====================================
-// CATEGORY DTOs
-// ====================================
-
-export interface CreateCategoryDto {
-  name_category: string;
-  image_category?: File;
-  description_category?: string;
-  brand_id?: number;
-}
-
-export interface UpdateCategoryDto {
-  name_category?: string;
-  image_category?: File;
-  description_category?: string;
-  brand_id?: number;
-}
 
 // ====================================
 // PRODUCT DTOs

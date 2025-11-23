@@ -9,10 +9,11 @@ import {
   MdCloudUpload,
   MdSave,
 } from 'react-icons/md';
-import { Brand, CreateBrandDto, UpdateBrandDto } from '@/types/product';
+
 import { brandApi } from '@/lib/api';
 import toast from 'react-hot-toast';
 import styles from './BrandModal.module.css';
+import { Brand } from '@/types/brand';
 
 interface BrandModalProps {
   isOpen: boolean;

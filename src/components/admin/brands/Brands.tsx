@@ -11,13 +11,14 @@ import {
   MdImage,
 } from 'react-icons/md';
 import { brandApi } from '@/lib/api';
-import { Brand } from '@/types/product';
+
 import PageContainer from '@/components/admin/PageContainer';
 import Button from '@/components/admin/Button';
 import Card from '@/components/admin/Card';
 import BrandModal from '@/components/admin/brands/BrandModal';
 import styles from '@/styles/admin/Brands.module.css';
 import toast from 'react-hot-toast';
+import { Brand } from '@/types/brand';
 
 export default function Brands() {
   const [brands, setBrands] = useState<Brand[]>([]);
