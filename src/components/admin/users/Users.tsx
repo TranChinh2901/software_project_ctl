@@ -21,7 +21,7 @@ import { RoleType } from '@/enums';
 import PageContainer from '@/components/admin/PageContainer';
 import Button from '@/components/admin/Button';
 import Card from '@/components/admin/Card';
-import EditForm from '@/components/admin/users/EditForm';
+import EditForm from '@/components/admin/users/edit/EditForm';
 import styles from '@/styles/admin/Users.module.css';
 import toast from 'react-hot-toast';
 
@@ -42,11 +42,9 @@ export default function Users() {
         page: currentPage,
         limit: 10,
       };
-      
       if (filterRole !== 'all') {
         params.role = filterRole;
       }
-
       const response = await userApi.getAll(params);
       setUsers(response.data || []);
       
@@ -112,8 +110,6 @@ export default function Users() {
     }
   };
 
-
-
   const filteredUsers = users.filter(user => 
     user.fullname.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -151,7 +147,6 @@ export default function Users() {
         </>
       }
     >
-      {/* Stats Cards */}
       <div className={styles.statsGrid}>
         <Card className={styles.statCard}>
           <div className={styles.statContent}>
@@ -179,8 +174,6 @@ export default function Users() {
           </div>
         </Card>
       </div>
-
-      {/* Filters */}
       <Card className={styles.filterCard}>
         <div className={styles.filterContainer}>
           <div className={styles.searchBox}>
@@ -209,8 +202,6 @@ export default function Users() {
           </div>
         </div>
       </Card>
-
-      {/* Users Table */}
       <Card noPadding>
         <div className={styles.tableContainer}>
           {loading ? (
@@ -327,8 +318,6 @@ export default function Users() {
             </table>
           )}
         </div>
-
-        {/* Pagination */}
         {!loading && filteredUsers.length > 0 && totalPages > 1 && (
           <div className={styles.pagination}>
             <button 
@@ -353,8 +342,6 @@ export default function Users() {
           </div>
         )}
       </Card>
-
-      {/* Edit User Modal */}
       <EditForm
         isOpen={editModalOpen}
         user={selectedUser}

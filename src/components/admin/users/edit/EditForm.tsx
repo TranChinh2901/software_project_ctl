@@ -113,7 +113,6 @@ export default function EditUserModal({
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    // Clear error when user types
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: '' }));
     }
@@ -141,7 +140,6 @@ export default function EditUserModal({
         <form onSubmit={handleSubmit}>
           <div className={styles.modalBody}>
             <div className={styles.form}>
-              {/* Họ và tên */}
               <div className={styles.formGroup}>
                 <label className={styles.label}>
                   <MdPerson />
@@ -162,8 +160,6 @@ export default function EditUserModal({
                   <span className={styles.errorMessage}>{errors.fullname}</span>
                 )}
               </div>
-
-              {/* Email và Số điện thoại */}
               <div className={styles.formRow}>
                 <div className={styles.formGroup}>
                   <label className={styles.label}>
@@ -207,8 +203,6 @@ export default function EditUserModal({
                   )}
                 </div>
               </div>
-
-              {/* Địa chỉ */}
               <div className={styles.formGroup}>
                 <label className={styles.label}>
                   <MdLocationOn />
@@ -226,8 +220,6 @@ export default function EditUserModal({
                   />
                 </div>
               </div>
-
-              {/* Giới tính và Ngày sinh */}
               <div className={styles.formRow}>
                 <div className={styles.formGroup}>
                   <label className={styles.label}>
@@ -266,8 +258,6 @@ export default function EditUserModal({
                   </div>
                 </div>
               </div>
-
-              {/* Vai trò */}
               <div className={styles.formGroup}>
                 <label className={styles.label}>
                   <MdSecurity />
@@ -289,8 +279,6 @@ export default function EditUserModal({
                   <span className={styles.errorMessage}>{errors.role}</span>
                 )}
               </div>
-
-              {/* Trạng thái xác thực */}
               <div className={styles.formGroup}>
                 <div className={styles.switchGroup}>
                   <div className={styles.switchLabel}>

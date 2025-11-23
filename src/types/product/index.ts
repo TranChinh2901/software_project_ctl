@@ -2,7 +2,7 @@
 // PRODUCT TYPES
 // ====================================
 
-import { ProductStatus } from "@/enums/product.enum";
+import { ProductStatus } from "@/enums/product/product.enum";
 import { Brand } from "../brand";
 import { Category } from "../category";
 

@@ -15,7 +15,7 @@ import { brandApi } from '@/lib/api';
 import PageContainer from '@/components/admin/PageContainer';
 import Button from '@/components/admin/Button';
 import Card from '@/components/admin/Card';
-import BrandModal from '@/components/admin/brands/BrandModal';
+import BrandModal from '@/components/admin/brands/edit/BrandModal';
 import styles from '@/styles/admin/Brands.module.css';
 import toast from 'react-hot-toast';
 import { Brand } from '@/types/brand';
@@ -31,13 +31,8 @@ export default function Brands() {
     try {
       setLoading(true);
       const response = await brandApi.getAll();
-      console.log('Brands API response:', response.data);
-      console.log('Type of response.data:', typeof response.data, Array.isArray(response.data));
-      
-      // Backend returns Array directly in response.data
       const brandsData = Array.isArray(response.data) ? response.data : [];
       setBrands(brandsData);
-      console.log('Brands set to state:', brandsData);
     } catch (error) {
       console.error('Error fetching brands:', error);
       toast.error('Không thể tải danh sách thương hiệu');
@@ -54,7 +49,6 @@ export default function Brands() {
     if (!confirm('Bạn có chắc chắn muốn xóa thương hiệu này?')) return;
     
     try {
-      console.log('Deleting brand with ID:', brandId);
       const response = await brandApi.delete(brandId);
       console.log('Delete response:', response);
       toast.success('Xóa thương hiệu thành công');
@@ -92,7 +86,6 @@ export default function Brands() {
     brand.description_brand?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Stats
   const totalBrands = brands.length;
   const brandsWithLogo = brands.filter(b => b.logo_url).length;
 
@@ -121,7 +114,6 @@ export default function Brands() {
         </>
       }
     >
-      {/* Stats Cards */}
       <div className={styles.statsGrid}>
         <Card className={styles.statCard}>
           <div className={styles.statContent}>
@@ -147,8 +139,6 @@ export default function Brands() {
           </div>
         </Card>
       </div>
-
-      {/* Search Filter */}
       <Card className={styles.filterCard}>
         <div className={styles.filterContainer}>
           <div className={styles.searchBox}>

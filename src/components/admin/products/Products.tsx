@@ -21,7 +21,7 @@ import Button from '@/components/admin/Button';
 import Card from '@/components/admin/Card';
 import styles from '@/styles/admin/Products.module.css';
 import toast from 'react-hot-toast';
-import { ProductStatus } from '@/enums/product.enum';
+import { ProductStatus } from '@/enums/product/product.enum';
 
 export default function Products() {
   const [products, setProducts] = useState<Product[]>([]);

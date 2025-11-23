@@ -3,72 +3,97 @@
 import { useState, useEffect, useRef } from 'react';
 import {
   MdClose,
-  MdBusiness,
+  MdCategory,
   MdDescription,
   MdImage,
   MdCloudUpload,
   MdSave,
+  MdBusiness,
 } from 'react-icons/md';
-
-import { brandApi } from '@/lib/api';
-import toast from 'react-hot-toast';
-import styles from './BrandModal.module.css';
+import { Category, CreateCategoryDto, UpdateCategoryDto } from '@/types/category';
 import { Brand } from '@/types/brand';
+import { categoryApi, brandApi } from '@/lib/api';
+import toast from 'react-hot-toast';
+import styles from './CategoryModal.module.css';
 
-interface BrandModalProps {
+interface CategoryModalProps {
   isOpen: boolean;
-  brand: Brand | null;
+  category: Category | null;
   onClose: () => void;
   onSuccess: () => void;
 }
 
-interface BrandFormData {
-  name_brand: string;
-  description_brand: string;
+interface CategoryFormData {
+  name_category: string;
+  description_category: string;
+  brand_id: string;
 }
 
-export default function BrandModal({
+export default function CategoryModal({
   isOpen,
-  brand,
+  category,
   onClose,
   onSuccess,
-}: BrandModalProps) {
-  const [formData, setFormData] = useState<BrandFormData>({
-    name_brand: '',
-    description_brand: '',
+}: CategoryModalProps) {
+  const [formData, setFormData] = useState<CategoryFormData>({
+    name_category: '',
+    description_category: '',
+    brand_id: '',
   });
-  const [logoFile, setLogoFile] = useState<File | null>(null);
-  const [logoPreview, setLogoPreview] = useState<string>('');
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string>('');
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [brands, setBrands] = useState<Brand[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (brand && isOpen) {
+    fetchBrands();
+  }, []);
+
+  useEffect(() => {
+    if (category && isOpen) {
       setFormData({
-        name_brand: brand.name_brand,
-        description_brand: brand.description_brand || '',
+        name_category: category.name_category,
+        description_category: category.description_category || '',
+        brand_id: category.brand?.id?.toString() || '',
       });
-      setLogoPreview(brand.logo_url || '');
-      setLogoFile(null);
+      setImagePreview(category.image_category || '');
+      setImageFile(null);
       setErrors({});
     } else if (isOpen) {
       // Reset form for create mode
       setFormData({
-        name_brand: '',
-        description_brand: '',
+        name_category: '',
+        description_category: '',
+        brand_id: '',
       });
-      setLogoPreview('');
-      setLogoFile(null);
+      setImagePreview('');
+      setImageFile(null);
       setErrors({});
     }
-  }, [brand, isOpen]);
+  }, [category, isOpen]);
+
+  const fetchBrands = async () => {
+    try {
+      const response = await brandApi.getAll();
+      const brandsData = Array.isArray(response.data) ? response.data : [];
+      setBrands(brandsData);
+    } catch (error) {
+      console.error('Error fetching brands:', error);
+      toast.error('Không thể tải danh sách thương hiệu');
+    }
+  };
 
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
 
-    if (!formData.name_brand.trim()) {
-      newErrors.name_brand = 'Vui lòng nhập tên thương hiệu';
+    if (!formData.name_category.trim()) {
+      newErrors.name_category = 'Vui lòng nhập tên danh mục';
+    }
+
+    if (!formData.brand_id) {
+      newErrors.brand_id = 'Vui lòng chọn thương hiệu';
     }
 
     setErrors(newErrors);
@@ -76,7 +101,7 @@ export default function BrandModal({
   };
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -101,18 +126,18 @@ export default function BrandModal({
         return;
       }
 
-      setLogoFile(file);
+      setImageFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
-        setLogoPreview(reader.result as string);
+        setImagePreview(reader.result as string);
       };
       reader.readAsDataURL(file);
     }
   };
 
   const handleRemoveImage = () => {
-    setLogoFile(null);
-    setLogoPreview('');
+    setImageFile(null);
+    setImagePreview('');
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -127,38 +152,30 @@ export default function BrandModal({
       setLoading(true);
 
       const formDataToSend = new FormData();
-      formDataToSend.append('name_brand', formData.name_brand.trim());
-      formDataToSend.append('description_brand', formData.description_brand.trim());
+      formDataToSend.append('name_category', formData.name_category.trim());
+      formDataToSend.append('description_category', formData.description_category.trim());
+      formDataToSend.append('brand_id', formData.brand_id);
       
-      if (logoFile) {
-        formDataToSend.append('logo', logoFile);
+      if (imageFile) {
+        formDataToSend.append('image_category', imageFile);
       }
 
-      console.log('Form data being sent:');
-      console.log('name_brand:', formData.name_brand);
-      console.log('description_brand:', formData.description_brand);
-      
-      // Debug: log FormData content
-      for (const pair of formDataToSend.entries()) {
-        console.log(pair[0] + ': ' + pair[1]);
-      }
-
-      if (brand) {
-        // Update existing brand
-        await brandApi.update(brand.id, formDataToSend);
-        toast.success('Cập nhật thương hiệu thành công!');
+      if (category) {
+        // Update existing category
+        await categoryApi.update(category.id, formDataToSend);
+        toast.success('Cập nhật danh mục thành công!');
       } else {
-        // Create new brand
-        await brandApi.create(formDataToSend);
-        toast.success('Thêm thương hiệu thành công!');
+        // Create new category
+        await categoryApi.create(formDataToSend);
+        toast.success('Thêm danh mục thành công!');
       }
 
       onSuccess();
       onClose();
     } catch (error) {
-      console.error('Error saving brand:', error);
+      console.error('Error saving category:', error);
       const err = error as { response?: { data?: { message?: string } } };
-      toast.error(err.response?.data?.message || 'Không thể lưu thương hiệu');
+      toast.error(err.response?.data?.message || 'Không thể lưu danh mục');
     } finally {
       setLoading(false);
     }
@@ -171,8 +188,8 @@ export default function BrandModal({
       <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
         <div className={styles.modalHeader}>
           <div className={styles.modalTitle}>
-            <MdBusiness />
-            <span>{brand ? 'Chỉnh sửa thương hiệu' : 'Thêm thương hiệu mới'}</span>
+            <MdCategory />
+            <span>{category ? 'Chỉnh sửa danh mục' : 'Thêm danh mục mới'}</span>
           </div>
           <button className={styles.closeButton} onClick={onClose}>
             <MdClose />
@@ -182,25 +199,52 @@ export default function BrandModal({
         <form onSubmit={handleSubmit}>
           <div className={styles.modalBody}>
             <div className={styles.form}>
-              {/* Tên thương hiệu */}
+              {/* Tên danh mục */}
+              <div className={styles.formGroup}>
+                <label className={styles.label}>
+                  <MdCategory />
+                  Tên danh mục <span className={styles.required}>*</span>
+                </label>
+                <div className={styles.inputWrapper}>
+                  <MdCategory className={styles.inputIcon} />
+                  <input
+                    type="text"
+                    name="name_category"
+                    value={formData.name_category}
+                    onChange={handleChange}
+                    className={`${styles.input} ${errors.name_category ? styles.error : ''}`}
+                    placeholder="Nhập tên danh mục"
+                  />
+                </div>
+                {errors.name_category && (
+                  <span className={styles.errorMessage}>{errors.name_category}</span>
+                )}
+              </div>
+
+              {/* Thương hiệu */}
               <div className={styles.formGroup}>
                 <label className={styles.label}>
                   <MdBusiness />
-                  Tên thương hiệu <span className={styles.required}>*</span>
+                  Thương hiệu <span className={styles.required}>*</span>
                 </label>
                 <div className={styles.inputWrapper}>
                   <MdBusiness className={styles.inputIcon} />
-                  <input
-                    type="text"
-                    name="name_brand"
-                    value={formData.name_brand}
+                  <select
+                    name="brand_id"
+                    value={formData.brand_id}
                     onChange={handleChange}
-                    className={`${styles.input} ${errors.name_brand ? styles.error : ''}`}
-                    placeholder="Nhập tên thương hiệu"
-                  />
+                    className={`${styles.select} ${errors.brand_id ? styles.error : ''}`}
+                  >
+                    <option value="">-- Chọn thương hiệu --</option>
+                    {brands.map((brand) => (
+                      <option key={brand.id} value={brand.id}>
+                        {brand.name_brand}
+                      </option>
+                    ))}
+                  </select>
                 </div>
-                {errors.name_brand && (
-                  <span className={styles.errorMessage}>{errors.name_brand}</span>
+                {errors.brand_id && (
+                  <span className={styles.errorMessage}>{errors.brand_id}</span>
                 )}
               </div>
 
@@ -210,31 +254,28 @@ export default function BrandModal({
                   <MdDescription />
                   Mô tả
                 </label>
-                <div className={styles.inputWrapper}>
-                  {/* <MdDescription className={styles.inputIcon} /> */}
-                  <textarea
-                    name="description_brand"
-                    value={formData.description_brand}
-                    onChange={handleChange}
-                    className={styles.textarea}
-                    placeholder="Nhập mô tả thương hiệu"
-                    rows={4}
-                  />
-                </div>
+                <textarea
+                  name="description_category"
+                  value={formData.description_category}
+                  onChange={handleChange}
+                  className={styles.textarea}
+                  placeholder="Nhập mô tả danh mục"
+                  rows={4}
+                />
               </div>
 
-              {/* Logo Upload */}
+              {/* Image Upload */}
               <div className={styles.formGroup}>
                 <label className={styles.label}>
                   <MdImage />
-                  Logo thương hiệu
+                  Hình ảnh danh mục
                 </label>
                 <div className={styles.imageUploadContainer}>
-                  <div className={`${styles.imagePreview} ${logoPreview ? styles.hasImage : ''}`}>
-                    {logoPreview ? (
+                  <div className={`${styles.imagePreview} ${imagePreview ? styles.hasImage : ''}`}>
+                    {imagePreview ? (
                       <>
                         <img 
-                          src={logoPreview} 
+                          src={imagePreview} 
                           alt="Preview" 
                           className={styles.previewImage}
                         />
@@ -302,7 +343,7 @@ export default function BrandModal({
               ) : (
                 <>
                   <MdSave />
-                  {brand ? 'Cập nhật' : 'Thêm mới'}
+                  {category ? 'Cập nhật' : 'Thêm mới'}
                 </>
               )}
             </button>
