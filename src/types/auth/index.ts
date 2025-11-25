@@ -1,78 +1,46 @@
-import { GenderType, RoleType } from '@/enums';
-
-// ====================================
-// USER TYPES (Response từ API)
-// ====================================
-export interface User {
-  id: number;
-  fullname: string;
-  email: string;
-  phone_number?: string;
-  address?: string;
-  avatar?: string;
-  gender?: GenderType;
-  date_of_birth?: string;
-  is_verified: boolean;
-  role: RoleType;
-  created_at?: string;
-  updated_at?: string;
-}
-
-// ====================================
-// AUTH DTOs (Data gửi lên API)
-// ====================================
-
-// DTO cho Login - chỉ cần email + password
 export interface LoginDto {
   email: string;
   password: string;
 }
 
-// DTO cho Register - đầy đủ thông tin
 export interface RegisterDto {
-  fullname: string;
+  username: string;
   email: string;
   password: string;
-  phone_number?: string;
-  address?: string;
-  gender: GenderType;
-  date_of_birth: string; // Format: YYYY-MM-DD
+  full_name?: string;
 }
 
-// DTO cho Update Profile
-export interface UpdateProfileDto {
-  fullname?: string;
-  phone_number?: string;
-  address?: string;
-  gender?: GenderType;
-  date_of_birth?: string;
-  avatar?: string;
-}
-
-// ====================================
-// AUTH RESPONSES (Data nhận từ API)
-// ====================================
-
-// Response khi login thành công
 export interface AuthResponse {
-  accessToken: string;
-  refreshToken: string;
-  user: User;
-}
-
-// Response khi register thành công
-export interface RegisterResponse {
+  success: boolean;
   message: string;
-  user: {
-    id: number;
-    fullname: string;
-    email: string;
-    role: string;
+  data: {
+    access_token: string;
+    refresh_token: string;
+    user: {
+      id: number;
+      email: string;
+      username: string;
+      full_name?: string;
+      role: string;
+    };
   };
 }
 
-// Response khi refresh token
-export interface RefreshTokenResponse {
-  accessToken: string;
-  refreshToken: string;
+export interface RegisterResponse {
+  success: boolean;
+  message: string;
+  data: {
+    id: number;
+    email: string;
+    username: string;
+    full_name?: string;
+  };
+}
+
+export interface UpdateProfileDto {
+  username?: string;
+  email?: string;
+  full_name?: string;
+  phone?: string;
+  avatar?: string;
 }

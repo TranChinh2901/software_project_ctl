@@ -162,6 +162,39 @@ export const brandApi = {
 };
 
 // ====================================
+// BLOG API
+// ====================================
+export const blogApi = {
+  getAll: (params?: Record<string, unknown>) => {
+    return apiClient.get('/blogs', { params });
+  },
+  
+  getById: (id: number) => {
+    return apiClient.get(`/blogs/${id}`);
+  },
+
+  create: (data: FormData) => {
+    return apiClient.post('/blogs', data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+  },
+  
+  update: (id: number, data: FormData) => {
+    return apiClient.put(`/blogs/${id}`, data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+  },
+  
+  delete: (id: number) => {
+    return apiClient.delete(`/blogs/${id}`);
+  },
+};
+
+// ====================================
 // ORDER API (Placeholder - tạo sau)
 // ====================================
 export const orderApi = {

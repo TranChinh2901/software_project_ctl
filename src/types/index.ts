@@ -1,6 +1,8 @@
-// Re-export all types for easier imports
+
+export * from './auth';
 export * from './product';
 export * from './user';
-// Auth types conflict with User types, import explicitly if needed
-// export * from './auth';
 export * from './order';
+export * from './category';
+export * from './brand';
+export * from './blog';

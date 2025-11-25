@@ -7,8 +7,6 @@ const apiClient = axios.create({
     'Content-Type': 'application/json',
   },
 });
-
-// Request interceptor - thêm token vào header
 apiClient.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('accessToken');
