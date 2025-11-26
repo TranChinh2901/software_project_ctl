@@ -161,9 +161,6 @@ export const brandApi = {
   },
 };
 
-// ====================================
-// BLOG API
-// ====================================
 export const blogApi = {
   getAll: (params?: Record<string, unknown>) => {
     return apiClient.get('/blogs', { params });
@@ -191,6 +188,41 @@ export const blogApi = {
   
   delete: (id: number) => {
     return apiClient.delete(`/blogs/${id}`);
+  },
+};
+
+export const bannerApi = {
+  getAll: async () => {
+    const response = await apiClient.get('/banners');
+    return response;
+  },
+  
+  getById: async (id: number) => {
+    const response = await apiClient.get(`/banners/${id}`);
+    return response;
+  },
+  
+  create: async (data: FormData) => {
+    const response = await apiClient.post('/banners', data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response;
+  },
+  
+  update: async (id: number, data: FormData) => {
+    const response = await apiClient.put(`/banners/${id}`, data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response;
+  },
+  
+  delete: async (id: number) => {
+    const response = await apiClient.delete(`/banners/${id}`);
+    return response;
   },
 };
 
