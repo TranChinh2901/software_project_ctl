@@ -1,35 +1,37 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { 
-  MdAdd, 
-  MdSearch, 
-  MdEdit, 
+import { useState, useEffect } from "react";
+import {
+  MdAdd,
+  MdSearch,
+  MdEdit,
   MdDelete,
   MdCategory,
   MdRefresh,
   MdImage,
   MdBusiness,
   MdFilterList,
-} from 'react-icons/md';
-import { categoryApi, brandApi } from '@/lib/api';
-import PageContainer from '@/components/admin/PageContainer';
-import Button from '@/components/admin/Button';
-import Card from '@/components/admin/Card';
-import styles from '@/styles/admin/Categories.module.css';
-import toast from 'react-hot-toast';
-import { Category } from '@/types/category';
-import { Brand } from '@/types/brand';
-import CategoryModal from './edit/CategoryModal';
+} from "react-icons/md";
+import { categoryApi, brandApi } from "@/lib/api";
+import PageContainer from "@/components/admin/PageContainer";
+import Button from "@/components/admin/Button";
+import Card from "@/components/admin/Card";
+import styles from "@/styles/admin/Categories.module.css";
+import toast from "react-hot-toast";
+import { Category } from "@/types/category";
+import { Brand } from "@/types/brand";
+import CategoryModal from "./edit/CategoryModal";
 
 export default function Categories() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [brands, setBrands] = useState<Brand[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedBrandId, setSelectedBrandId] = useState<string>('');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedBrandId, setSelectedBrandId] = useState<string>("");
   const [modalOpen, setModalOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(
+    null
+  );
 
   const fetchCategories = async () => {
     try {
@@ -38,8 +40,8 @@ export default function Categories() {
       const categoriesData = Array.isArray(response.data) ? response.data : [];
       setCategories(categoriesData);
     } catch (error) {
-      console.error('Error fetching categories:', error);
-      toast.error('Không thể tải danh sách danh mục');
+      console.error("Error fetching categories:", error);
+      toast.error("Không thể tải danh sách danh mục");
     } finally {
       setLoading(false);
     }
@@ -51,7 +53,7 @@ export default function Categories() {
       const brandsData = Array.isArray(response.data) ? response.data : [];
       setBrands(brandsData);
     } catch (error) {
-      console.error('Error fetching brands:', error);
+      console.error("Error fetching brands:", error);
     }
   };
 
@@ -61,16 +63,19 @@ export default function Categories() {
   }, []);
 
   const handleDeleteCategory = async (categoryId: number) => {
-    if (!confirm('Bạn có chắc chắn muốn xóa danh mục này?')) return;
-    
+    if (!confirm("Bạn có chắc chắn muốn xóa danh mục này?")) return;
+
     try {
       await categoryApi.delete(categoryId);
-      toast.success('Xóa danh mục thành công');
+      toast.success("Xóa danh mục thành công");
       fetchCategories();
     } catch (error) {
-      console.error('Error deleting category:', error);
-      const err = error as { response?: { data?: { message?: string }; status?: number } };
-      const errorMessage = err.response?.data?.message || 'Không thể xóa danh mục';
+      console.error("Error deleting category:", error);
+      const err = error as {
+        response?: { data?: { message?: string }; status?: number };
+      };
+      const errorMessage =
+        err.response?.data?.message || "Không thể xóa danh mục";
       toast.error(errorMessage);
     }
   };
@@ -94,20 +99,29 @@ export default function Categories() {
     fetchCategories();
   };
 
-  const filteredCategories = categories.filter(category => {
-    const matchesSearch = category.name_category.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      category.description_category?.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesBrand = selectedBrandId === '' || category.brand?.id.toString() === selectedBrandId;
-    
+  const filteredCategories = categories.filter((category) => {
+    const matchesSearch =
+      category.name_category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      category.description_category
+        ?.toLowerCase()
+        .includes(searchTerm.toLowerCase());
+
+    const matchesBrand =
+      selectedBrandId === "" ||
+      category.brand?.id.toString() === selectedBrandId;
+
     return matchesSearch && matchesBrand;
   });
 
   const totalCategories = filteredCategories.length;
-  const categoriesWithImage = filteredCategories.filter(c => c.image_category).length;
-  
+  const categoriesWithImage = filteredCategories.filter(
+    (c) => c.image_category
+  ).length;
+
   // Get unique brands count
-  const uniqueBrands = new Set(categories.filter(c => c.brand).map(c => c.brand!.id)).size;
+  const uniqueBrands = new Set(
+    categories.filter((c) => c.brand).map((c) => c.brand!.id)
+  ).size;
 
   return (
     <PageContainer
@@ -115,17 +129,17 @@ export default function Categories() {
       description="Danh sách tất cả danh mục trong hệ thống"
       action={
         <>
-          <Button 
-            variant="secondary" 
-            size="md" 
+          <Button
+            variant="secondary"
+            size="md"
             icon={<MdRefresh />}
             onClick={fetchCategories}
           >
             Làm mới
           </Button>
-          <Button 
-            variant="primary" 
-            size="md" 
+          <Button
+            variant="primary"
+            size="md"
             icon={<MdAdd />}
             onClick={handleOpenCreateModal}
           >
@@ -137,21 +151,27 @@ export default function Categories() {
       <div className={styles.statsGrid}>
         <Card className={styles.statCard}>
           <div className={styles.statContent}>
-            <div className={styles.statIcon} style={{ background: '#ff634715', color: '#ff6347' }}>
+            <div
+              className={styles.statIcon}
+              style={{ background: "#ff634715", color: "#ff6347" }}
+            >
               <MdCategory />
             </div>
             <div className={styles.statInfo}>
               <div className={styles.statLabel}>
-                {selectedBrandId ? 'Danh mục đã lọc' : 'Tổng danh mục'}
+                {selectedBrandId ? "Danh mục đã lọc" : "Tổng danh mục"}
               </div>
               <div className={styles.statValue}>{totalCategories}</div>
             </div>
           </div>
         </Card>
-        
+
         <Card className={styles.statCard}>
           <div className={styles.statContent}>
-            <div className={styles.statIcon} style={{ background: '#3b82f615', color: '#3b82f6' }}>
+            <div
+              className={styles.statIcon}
+              style={{ background: "#3b82f615", color: "#3b82f6" }}
+            >
               <MdBusiness />
             </div>
             <div className={styles.statInfo}>
@@ -163,7 +183,10 @@ export default function Categories() {
 
         <Card className={styles.statCard}>
           <div className={styles.statContent}>
-            <div className={styles.statIcon} style={{ background: '#48bb7815', color: '#48bb78' }}>
+            <div
+              className={styles.statIcon}
+              style={{ background: "#48bb7815", color: "#48bb78" }}
+            >
               <MdImage />
             </div>
             <div className={styles.statInfo}>
@@ -185,7 +208,7 @@ export default function Categories() {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          
+
           <div className={styles.filterGroup}>
             <MdFilterList className={styles.filterIcon} />
             <select
@@ -203,73 +226,117 @@ export default function Categories() {
           </div>
         </div>
       </Card>
-      {loading ? (
-        <Card>
-          <div className={styles.loadingState}>
-            <div className={styles.spinner} />
-            <p>Đang tải dữ liệu...</p>
-          </div>
-        </Card>
-      ) : filteredCategories.length === 0 ? (
-        <Card>
-          <div className={styles.emptyState}>
-            <MdCategory className={styles.emptyIcon} />
-            <p>Không tìm thấy danh mục nào</p>
-          </div>
-        </Card>
-      ) : (
-        <div className={styles.categoriesGrid}>
-          {filteredCategories.map((category) => (
-            <Card key={category.id} className={styles.categoryCard}>
-              <div className={styles.categoryCardContent}>
-                <div className={styles.categoryImageContainer}>
-                  {category.image_category ? (
-                    <img 
-                      src={category.image_category} 
-                      alt={category.name_category}
-                      className={styles.categoryImage}
-                    />
-                  ) : (
-                    <MdCategory className={styles.categoryImagePlaceholder} />
-                  )}
-                </div>
-                <div className={styles.categoryInfo}>
-                  <div className={styles.categoryName}>{category.name_category}</div>
-                  {category.brand && (
-                    <div className={styles.categoryBrand}>
-                      Thương hiệu: {category.brand.name_brand}
-                    </div>
-                  )}
-                  <div className={styles.categoryDescription}>
-                    {category.description_category?.trim() || 'Chưa có mô tả'}
-                  </div>
-                </div>
-              </div>
-              <div className={styles.categoryFooter}>
-                <div className={styles.categoryDate}>
-                  {new Date(category.updated_at).toLocaleDateString('vi-VN')}
-                </div>
-                <div className={styles.categoryActions}>
-                  <button 
-                    className={`${styles.actionButton} ${styles.editButton}`}
-                    onClick={() => handleOpenEditModal(category)}
-                    title="Chỉnh sửa"
-                  >
-                    <MdEdit />
-                  </button>
-                  <button 
-                    className={`${styles.actionButton} ${styles.deleteButton}`}
-                    onClick={() => handleDeleteCategory(category.id)}
-                    title="Xóa"
-                  >
-                    <MdDelete />
-                  </button>
-                </div>
-              </div>
-            </Card>
-          ))}
+      <Card noPadding>
+        <div className={styles.tableContainer}>
+          {loading ? (
+            <div className={styles.loadingState}>
+              <div className={styles.spinner} />
+              <p>Đang tải dữ liệu...</p>
+            </div>
+          ) : filteredCategories.length === 0 ? (
+            <div className={styles.emptyState}>
+              <MdCategory className={styles.emptyIcon} />
+              <p>Không tìm thấy danh mục nào</p>
+            </div>
+          ) : (
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Hình ảnh</th>
+                  <th>Tên danh mục</th>
+                  <th>Thương hiệu</th>
+                  <th>Mô tả</th>
+                  <th>Ngày cập nhật</th>
+                  <th>Thao tác</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredCategories.map((category) => (
+                  <tr key={category.id}>
+                    <td className={styles.idCell}>#{category.id}</td>
+
+                    <td>
+                      <div className={styles.imageCell}>
+                        {category.image_category ? (
+                          <img
+                            src={category.image_category}
+                            alt={category.name_category}
+                            className={styles.categoryImage}
+                          />
+                        ) : (
+                          <div className={styles.imagePlaceholder}>
+                            <MdCategory />
+                          </div>
+                        )}
+                      </div>
+                    </td>
+
+                    <td>
+                      <div className={styles.categoryName}>
+                        {category.name_category}
+                      </div>
+                    </td>
+
+                    <td>
+                      {category.brand ? (
+                        <div className={styles.brandInfo}>
+                          <MdBusiness />
+                          <span>{category.brand.name_brand}</span>
+                        </div>
+                      ) : (
+                        <span className={styles.noBrand}>
+                          Chưa có thương hiệu
+                        </span>
+                      )}
+                    </td>
+
+                    <td>
+                      <div className={styles.description}>
+                        {category?.description_category
+                          ? category.description_category.length > 70
+                            ? `${category.description_category.substring(
+                                0,
+                                70
+                              )}...`
+                            : category.description_category
+                          : "Chưa có mô tả"}
+                      </div>
+                    </td>
+
+                    <td>
+                      <div className={styles.dateInfo}>
+                        {new Date(category.updated_at).toLocaleDateString(
+                          "vi-VN"
+                        )}
+                      </div>
+                    </td>
+
+                    <td>
+                      <div className={styles.actionButtons}>
+                        <button
+                          className={`${styles.actionButton} ${styles.editButton}`}
+                          onClick={() => handleOpenEditModal(category)}
+                          title="Chỉnh sửa"
+                        >
+                          <MdEdit />
+                        </button>
+                        <button
+                          className={`${styles.actionButton} ${styles.deleteButton}`}
+                          onClick={() => handleDeleteCategory(category.id)}
+                          title="Xóa"
+                        >
+                          <MdDelete />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
-      )}
+      </Card>
       <CategoryModal
         isOpen={modalOpen}
         category={selectedCategory}

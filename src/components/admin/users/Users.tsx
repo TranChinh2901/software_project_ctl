@@ -48,9 +48,6 @@ export default function Users() {
       const response = await userApi.getAll(params);
       setUsers(response.data || []);
       
-      // if (response.total && response.limit) {
-      //   setTotalPages(Math.ceil(response.total / response.limit));
-      // }
     } catch (error) {
       console.error('Error fetching users:', error);
       toast.error('Không thể tải danh sách người dùng');

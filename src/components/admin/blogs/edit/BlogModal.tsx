@@ -6,6 +6,7 @@ import { blogApi } from '@/lib/api';
 import { Blog } from '@/types/blog';
 import { BlogType } from '@/enums';
 import { useAuth } from '@/contexts/AuthContext';
+import RichTextEditor from '@/components/admin/RichTextEditor';
 import styles from './BlogModal.module.css';
 import toast from 'react-hot-toast';
 
@@ -70,6 +71,11 @@ export default function BlogModal({ isOpen, onClose, blog, onSuccess }: BlogModa
       return;
     }
 
+    if (formData.content && formData.content.trim().length < 10) {
+      toast.error('Nội dung phải có ít nhất 10 ký tự');
+      return;
+    }
+
     if (!user) {
       toast.error('Bạn cần đăng nhập để tạo bài viết');
       return;
@@ -78,14 +84,24 @@ export default function BlogModal({ isOpen, onClose, blog, onSuccess }: BlogModa
     try {
       setLoading(true);
       const submitData = new FormData();
-      submitData.append('title', formData.title);
-      submitData.append('content', formData.content);
+      submitData.append('title', formData.title.trim());
+      
+      // Chỉ gửi content nếu có giá trị và đủ độ dài
+      if (formData.content && formData.content.trim().length >= 10) {
+        submitData.append('content', formData.content.trim());
+      }
+      
       submitData.append('status', formData.status);
-      // Tự động gán user đang đăng nhập làm tác giả
-      submitData.append('author_id', user.id.toString());
+      // Backend tự động gán author_id từ req.user.id, không cần gửi từ frontend
       
       if (imageFile) {
         submitData.append('image_blogs', imageFile);
+      }
+
+      // Debug log
+      console.log('FormData being sent:');
+      for (const [key, value] of submitData.entries()) {
+        console.log(key, ':', value);
       }
 
       if (blog) {
@@ -101,10 +117,30 @@ export default function BlogModal({ isOpen, onClose, blog, onSuccess }: BlogModa
       resetForm();
     } catch (error) {
       console.error('Error saving blog:', error);
-      const err = error as { response?: { data?: { message?: string } } };
-      const errorMessage = err.response?.data?.message || 
+      const err = error as { 
+        response?: { 
+          data?: { 
+            message?: string; 
+            error?: string; 
+            details?: Array<{ field?: string; message?: string }> | string[]
+          } 
+        } 
+      };
+      console.error('Error response:', err.response?.data); // Debug log
+      console.error('Validation details:', err.response?.data?.details); // Debug validation errors
+      
+      const errorMessage = err.response?.data?.message || err.response?.data?.error ||
         (blog ? 'Không thể cập nhật bài viết' : 'Không thể tạo bài viết mới');
-      toast.error(errorMessage);
+      
+      // Hiển thị chi tiết validation errors nếu có
+      if (err.response?.data?.details && Array.isArray(err.response.data.details)) {
+        err.response.data.details.forEach((detail) => {
+          const msg = typeof detail === 'string' ? detail : (detail as { message?: string }).message || JSON.stringify(detail);
+          toast.error(msg);
+        });
+      } else {
+        toast.error(errorMessage);
+      }
     } finally {
       setLoading(false);
     }
@@ -148,12 +184,10 @@ export default function BlogModal({ isOpen, onClose, blog, onSuccess }: BlogModa
 
           <div className={styles.formGroup}>
             <label htmlFor="content">Nội dung</label>
-            <textarea
-              id="content"
+            <RichTextEditor
               value={formData.content}
-              onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-              placeholder="Nhập nội dung bài viết"
-              rows={8}
+              onChange={(value) => setFormData({ ...formData, content: value })}
+              placeholder="Nhập nội dung bài viết..."
             />
           </div>
 

@@ -10,7 +10,6 @@ import {
   MdCheckCircle,
   MdImage,
   MdPerson,
-  MdCalendarToday,
 } from "react-icons/md";
 import { blogApi } from '@/lib/api';
 import PageContainer from "../PageContainer";
@@ -32,7 +31,7 @@ const Blogs = () => {
     try {
       setLoading(true);
       const response = await blogApi.getAll();
-      const blogsData = Array.isArray(response.data) ? response.data : [];
+      const blogsData = response.data?.blogs || [];
       setBlogs(blogsData);
     } catch (error) {
       console.error('Error fetching blogs:', error);
@@ -196,16 +195,25 @@ const Blogs = () => {
                   </div>
                 )}
                 <div className={styles.blogInfo}>
-                  <div className={styles.blogTitle}>{blog.title}</div>
-                  <div className={styles.blogContent}>
-                    {blog.content ? 
-                      (blog.content.length > 150 ? 
-                        `${blog.content.substring(0, 150)}...` : 
-                        blog.content
-                      ) : 
-                      'Chưa có nội dung'
-                    }
-                  </div>
+                  <div className={styles.blogTitle}>
+                    {blog.title ? 
+                    (blog.title.length > 20 ? 
+                      `${blog.title.substring(0, 20)}...` : 
+                      blog.title
+                    ) : 
+                    'Chưa có tiêu đề'
+                    
+                    }</div>
+                  <div 
+                    className={styles.blogContent}
+                    dangerouslySetInnerHTML={{
+                      __html: blog.content 
+                        ? (blog.content.length > 150 
+                            ? `${blog.content.substring(0, 150)}...` 
+                            : blog.content)
+                        : 'Chưa có nội dung'
+                    }}
+                  />
                   <div className={styles.blogMeta}>
                     <span className={`${styles.blogStatus} ${styles[blog.status]}`}>
                       {blog.status === 'active' ? 'Hoạt động' : 'Không hoạt động'}
@@ -213,7 +221,7 @@ const Blogs = () => {
                     {blog.author && (
                       <span className={styles.blogAuthor}>
                         <MdPerson />
-                        {blog.author.full_name || blog.author.username}
+                        {blog.author.fullname || blog.author.email}
                       </span>
                     )}
                   </div>

@@ -2,8 +2,9 @@ import { BlogType } from "@/enums";
 
 export interface Author {
   id: number;
-  username: string;
-  full_name?: string;
+  fullname?: string;
+  email: string;
+  role?: string;
 }
 
 export interface Blog {
