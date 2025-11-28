@@ -12,24 +12,39 @@ import {
   MdImage,
   MdCheckCircle,
   MdCancel,
-  MdWarning
+  MdWarning,
+  MdVisibility
 } from 'react-icons/md';
-import { productApi } from '@/lib/api';
+import { productApi, categoryApi, brandApi } from '@/lib/api';
 import { Product  } from '@/types/product';
+import { Category } from '@/types/category';
+import { Brand } from '@/types/brand';
 import PageContainer from '@/components/admin/PageContainer';
 import Button from '@/components/admin/Button';
 import Card from '@/components/admin/Card';
 import styles from '@/styles/admin/Products.module.css';
 import toast from 'react-hot-toast';
 import { ProductStatus } from '@/enums/product/product.enum';
+import ProductModal from './ProductModal';
+import ProductDetailModal from './ProductDetailModal';
 
 export default function Products() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [brands, setBrands] = useState<Brand[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState<string>('all');
+  const [filterCategory, setFilterCategory] = useState<string>('all');
+  const [filterBrand, setFilterBrand] = useState<string>('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  
+  // Modal states
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [viewingProduct, setViewingProduct] = useState<Product | null>(null);
 
   const fetchProducts = async () => {
     try {
@@ -43,27 +58,89 @@ export default function Products() {
         params.status = filterStatus;
       }
 
+      if (filterCategory !== 'all') {
+        params.category_id = parseInt(filterCategory);
+      }
+
+      if (filterBrand !== 'all') {
+        params.brand_id = parseInt(filterBrand);
+      }
+
+      if (searchTerm.trim()) {
+        params.search = searchTerm.trim();
+      }
+
       const response = await productApi.getAll(params);
-      console.log('Products API response:', response.data);
-      // Backend returns: { success: true, message: "...", data: { products, total, page, limit } }
-      const responseData = response.data.data;
-      setProducts(responseData.products || []);
+      console.log('Products API response:', response);
       
-      if (responseData.total && responseData.limit) {
-        setTotalPages(Math.ceil(responseData.total / responseData.limit));
+      // apiClient interceptor already returns response.data
+      // Backend returns: { success: true, message: "...", data: { products, total, page, limit, totalPages } }
+      if (response && response.data) {
+        const responseData = response.data;
+        setProducts(responseData.products || []);
+        
+        // Use totalPages from backend if available, otherwise calculate
+        if (responseData.totalPages) {
+          setTotalPages(responseData.totalPages);
+        } else if (responseData.total && responseData.limit) {
+          setTotalPages(Math.ceil(responseData.total / responseData.limit));
+        }
       }
     } catch (error) {
       console.error('Error fetching products:', error);
       toast.error('Không thể tải danh sách sản phẩm');
+      setProducts([]);
     } finally {
       setLoading(false);
     }
   };
 
+  const fetchCategories = async () => {
+    try {
+      const response = await categoryApi.getAll({ limit: 100 });
+      console.log('Categories API response:', response);
+      
+      // apiClient interceptor already returns response.data
+      if (response && response.data) {
+        const responseData = response.data;
+        setCategories(responseData.categories || []);
+      }
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+      setCategories([]);
+    }
+  };
+
+  const fetchBrands = async () => {
+    try {
+      const response = await brandApi.getAll({ limit: 100 });
+      console.log('Brands API response:', response);
+      
+      // apiClient interceptor already returns response.data
+      if (response && response.data) {
+        const responseData = response.data;
+        setBrands(responseData.brands || []);
+      }
+    } catch (error) {
+      console.error('Error fetching brands:', error);
+      setBrands([]);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
+    fetchBrands();
+  }, []);
+
   useEffect(() => {
     fetchProducts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentPage, filterStatus]);
+  }, [currentPage, filterStatus, filterCategory, filterBrand]);
+
+  const handleSearch = () => {
+    setCurrentPage(1);
+    fetchProducts();
+  };
 
   const handleDeleteProduct = async (productId: number) => {
     if (!confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) return;
@@ -76,6 +153,36 @@ export default function Products() {
       console.error('Error deleting product:', error);
       toast.error('Không thể xóa sản phẩm');
     }
+  };
+
+  const handleEditProduct = (product: Product) => {
+    setEditingProduct(product);
+    setIsModalOpen(true);
+  };
+
+  const handleViewProduct = (product: Product) => {
+    setViewingProduct(product);
+    setIsDetailModalOpen(true);
+  };
+
+  const handleAddProduct = () => {
+    setEditingProduct(null);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setEditingProduct(null);
+  };
+
+  const handleCloseDetailModal = () => {
+    setIsDetailModalOpen(false);
+    setViewingProduct(null);
+  };
+
+  const handleSuccess = () => {
+    fetchProducts();
+    handleCloseModal();
   };
 
   const getStockBadgeClass = (stock?: number) => {
@@ -132,6 +239,7 @@ export default function Products() {
             variant="primary" 
             size="md" 
             icon={<MdAdd />}
+            onClick={handleAddProduct}
           >
             Thêm sản phẩm
           </Button>
@@ -200,6 +308,7 @@ export default function Products() {
               className={styles.searchInput}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
             />
           </div>
           
@@ -208,11 +317,46 @@ export default function Products() {
             <select 
               className={styles.filterSelect}
               value={filterStatus}
-              onChange={(e) => setFilterStatus(e.target.value)}
+              onChange={(e) => {
+                setFilterStatus(e.target.value);
+                setCurrentPage(1);
+              }}
             >
               <option value="all">Tất cả trạng thái</option>
               <option value={ProductStatus.ACTIVE}>Đang bán</option>
               <option value={ProductStatus.INACTIVE}>Ngừng bán</option>
+            </select>
+          </div>
+
+          <div className={styles.filterGroup}>
+            <select 
+              className={styles.filterSelect}
+              value={filterCategory}
+              onChange={(e) => {
+                setFilterCategory(e.target.value);
+                setCurrentPage(1);
+              }}
+            >
+              <option value="all">Tất cả danh mục</option>
+              {categories.map(cat => (
+                <option key={cat.id} value={cat.id}>{cat.name_category}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className={styles.filterGroup}>
+            <select 
+              className={styles.filterSelect}
+              value={filterBrand}
+              onChange={(e) => {
+                setFilterBrand(e.target.value);
+                setCurrentPage(1);
+              }}
+            >
+              <option value="all">Tất cả thương hiệu</option>
+              {brands.map(brand => (
+                <option key={brand.id} value={brand.id}>{brand.name_brand}</option>
+              ))}
             </select>
           </div>
         </div>
@@ -344,6 +488,14 @@ export default function Products() {
                       <div className={styles.actions}>
                         <button 
                           className={styles.actionButton}
+                          onClick={() => handleViewProduct(product)}
+                          title="Xem chi tiết"
+                        >
+                          <MdVisibility />
+                        </button>
+                        <button 
+                          className={styles.actionButton}
+                          onClick={() => handleEditProduct(product)}
                           title="Chỉnh sửa"
                         >
                           <MdEdit />
@@ -389,6 +541,22 @@ export default function Products() {
           </div>
         )}
       </Card>
+
+      {/* Modals */}
+      <ProductModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        product={editingProduct}
+        categories={categories}
+        brands={brands}
+        onSuccess={handleSuccess}
+      />
+
+      <ProductDetailModal
+        isOpen={isDetailModalOpen}
+        onClose={handleCloseDetailModal}
+        product={viewingProduct}
+      />
     </PageContainer>
   );
 }

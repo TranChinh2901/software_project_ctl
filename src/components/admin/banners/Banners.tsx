@@ -131,7 +131,7 @@ export default function Banners() {
                         <MdEdit />
                       </button>
                       <button
-                        className={styles.actionButton}
+                        className={styles.actionButtonb}
                         onClick={() => handleDeleteBanner(banner.id)}
                         title="Xóa"
                       >
@@ -142,7 +142,11 @@ export default function Banners() {
                 </div>
                 <div className={styles.bannerInfo}>
                   <div className={styles.bannerHeader}>
-                    <h3 className={styles.bannerTitle}>{banner.title}</h3>
+                    <h3 className={styles.bannerTitle}>
+                      {banner.title.length > 50 
+                        ? `${banner.title.substring(0, 50)}...` 
+                        : banner.title}
+                    </h3>
                     <span className={`${styles.statusBadge} ${styles[banner.status]}`}>
                       {banner.status === BannerType.ACTIVE ? (
                         <>
@@ -156,10 +160,18 @@ export default function Banners() {
                     </span>
                   </div>
                   {banner.subtitle && (
-                    <p className={styles.bannerSubtitle}>{banner.subtitle}</p>
+                    <p className={styles.bannerSubtitle}>
+                      {banner.subtitle.length > 30 
+                        ? `${banner.subtitle.substring(0, 30)}...` 
+                        : banner.subtitle}
+                    </p>
                   )}
                   {banner.description && (
-                    <p className={styles.bannerDescription}>{banner.description}</p>
+                    <p className={styles.bannerDescription}>
+                      {banner.description.length > 50 
+                        ? `${banner.description.substring(0, 50)}...` 
+                        : banner.description}
+                    </p>
                   )}
                   <div className={styles.bannerMeta}>
                     <span className={styles.metaItem}>

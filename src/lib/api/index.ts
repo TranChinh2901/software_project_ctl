@@ -227,6 +227,36 @@ export const bannerApi = {
 };
 
 // ====================================
+// VOUCHER API
+// ====================================
+export const voucherApi = {
+  getAll: async () => {
+    const response = await apiClient.get('/vouchers');
+    return response;
+  },
+  
+  getById: async (id: number) => {
+    const response = await apiClient.get(`/vouchers/${id}`);
+    return response;
+  },
+  
+  create: async (data: Record<string, unknown>) => {
+    const response = await apiClient.post('/vouchers', data);
+    return response;
+  },
+  
+  update: async (id: number, data: Record<string, unknown>) => {
+    const response = await apiClient.put(`/vouchers/${id}`, data);
+    return response;
+  },
+  
+  delete: async (id: number) => {
+    const response = await apiClient.delete(`/vouchers/${id}`);
+    return response;
+  },
+};
+
+// ====================================
 // ORDER API (Placeholder - tạo sau)
 // ====================================
 export const orderApi = {

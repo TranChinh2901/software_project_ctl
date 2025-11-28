@@ -1,0 +1,212 @@
+/* Loading & Empty States */
+.loading {
+  text-align: center;
+  padding: 3rem;
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.empty {
+  text-align: center;
+  padding: 3rem;
+  color: #9ca3af;
+}
+
+.emptyIcon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.empty p {
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+/* Table Container */
+.tableContainer {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.table thead {
+  background-color: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.table th {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #374151;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.table tbody tr {
+  border-bottom: 1px solid #f3f4f6;
+  transition: background-color 0.15s;
+}
+
+.table tbody tr:hover {
+  background-color: #f9fafb;
+}
+
+.table td {
+  padding: 1rem;
+  color: #1f2937;
+}
+
+.expiredRow {
+  background-color: #fef2f2;
+}
+
+.expiredRow:hover {
+  background-color: #fee2e2;
+}
+
+/* Code Cell */
+.codeCell {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.codeIcon {
+  color: #ff6347;
+  font-size: 1.25rem;
+}
+
+.code {
+  font-weight: 600;
+  color: #1f2937;
+  font-family: 'Courier New', monospace;
+  background-color: #f3f4f6;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+}
+
+/* Discount Cell */
+.discountCell {
+  font-weight: 600;
+  color: #059669;
+}
+
+/* Quantity */
+.quantity {
+  display: inline-block;
+  background-color: #dbeafe;
+  color: #1e40af;
+  padding: 0.25rem 0.625rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+
+/* Date */
+.validDate {
+  color: #6b7280;
+}
+
+.expiredDate {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+/* No Limit */
+.noLimit {
+  color: #9ca3af;
+  font-style: italic;
+}
+
+/* Status Badge */
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0.375rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.statusBadge svg {
+  font-size: 0.875rem;
+}
+
+.statusBadge.active {
+  background-color: #d1fae5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+}
+
+.statusBadge.inactive {
+  background-color: #fee2e2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+}
+
+/* Actions */
+.actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.editButton,
+.deleteButton {
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 1.125rem;
+  color: #6b7280;
+}
+
+.editButton:hover {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.deleteButton:hover {
+  background: #fee2e2;
+  color: #ef4444;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .tableContainer {
+    border-radius: 8px;
+  }
+
+  .table {
+    font-size: 0.8rem;
+  }
+
+  .table th,
+  .table td {
+    padding: 0.625rem 0.75rem;
+  }
+
+  .table th {
+    font-size: 0.75rem;
+  }
+
+  .editButton,
+  .deleteButton {
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
+  }
+}
