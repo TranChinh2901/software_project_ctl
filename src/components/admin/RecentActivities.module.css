@@ -1,0 +1,169 @@
+.activitiesContainer {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.refreshBtn {
+  background: transparent;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  color: #666;
+}
+
+.refreshBtn:hover {
+  background: #f5f5f5;
+  border-color: #ff6347;
+  color: #ff6347;
+}
+
+.refreshBtn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.loadingState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  color: #666;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #ff6347;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 12px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.emptyState {
+  text-align: center;
+  padding: 40px 20px;
+  color: #999;
+}
+
+.activitiesList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.activityItem {
+  display: flex;
+  gap: 16px;
+  padding: 16px;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.activityItem:hover {
+  background: #f9f9f9;
+}
+
+.activityItem:not(:last-child) {
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.activityIcon {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #fff5f3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ff6347;
+}
+
+.activityContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.activityTitle {
+  margin: 0 0 4px 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1a1a1a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.activityType {
+  color: #666;
+  font-weight: 400;
+}
+
+.activityDetails {
+  margin: 0 0 4px 0;
+  font-size: 13px;
+  color: #666;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.activityTime {
+  margin: 0;
+  font-size: 12px;
+  color: #999;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .activitiesContainer {
+    padding: 16px;
+  }
+  
+  .header h3 {
+    font-size: 16px;
+  }
+  
+  .activityItem {
+    gap: 12px;
+    padding: 12px 8px;
+  }
+  
+  .activityIcon {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .activityIcon svg {
+    width: 18px;
+    height: 18px;
+  }
+}

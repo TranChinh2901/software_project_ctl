@@ -86,19 +86,15 @@ export default function BlogModal({ isOpen, onClose, blog, onSuccess }: BlogModa
       const submitData = new FormData();
       submitData.append('title', formData.title.trim());
       
-      // Chỉ gửi content nếu có giá trị và đủ độ dài
       if (formData.content && formData.content.trim().length >= 10) {
         submitData.append('content', formData.content.trim());
       }
       
       submitData.append('status', formData.status);
-      // Backend tự động gán author_id từ req.user.id, không cần gửi từ frontend
-      
       if (imageFile) {
         submitData.append('image_blogs', imageFile);
       }
 
-      // Debug log
       console.log('FormData being sent:');
       for (const [key, value] of submitData.entries()) {
         console.log(key, ':', value);
@@ -126,13 +122,9 @@ export default function BlogModal({ isOpen, onClose, blog, onSuccess }: BlogModa
           } 
         } 
       };
-      console.error('Error response:', err.response?.data); // Debug log
-      console.error('Validation details:', err.response?.data?.details); // Debug validation errors
       
       const errorMessage = err.response?.data?.message || err.response?.data?.error ||
         (blog ? 'Không thể cập nhật bài viết' : 'Không thể tạo bài viết mới');
-      
-      // Hiển thị chi tiết validation errors nếu có
       if (err.response?.data?.details && Array.isArray(err.response.data.details)) {
         err.response.data.details.forEach((detail) => {
           const msg = typeof detail === 'string' ? detail : (detail as { message?: string }).message || JSON.stringify(detail);

@@ -62,14 +62,14 @@
   padding: 1rem;
   color: #1f2937;
 }
-
+/* 
 .expiredRow {
   background-color: #fef2f2;
 }
 
 .expiredRow:hover {
   background-color: #fee2e2;
-}
+} */
 
 /* Code Cell */
 .codeCell {

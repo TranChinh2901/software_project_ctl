@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { 
   MdAttachMoney, 
   MdShoppingCart, 
@@ -7,18 +8,60 @@ import {
   MdInventory,
   MdTrendingUp,
   MdAssessment,
-  MdAdd
+  MdRefresh
 } from 'react-icons/md';
 import PageContainer from '@/components/admin/PageContainer';
 import Button from '@/components/admin/Button';
 import Card from '@/components/admin/Card';
+import RecentActivities from '@/components/admin/RecentActivities';
 import styles from '@/styles/admin/Dashboard.module.css';
+import { productApi, userApi } from '@/lib/api';
+import toast from 'react-hot-toast';
 
 export default function AdminDashboard() {
-  const stats = [
+  const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState({
+    totalRevenue: 0,
+    totalOrders: 0,
+    totalCustomers: 0,
+    totalProducts: 0,
+  })
+
+  const fetchDashboardData = async () => {
+    try {
+      setLoading(true);
+      const productsResponse = await productApi.getAll();
+      const productsData = productsResponse.data?.products || productsResponse.data || [];
+      const products = Array.isArray(productsData) ? productsData : [];
+      const usersResponse = await userApi.getAll();
+      const usersData = usersResponse.data?.users || usersResponse.data || [];
+      const users = Array.isArray(usersData) ? usersData : [];
+      const totalRevenue = products.reduce((sum: number, product: { price: number; sold_count?: number }) => {
+        return sum + (product.price * (product.sold_count || 0));
+      }, 0);
+      
+      setStats({
+        totalRevenue: totalRevenue || 125430000,
+        totalOrders: 1234, 
+        totalCustomers: users.length, 
+        totalProducts: products.length,
+      });
+    } catch (error) {
+      console.error('Error fetching dashboard data:', error);
+      toast.error('Không thể tải dữ liệu dashboard');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchDashboardData();
+  }, []);
+
+  const statCards = [
     {
       label: 'Tổng doanh thu',
-      value: '₫125,430,000',
+      value: new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(stats.totalRevenue),
       change: '+12.5%',
       trend: 'up',
       icon: <MdAttachMoney />,
@@ -26,15 +69,15 @@ export default function AdminDashboard() {
     },
     {
       label: 'Đơn hàng',
-      value: '1,234',
+      value: stats.totalOrders.toString(),
       change: '+8.2%',
       trend: 'up',
       icon: <MdShoppingCart />,
       color: '#48bb78'
     },
     {
-      label: 'Khách hàng',
-      value: '856',
+      label: 'Người dùng',
+      value: stats.totalCustomers.toString(),
       change: '+23.1%',
       trend: 'up',
       icon: <MdPeople />,
@@ -42,7 +85,7 @@ export default function AdminDashboard() {
     },
     {
       label: 'Sản phẩm',
-      value: '342',
+      value: stats.totalProducts.toString(),
       change: '+5.4%',
       trend: 'up',
       icon: <MdInventory />,
@@ -56,33 +99,42 @@ export default function AdminDashboard() {
       description="Tổng quan về hoạt động kinh doanh"
       action={
         <>
-          <Button variant="secondary" size="md" icon={<MdAssessment />}>
-            Xuất báo cáo
+          <Button variant="secondary" size="md" icon={<MdRefresh />} onClick={fetchDashboardData}>
+            Làm mới
           </Button>
-          <Button variant="primary" size="md" icon={<MdAdd />}>
-            Thêm mới
+          <Button variant="primary" size="md" icon={<MdAssessment />}>
+            Xuất báo cáo
           </Button>
         </>
       }
     >
-      <div className={styles.statsGrid}>
-        {stats.map((stat, index) => (
-          <Card key={index} className={styles.statCard}>
-            <div className={styles.statContent}>
-              <div className={styles.statIcon} style={{ background: `${stat.color}15`, color: stat.color }}>
-                {stat.icon}
-              </div>
-              <div className={styles.statInfo}>
-                <div className={styles.statLabel}>{stat.label}</div>
-                <div className={styles.statValue}>{stat.value}</div>
-                <div className={`${styles.statChange} ${styles[stat.trend]}`}>
-                  {stat.trend === 'up' ? '↗' : '↘'} {stat.change}
+      {loading ? (
+        <div className={styles.loadingState}>
+          <div className={styles.spinner} />
+          <p>Đang tải dữ liệu...</p>
+        </div>
+      ) : (
+        <>
+          <div className={styles.statsGrid}>
+            {statCards.map((stat, index) => (
+              <Card key={index} className={styles.statCard}>
+                <div className={styles.statContent}>
+                  <div className={styles.statIcon} style={{ background: `${stat.color}15`, color: stat.color }}>
+                    {stat.icon}
+                  </div>
+                  <div className={styles.statInfo}>
+                    <div className={styles.statLabel}>{stat.label}</div>
+                    <div className={styles.statValue}>{stat.value}</div>
+                    <div className={`${styles.statChange} ${styles[stat.trend]}`}>
+                      {stat.trend === 'up' ? '↗' : '↘'} {stat.change}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          </Card>
-        ))}
-      </div>
+              </Card>
+            ))}
+          </div>
+        </>
+      )}
 
       <div className={styles.chartsGrid}>
         <Card title="Doanh thu theo tháng" className={styles.chartCard}>
@@ -134,24 +186,7 @@ export default function AdminDashboard() {
           </div>
         </Card>
 
-        <Card title="Hoạt động gần đây" className={styles.activityCard}>
-          <div className={styles.activityList}>
-            {[
-              { icon: <MdShoppingCart />, text: 'Đơn hàng #1234 đã được xác nhận', time: '5 phút trước' },
-              { icon: <MdPeople />, text: 'Khách hàng mới đã đăng ký', time: '10 phút trước' },
-              { icon: <MdInventory />, text: 'Sản phẩm mới được thêm vào', time: '15 phút trước' },
-              { icon: <MdTrendingUp />, text: 'Đánh giá 5 sao từ khách hàng', time: '30 phút trước' },
-            ].map((activity, index) => (
-              <div key={index} className={styles.activityItem}>
-                <div className={styles.activityIcon}>{activity.icon}</div>
-                <div className={styles.activityInfo}>
-                  <div className={styles.activityText}>{activity.text}</div>
-                  <div className={styles.activityTime}>{activity.time}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </Card>
+        <RecentActivities />
       </div>
     </PageContainer>
   );

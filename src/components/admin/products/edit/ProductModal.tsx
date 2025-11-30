@@ -19,6 +19,7 @@ import styles from './ProductModal.module.css';
 import { Product } from '@/types/product';
 import { Category } from '@/types/category';
 import { ProductStatus } from '@/enums/product/product.enum';
+import RichTextEditor from '@/components/admin/RichTextEditor';
 
 interface ProductModalProps {
   product: Product | null;
@@ -179,7 +180,11 @@ export default function ProductModal({
       }
       
       if (formData.meta_description) {
-        formDataToSend.append('meta_description', formData.meta_description.trim());
+        // Don't trim HTML content, just clean empty tags
+        const cleanedHtml = formData.meta_description.replace(/<p><\/p>/g, '');
+        if (cleanedHtml && cleanedHtml !== '<p></p>') {
+          formDataToSend.append('meta_description', cleanedHtml);
+        }
       }
       
       if (formData.origin_price) {
@@ -189,6 +194,13 @@ export default function ProductModal({
       if (imageFile) {
         formDataToSend.append('image_product', imageFile);
       }
+
+      console.log('FormData to send:', {
+        name_product: formData.name_product,
+        price: formData.price,
+        category_id: formData.category_id,
+        meta_description_length: formData.meta_description?.length || 0
+      });
 
       if (product) {
         await productApi.update(product.id, formDataToSend);
@@ -405,15 +417,17 @@ export default function ProductModal({
               {/* Meta Description */}
               <div className={styles.formGroup}>
                 <label className={styles.label}>
-                  <MdDescription /> Mô tả SEO
+                  <MdDescription /> Mô tả chi tiết
                 </label>
-                <textarea
-                  name="meta_description"
+                <RichTextEditor
                   value={formData.meta_description}
-                  onChange={handleChange}
-                  className={styles.textarea}
-                  placeholder="Mô tả cho SEO"
-                  rows={3}
+                  onChange={(value) => {
+                    setFormData((prev) => ({ ...prev, meta_description: value }));
+                    if (errors.meta_description) {
+                      setErrors((prev) => ({ ...prev, meta_description: '' }));
+                    }
+                  }}
+                  placeholder="Nhập mô tả chi tiết về sản phẩm..."
                 />
               </div>
             </div>

@@ -143,8 +143,15 @@ export default function Products() {
   const activeProducts = products.filter(
     (p) => p.status === ProductStatus.ACTIVE
   ).length;
+  const inStock = products.filter(
+    (p) => (p.stock_quantity !== undefined && p.stock_quantity !== null && p.stock_quantity > 0) 
+          && p.status !== ProductStatus.OUT_OF_STOCK
+  ).length;
   const outOfStock = products.filter(
-    (p) => p.stock_quantity === 0
+    (p) => p.status === ProductStatus.OUT_OF_STOCK 
+          || p.stock_quantity === undefined 
+          || p.stock_quantity === null 
+          || p.stock_quantity === 0
   ).length;
 
   return (
@@ -203,6 +210,21 @@ export default function Products() {
             <div className={styles.statInfo}>
               <div className={styles.statLabel}>Đang bán</div>
               <div className={styles.statValue}>{activeProducts}</div>
+            </div>
+          </div>
+        </Card>
+
+        <Card className={styles.statCard}>
+          <div className={styles.statContent}>
+            <div
+              className={styles.statIcon}
+              style={{ background: "#3b82f615", color: "#3b82f6" }}
+            >
+              <MdInventory />
+            </div>
+            <div className={styles.statInfo}>
+              <div className={styles.statLabel}>Còn hàng</div>
+              <div className={styles.statValue}>{inStock}</div>
             </div>
           </div>
         </Card>
