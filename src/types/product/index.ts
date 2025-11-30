@@ -4,7 +4,6 @@
 
 import { ProductStatus } from "@/enums/product/product.enum";
 import { Brand } from "../brand";
-import { Category } from "../category";
 
 
 export interface Product {
@@ -19,8 +18,12 @@ export interface Product {
   stock_quantity?: number;
   discount?: number;
   is_on_sale: boolean;
-  category?: Category;
-  brand?: Brand;
+  category?: {
+    id: number;
+    name_category: string;
+    brand?: Brand; // Brand is accessed through category
+  };
+  // brand removed from root - access via category.brand
   is_deleted: boolean;
   created_at: string;
   updated_at: string;
@@ -42,7 +45,7 @@ export interface CreateProductDto {
   stock_quantity?: number;
   discount?: number;
   category_id: number;
-  brand_id?: number;
+  // brand_id removed - brand comes from category
 }
 
 export interface UpdateProductDto {
@@ -56,7 +59,7 @@ export interface UpdateProductDto {
   stock_quantity?: number;
   discount?: number;
   category_id?: number;
-  brand_id?: number;
+  // brand_id removed - brand comes from category
 }
 
 // ====================================

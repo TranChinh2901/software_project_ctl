@@ -1,3 +1,4 @@
+// Enum phải khớp với backend: ProductType in product.enum.ts
 export enum ProductStatus {
   ACTIVE = 'active',
   INACTIVE = 'inactive',
