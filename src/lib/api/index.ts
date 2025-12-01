@@ -257,11 +257,12 @@ export const voucherApi = {
 };
 
 // ====================================
-// ORDER API (Placeholder - tạo sau)
+// ====================================
+// ORDER API
 // ====================================
 export const orderApi = {
-  getAll: () => {
-    return apiClient.get('/orders');
+  getAll: (params?: Record<string, unknown>) => {
+    return apiClient.get('/orders', { params });
   },
   
   getById: (id: number) => {
@@ -270,5 +271,121 @@ export const orderApi = {
   
   create: (data: Record<string, unknown>) => {
     return apiClient.post('/orders', data);
+  },
+  
+  updateStatus: (id: number, data: { status: string; note?: string }) => {
+    return apiClient.put(`/orders/${id}/status`, data);
+  },
+  
+  cancel: (id: number, reason: string) => {
+    return apiClient.put(`/orders/${id}/cancel`, { cancel_reason: reason });
+  },
+  
+  delete: (id: number) => {
+    return apiClient.delete(`/orders/${id}`);
+  },
+};
+
+// ====================================
+// COLOR API
+// ====================================
+export const colorApi = {
+  getAll: (params?: Record<string, unknown>) => {
+    return apiClient.get('/colors', { params });
+  },
+  
+  getById: (id: number) => {
+    return apiClient.get(`/colors/${id}`);
+  },
+  
+  create: (data: Record<string, unknown>) => {
+    return apiClient.post('/colors', data);
+  },
+  
+  update: (id: number, data: Record<string, unknown>) => {
+    return apiClient.put(`/colors/${id}`, data);
+  },
+  
+  delete: (id: number) => {
+    return apiClient.delete(`/colors/${id}`);
+  },
+};
+
+// ====================================
+// REVIEW API
+// ====================================
+export const reviewApi = {
+  getAll: (params?: Record<string, unknown>) => {
+    return apiClient.get('/reviews', { params });
+  },
+  
+  getById: (id: number) => {
+    return apiClient.get(`/reviews/${id}`);
+  },
+  
+  create: (data: Record<string, unknown>) => {
+    return apiClient.post('/reviews', data);
+  },
+  
+  update: (id: number, data: Record<string, unknown>) => {
+    return apiClient.put(`/reviews/${id}`, data);
+  },
+  
+  approve: (id: number) => {
+    return apiClient.put(`/reviews/${id}/approve`);
+  },
+  
+  delete: (id: number) => {
+    return apiClient.delete(`/reviews/${id}`);
+  },
+};
+
+// ====================================
+// PRODUCT GALLERY API
+// ====================================
+export const productGalleryApi = {
+  getAll: () => {
+    return apiClient.get('/product-gallery');
+  },
+  
+  create: (data: FormData) => {
+    return apiClient.post('/product-gallery', data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+  },
+  
+  delete: (id: number) => {
+    return apiClient.delete(`/product-gallery/${id}`);
+  },
+};
+
+// ====================================
+// PRODUCT VARIANT API
+// ====================================
+export const productVariantApi = {
+  getAll: (params?: Record<string, unknown>) => {
+    return apiClient.get('/product-variants', { params });
+  },
+  
+  getById: (id: number) => {
+    return apiClient.get(`/product-variants/${id}`);
+  },
+  
+  getByProduct: (productId: number) => {
+    return apiClient.get('/product-variants', { params: { product_id: productId } });
+  },
+  
+  create: (data: Record<string, unknown>) => {
+    return apiClient.post('/product-variants', data);
+  },
+  
+  update: (id: number, data: Record<string, unknown>) => {
+    return apiClient.put(`/product-variants/${id}`, data);
+  },
+  
+  delete: (id: number) => {
+    return apiClient.delete(`/product-variants/${id}`);
   },
 };

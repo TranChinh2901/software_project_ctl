@@ -1,12 +1,14 @@
 import { OrderStatus, PaymentMethod } from '@/enums';
-import { User } from '../auth';
+
 import { Product } from '../product';
+import { User } from '../user';
 
 // ====================================
 // ORDER TYPES
 // ====================================
 
 export interface Order {
+  payment_status(payment_status: any): import("react").ReactNode;
   id: number;
   user_id: number;
   user?: User;

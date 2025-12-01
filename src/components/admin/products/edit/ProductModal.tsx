@@ -11,15 +11,19 @@ import {
   MdDiscount,
   MdCategory,
   MdSave,
+  MdDelete,
+  MdCollections,
 } from 'react-icons/md';
 
-import { productApi } from '@/lib/api';
+import { productApi, productGalleryApi } from '@/lib/api';
 import toast from 'react-hot-toast';
 import styles from './ProductModal.module.css';
 import { Product } from '@/types/product';
 import { Category } from '@/types/category';
 import { ProductStatus } from '@/enums/product/product.enum';
 import RichTextEditor from '@/components/admin/RichTextEditor';
+import { ProductGallery } from '@/types/product-gallery';
+import ProductVariants from '../variants/ProductVariants';
 
 interface ProductModalProps {
   product: Product | null;
@@ -62,6 +66,15 @@ export default function ProductModal({
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  // Gallery state
+  const [galleryImages, setGalleryImages] = useState<ProductGallery[]>([]);
+  const [galleryFiles, setGalleryFiles] = useState<File[]>([]);
+  const [galleryPreviews, setGalleryPreviews] = useState<string[]>([]);
+  const galleryInputRef = useRef<HTMLInputElement>(null);
+  
+  // Tab state
+  const [activeTab, setActiveTab] = useState<'info' | 'variants'>('info');
 
   useEffect(() => {
     if (product) {
@@ -79,6 +92,9 @@ export default function ProductModal({
       setImagePreview(product.image_product || '');
       setImageFile(null);
       setErrors({});
+      
+      // Load gallery images for this product
+      loadGalleryImages(product.id);
     } else {
       setFormData({
         name_product: '',
@@ -94,8 +110,35 @@ export default function ProductModal({
       setImagePreview('');
       setImageFile(null);
       setErrors({});
+      setGalleryImages([]);
+      setGalleryFiles([]);
+      setGalleryPreviews([]);
     }
   }, [product]);
+
+  const loadGalleryImages = async (productId: number) => {
+    try {
+      const response = await productGalleryApi.getAll()
+    
+      let allGalleries: ProductGallery[] = [];
+      if (Array.isArray(response.data)) {
+        allGalleries = response.data;
+      } else if (response.data?.galleries) {
+        allGalleries = response.data.galleries;
+      } else if (response.data?.data) {
+        allGalleries = response.data.data;
+      }
+      
+      console.log('📸 All galleries:', allGalleries);
+      const productGalleries = allGalleries.filter(
+        (gallery: ProductGallery) => gallery.product_id === productId
+      );
+      setGalleryImages(productGalleries);
+    } catch (error) {
+      console.error('❌ Error loading gallery images:', error);
+      setGalleryImages([]);
+    }
+  };
 
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
@@ -158,6 +201,71 @@ export default function ProductModal({
       fileInputRef.current.value = '';
     }
   };
+  const handleGallerySelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
+    const validFiles: File[] = [];
+    for (const file of files) {
+      if (!file.type.startsWith('image/')) {
+        toast.error(`${file.name} không phải là file ảnh`);
+        continue;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error(`${file.name} vượt quá 5MB`);
+        continue;
+      }
+      validFiles.push(file);
+    }
+
+    if (validFiles.length === 0) return;
+    const previews: string[] = [];
+    validFiles.forEach((file) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        previews.push(reader.result as string);
+        if (previews.length === validFiles.length) {
+          setGalleryPreviews((prev) => [...prev, ...previews]);
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+
+    setGalleryFiles((prev) => [...prev, ...validFiles]);
+  };
+
+  const handleRemoveGalleryPreview = (index: number) => {
+    setGalleryFiles((prev) => prev.filter((_, i) => i !== index));
+    setGalleryPreviews((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const handleRemoveGalleryImage = async (imageId: number) => {
+    try {
+      await productGalleryApi.delete(imageId);
+      setGalleryImages((prev) => prev.filter((img) => img.id !== imageId));
+      toast.success('Xóa ảnh thành công!');
+    } catch (error) {
+      console.error('Error deleting gallery image:', error);
+      toast.error('Không thể xóa ảnh');
+    }
+  };
+
+  const uploadGalleryImages = async (productId: number) => {
+    if (galleryFiles.length === 0) return;
+
+    try {
+      const formData = new FormData();
+      formData.append('product_id', productId.toString());
+      galleryFiles.forEach((file) => {
+        formData.append('image_url', file);
+      });
+
+      await productGalleryApi.create(formData);
+      toast.success(`Đã upload ${galleryFiles.length} ảnh gallery!`);
+    } catch (error) {
+      console.error('Error uploading gallery images:', error);
+      toast.error('Không thể upload ảnh gallery');
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -202,12 +310,21 @@ export default function ProductModal({
         meta_description_length: formData.meta_description?.length || 0
       });
 
+      let productId: number;
+
       if (product) {
         await productApi.update(product.id, formDataToSend);
+        productId = product.id;
         toast.success('Cập nhật sản phẩm thành công!');
       } else {
-        await productApi.create(formDataToSend);
+        const response = await productApi.create(formDataToSend);
+        productId = response.data?.product?.id || response.data?.id;
         toast.success('Thêm sản phẩm thành công!');
+      }
+
+      // Upload gallery images if any
+      if (galleryFiles.length > 0 && productId) {
+        await uploadGalleryImages(productId);
       }
 
       onSuccess();
@@ -231,45 +348,126 @@ export default function ProductModal({
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className={styles.form}>
-          <div className={styles.formBody}>
-            {/* Image Upload */}
-            <div className={styles.imageSection}>
-              <label className={styles.label}>
-                <MdImage /> Hình ảnh sản phẩm
-              </label>
-              {imagePreview ? (
-                <div className={styles.imagePreview}>
-                  <img src={imagePreview} alt="Preview" />
-                  <button
-                    type="button"
-                    className={styles.removeImageButton}
-                    onClick={handleRemoveImage}
-                  >
-                    <MdClose />
-                  </button>
-                </div>
-              ) : (
-                <div
-                  className={styles.uploadBox}
-                  onClick={() => fileInputRef.current?.click()}
-                >
-                  <MdImage className={styles.uploadIcon} />
-                  <p>Click để chọn ảnh</p>
-                  <span>PNG, JPG (max. 5MB)</span>
-                </div>
-              )}
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                onChange={handleFileSelect}
-                style={{ display: 'none' }}
-              />
-            </div>
+        {/* Tabs */}
+        <div className={styles.tabs}>
+          <button
+            type="button"
+            className={`${styles.tab} ${activeTab === 'info' ? styles.activeTab : ''}`}
+            onClick={() => setActiveTab('info')}
+          >
+            Thông tin
+          </button>
+          <button
+            type="button"
+            className={`${styles.tab} ${activeTab === 'variants' ? styles.activeTab : ''}`}
+            onClick={() => setActiveTab('variants')}
+            disabled={!product}
+          >
+            Biến thể {!product && '(Lưu sản phẩm trước)'}
+          </button>
+        </div>
 
-            {/* Form Fields */}
-            <div className={styles.fieldsSection}>
+        <form onSubmit={handleSubmit} className={styles.form}>
+          {activeTab === 'info' && (
+          <div className={styles.formBody}>
+            <div className={styles.mainContent}>
+              {/* Left Side - Images */}
+              <div className={styles.imagesColumn}>
+                {/* Main Product Image */}
+                <div className={styles.imageSection}>
+                  <label className={styles.label}>
+                    <MdImage /> Hình ảnh chính
+                  </label>
+                  {imagePreview ? (
+                    <div className={styles.imagePreview}>
+                      <img src={imagePreview} alt="Preview" />
+                      <button
+                        type="button"
+                        className={styles.removeImageButton}
+                        onClick={handleRemoveImage}
+                      >
+                        <MdClose />
+                      </button>
+                    </div>
+                  ) : (
+                    <div
+                      className={styles.uploadBox}
+                      onClick={() => fileInputRef.current?.click()}
+                    >
+                      <MdImage className={styles.uploadIcon} />
+                      <p>Click để chọn ảnh</p>
+                      <span>PNG, JPG (max. 5MB)</span>
+                    </div>
+                  )}
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileSelect}
+                    style={{ display: 'none' }}
+                  />
+                </div>
+
+                {/* Gallery Section */}
+                <div className={styles.gallerySection}>
+                  <label className={styles.label}>
+                    <MdCollections /> Thư viện ảnh
+                  </label>
+                  <div className={styles.galleryGrid}>
+                    {/* Existing gallery images (if editing) */}
+                    {product && galleryImages.map((image) => (
+                      <div key={image.id} className={styles.galleryItem}>
+                        <img src={image.image_url} alt="Gallery" />
+                        <button
+                          type="button"
+                          className={styles.removeGalleryBtn}
+                          onClick={() => handleRemoveGalleryImage(image.id)}
+                        >
+                          <MdDelete />
+                        </button>
+                      </div>
+                    ))}
+
+                    {/* New gallery previews */}
+                    {galleryPreviews.map((preview, index) => (
+                      <div key={`preview-${index}`} className={styles.galleryItem}>
+                        <img src={preview} alt={`Preview ${index + 1}`} />
+                        <button
+                          type="button"
+                          className={styles.removeGalleryBtn}
+                          onClick={() => handleRemoveGalleryPreview(index)}
+                        >
+                          <MdDelete />
+                        </button>
+                        <span className={styles.newBadge}>Mới</span>
+                      </div>
+                    ))}
+
+                    {/* Add button */}
+                    <div
+                      className={styles.galleryAddBtn}
+                      onClick={() => galleryInputRef.current?.click()}
+                    >
+                      <MdImage />
+                      <span>Thêm ảnh</span>
+                    </div>
+                  </div>
+                  <input
+                    ref={galleryInputRef}
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={handleGallerySelect}
+                    style={{ display: 'none' }}
+                  />
+                  <p className={styles.galleryHint}>
+                    Có thể chọn nhiều ảnh cùng lúc. PNG, JPG (max. 5MB mỗi ảnh)
+                  </p>
+                </div>
+              </div>
+
+              {/* Right Side - Product Information */}
+              <div className={styles.fieldsSection}>
               {/* Product Name */}
               <div className={styles.formGroup}>
                 <label className={styles.label}>
@@ -431,8 +629,20 @@ export default function ProductModal({
                 />
               </div>
             </div>
+            </div>
           </div>
+          )}
 
+          {activeTab === 'variants' && (
+            <div className={styles.variantsTab}>
+              <ProductVariants 
+                productId={product?.id || null} 
+                productPrice={parseFloat(formData.price) || 0}
+              />
+            </div>
+          )}
+
+          {activeTab === 'info' && (
           <div className={styles.modalFooter}>
             <button
               type="button"
@@ -451,6 +661,7 @@ export default function ProductModal({
               {loading ? 'Đang lưu...' : product ? 'Cập nhật' : 'Thêm mới'}
             </button>
           </div>
+          )}
         </form>
       </div>
     </div>

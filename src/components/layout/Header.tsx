@@ -134,9 +134,9 @@ export default function Header() {
           <ul>
             <li><Link href="/">Trang chủ</Link></li>
             <li><Link href="/products">Sản phẩm</Link></li>
-            <li><Link href="/tin-tuc">Tin tức</Link></li>
+            <li><Link href="/blogs">Tin tức</Link></li>
             <li><Link href="/contact">Liên hệ</Link></li>
-            <li><Link href="/he-thong">Hệ thống cửa hàng</Link></li>
+            <li><Link href="/store-system">Hệ thống cửa hàng</Link></li>
             <li><Link href="/kiem-tra">Kiểm tra đơn hàng</Link></li>
             <li><Link href="/chi-tiet">Chi tiết sản phẩm</Link></li>
           </ul>
@@ -205,7 +205,7 @@ export default function Header() {
               <ul className={styles.mobileMenuLinks}>
                 <li><Link href="/" onClick={closeMobileMenu}>Trang chủ</Link></li>
                 <li><Link href="/products" onClick={closeMobileMenu}>Sản phẩm</Link></li>
-                <li><Link href="/tin-tuc" onClick={closeMobileMenu}>Tin tức</Link></li>
+                <li><Link href="/blogs" onClick={closeMobileMenu}>Tin tức</Link></li>
                 <li><Link href="/contact" onClick={closeMobileMenu}>Liên hệ</Link></li>
               </ul>
             </div>
@@ -213,7 +213,7 @@ export default function Header() {
             <div className={styles.mobileMenuSection}>
               <h3>Dịch vụ</h3>
               <ul className={styles.mobileMenuLinks}>
-                <li><Link href="/he-thong" onClick={closeMobileMenu}>Hệ thống cửa hàng</Link></li>
+                <li><Link href="/store-system" onClick={closeMobileMenu}>Hệ thống cửa hàng</Link></li>
                 <li><Link href="/kiem-tra" onClick={closeMobileMenu}>Kiểm tra đơn hàng</Link></li>
                 <li>
                   <Link href="/wishlist" onClick={closeMobileMenu} className={styles.iconLink}>

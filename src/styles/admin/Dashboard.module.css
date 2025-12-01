@@ -193,6 +193,32 @@
   color: #d97706;
 }
 
+.statusConfirmed {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.statusShipping {
+  background: #e0e7ff;
+  color: #6366f1;
+}
+
+.statusCompleted {
+  background: #d1fae5;
+  color: #059669;
+}
+
+.statusCancelled {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.emptyState {
+  padding: 2rem;
+  text-align: center;
+  color: #9ca3af;
+}
+
 .bottomGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));

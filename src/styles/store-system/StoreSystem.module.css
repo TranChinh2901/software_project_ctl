@@ -1,0 +1,455 @@
+/* ===== CONTAINER ===== */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0;
+}
+
+/* ===== HEADER SECTION ===== */
+.headerSection {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin: 30px 0 40px 0;
+}
+
+.headerCard {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 20px;
+  background: #fff;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  color: #333;
+}
+
+.headerIcon {
+  font-size: 40px;
+  color: #ff6347;
+}
+
+.headerCard h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+.headerCard p {
+  margin: 5px 0 0 0;
+  font-size: 14px;
+  color: #666;
+}
+
+/* ===== MAIN CONTENT ===== */
+.mainContent {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.filterSection {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+
+.filterSection label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #333;
+  font-size: 14px;
+}
+
+.citySelect {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  background: white;
+  cursor: pointer;
+}
+
+.citySelect:focus {
+  outline: none;
+  border-color: #ff6347;
+}
+
+/* ===== STORE LIST ===== */
+.storeList {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-height: 450px;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.storeList::-webkit-scrollbar {
+  width: 5px;
+}
+
+.storeList::-webkit-scrollbar-track {
+  background: #f5f5f5;
+  border-radius: 10px;
+}
+
+.storeList::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 10px;
+}
+
+.storeList::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}
+
+/* ===== STORE CARD ===== */
+.storeCard {
+  background: white;
+  padding: 18px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  cursor: pointer;
+}
+
+.storeCard:hover {
+  border-color: #ff6347;
+}
+
+.storeCard.activeStore {
+  border-color: #ff6347;
+  background: #fff9f8;
+}
+
+.storeCard h3 {
+  margin: 0 0 12px 0;
+  font-size: 16px;
+  color: #333;
+  font-weight: 600;
+}
+
+.storeInfo {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 10px;
+  font-size: 13px;
+  color: #666;
+  line-height: 1.6;
+}
+
+.infoIcon {
+  font-size: 16px;
+  color: #ff6347;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.storeInfo strong {
+  color: #333;
+}
+
+.viewMapBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 8px 12px;
+  background: white;
+  border: 1px solid #ddd;
+  color: #666;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 13px;
+  cursor: pointer;
+  margin-top: 12px;
+}
+
+.viewMapBtn:hover {
+  background: #f8f8f8;
+  border-color: #ff6347;
+  color: #ff6347;
+}
+
+.viewMapBtn svg {
+  font-size: 14px;
+}
+
+/* ===== MAP SECTION ===== */
+.mapSection {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #e0e0e0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.mapContainer {
+  width: 100%;
+  height: 450px;
+  position: relative;
+  flex: 1;
+}
+
+.mapContainer iframe {
+  width: 100%;
+  height: 100%;
+}
+
+.mapInfo {
+  padding: 18px;
+  border-top: 1px solid #e0e0e0;
+  background: #fafafa;
+}
+
+.mapInfo h3 {
+  margin: 0 0 6px 0;
+  font-size: 16px;
+  color: #333;
+  font-weight: 600;
+}
+
+.mapInfo p {
+  margin: 0;
+  font-size: 13px;
+  color: #666;
+  line-height: 1.5;
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+
+/* Tablet (768px - 1024px) */
+@media (max-width: 1024px) {
+  .mainContent {
+    gap: 20px;
+  }
+
+  .headerCard h3 {
+    font-size: 16px;
+  }
+
+  .headerCard p {
+    font-size: 13px;
+  }
+
+  .headerIcon {
+    font-size: 36px;
+  }
+}
+
+/* Tablet Portrait (768px) */
+@media (max-width: 768px) {
+  .container {
+    padding: 15px;
+  }
+
+  .headerSection {
+    grid-template-columns: 1fr;
+    gap: 15px;
+    margin: 20px 0 30px 0;
+  }
+
+  .headerCard {
+    padding: 18px;
+  }
+
+  .mainContent {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .sidebar {
+    order: 1;
+  }
+
+  .mapSection {
+    order: 2;
+    height: auto;
+  }
+
+  .storeList {
+    max-height: none;
+    padding-right: 0;
+  }
+
+  .mapContainer {
+    height: 400px;
+  }
+}
+
+/* Mobile (480px - 640px) */
+@media (max-width: 640px) {
+  .container {
+    padding: 10px;
+  }
+
+  .headerSection {
+    margin: 15px 0 25px 0;
+  }
+
+  .headerCard {
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .headerIcon {
+    font-size: 32px;
+  }
+
+  .headerCard h3 {
+    font-size: 15px;
+  }
+
+  .headerCard p {
+    font-size: 12px;
+  }
+
+  .filterSection {
+    padding: 15px;
+  }
+
+  .storeCard {
+    padding: 15px;
+  }
+
+  .storeCard h3 {
+    font-size: 15px;
+  }
+
+  .storeInfo {
+    font-size: 12px;
+  }
+
+  .viewMapBtn {
+    font-size: 12px;
+    padding: 8px 10px;
+  }
+
+  .mapContainer {
+    height: 350px;
+  }
+
+  .mapInfo {
+    padding: 15px;
+  }
+
+  .mapInfo h3 {
+    font-size: 15px;
+  }
+
+  .mapInfo p {
+    font-size: 12px;
+  }
+}
+
+/* Mobile Small (< 480px) */
+@media (max-width: 480px) {
+  .headerCard {
+    padding: 15px;
+  }
+
+  .headerIcon {
+    font-size: 30px;
+  }
+
+  .headerCard h3 {
+    font-size: 14px;
+  }
+
+  .storeCard {
+    padding: 12px;
+  }
+
+  .storeCard h3 {
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+
+  .storeInfo {
+    font-size: 12px;
+    margin-bottom: 8px;
+  }
+
+  .infoIcon {
+    font-size: 14px;
+  }
+
+  .viewMapBtn {
+    padding: 7px 10px;
+    font-size: 11px;
+  }
+
+  .mapContainer {
+    height: 300px;
+  }
+
+  .mapInfo {
+    padding: 12px;
+  }
+
+  .mapInfo h3 {
+    font-size: 14px;
+  }
+
+  .mapInfo p {
+    font-size: 12px;
+  }
+
+  .citySelect {
+    padding: 9px 10px;
+    font-size: 13px;
+  }
+}
+
+/* Extra Small Mobile (< 360px) */
+@media (max-width: 360px) {
+  .container {
+    padding: 8px;
+  }
+
+  .headerSection {
+    gap: 10px;
+  }
+
+  .headerCard {
+    padding: 12px;
+  }
+
+  .headerIcon {
+    font-size: 28px;
+  }
+
+  .headerCard h3 {
+    font-size: 13px;
+  }
+
+  .headerCard p {
+    font-size: 11px;
+  }
+
+  .storeCard h3 {
+    font-size: 13px;
+  }
+
+  .storeInfo {
+    font-size: 11px;
+  }
+
+  .mapContainer {
+    height: 250px;
+  }
+}

@@ -15,8 +15,16 @@ import Button from '@/components/admin/Button';
 import Card from '@/components/admin/Card';
 import RecentActivities from '@/components/admin/RecentActivities';
 import styles from '@/styles/admin/Dashboard.module.css';
-import { productApi, userApi } from '@/lib/api';
+import { productApi, userApi, orderApi } from '@/lib/api';
 import toast from 'react-hot-toast';
+
+interface Order {
+  id: number;
+  order_code: string;
+  total_price: number;
+  status: string;
+  created_at: string;
+}
 
 export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
@@ -25,27 +33,44 @@ export default function AdminDashboard() {
     totalOrders: 0,
     totalCustomers: 0,
     totalProducts: 0,
-  })
+  });
+  const [recentOrders, setRecentOrders] = useState<Order[]>([]);
 
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      const productsResponse = await productApi.getAll();
+      
+      const [productsResponse, usersResponse, ordersResponse] = await Promise.all([
+        productApi.getAll(),
+        userApi.getAll(),
+        orderApi.getAll()
+      ]);
+      
       const productsData = productsResponse.data?.products || productsResponse.data || [];
       const products = Array.isArray(productsData) ? productsData : [];
-      const usersResponse = await userApi.getAll();
+      
       const usersData = usersResponse.data?.users || usersResponse.data || [];
       const users = Array.isArray(usersData) ? usersData : [];
-      const totalRevenue = products.reduce((sum: number, product: { price: number; sold_count?: number }) => {
-        return sum + (product.price * (product.sold_count || 0));
+      
+      const ordersData = ordersResponse.data?.orders || ordersResponse.data || [];
+      const orders = Array.isArray(ordersData) ? ordersData : [];
+      
+      const totalRevenue = orders.reduce((sum: number, order: { total_price: number }) => {
+        return sum + (order.total_price || 0);
       }, 0);
       
+      const sortedOrders = [...orders].sort((a: Order, b: Order) => {
+        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      });
+      const recent = sortedOrders.slice(0, 5);
+      
       setStats({
-        totalRevenue: totalRevenue || 125430000,
-        totalOrders: 1234, 
+        totalRevenue: totalRevenue,
+        totalOrders: orders.length, 
         totalCustomers: users.length, 
         totalProducts: products.length,
       });
+      setRecentOrders(recent);
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
       toast.error('Không thể tải dữ liệu dashboard');
@@ -146,21 +171,66 @@ export default function AdminDashboard() {
 
         <Card title="Đơn hàng gần đây" className={styles.chartCard}>
           <div className={styles.ordersList}>
-            {[1, 2, 3, 4, 5].map((order) => (
-              <div key={order} className={styles.orderItem}>
-                <div className={styles.orderIcon}>
-                  <MdShoppingCart />
-                </div>
-                <div className={styles.orderInfo}>
-                  <div className={styles.orderTitle}>Đơn hàng #{1000 + order}</div>
-                  <div className={styles.orderDate}>2 phút trước</div>
-                </div>
-                <div className={styles.orderAmount}>₫1,250,000</div>
-                <div className={`${styles.orderStatus} ${styles.statusPending}`}>
-                  Đang xử lý
-                </div>
+            {recentOrders.length > 0 ? (
+              recentOrders.map((order) => {
+                const getStatusLabel = (status: string) => {
+                  const statusMap: Record<string, string> = {
+                    'pending': 'Chờ xác nhận',
+                    'confirmed': 'Đã xác nhận',
+                    'shipping': 'Đang giao',
+                    'completed': 'Hoàn thành',
+                    'cancelled': 'Đã hủy',
+                  };
+                  return statusMap[status] || status;
+                };
+                
+                const getStatusClass = (status: string) => {
+                  const classMap: Record<string, string> = {
+                    'pending': styles.statusPending,
+                    'confirmed': styles.statusConfirmed,
+                    'shipping': styles.statusShipping,
+                    'completed': styles.statusCompleted,
+                    'cancelled': styles.statusCancelled,
+                  };
+                  return classMap[status] || styles.statusPending;
+                };
+                
+                const getTimeAgo = (dateString: string) => {
+                  const date = new Date(dateString);
+                  const now = new Date();
+                  const diffMs = now.getTime() - date.getTime();
+                  const diffMins = Math.floor(diffMs / 60000);
+                  const diffHours = Math.floor(diffMs / 3600000);
+                  const diffDays = Math.floor(diffMs / 86400000);
+                  
+                  if (diffMins < 60) return `${diffMins} phút trước`;
+                  if (diffHours < 24) return `${diffHours} giờ trước`;
+                  return `${diffDays} ngày trước`;
+                };
+                
+                return (
+                  <div key={order.id} className={styles.orderItem}>
+                    <div className={styles.orderIcon}>
+                      <MdShoppingCart />
+                    </div>
+                    <div className={styles.orderInfo}>
+                      <div className={styles.orderTitle}>{order.order_code}</div>
+                      <div className={styles.orderDate}>{getTimeAgo(order.created_at)}</div>
+                    </div>
+                    <div className={styles.orderAmount}>
+                      {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(order.total_price)}
+                    </div>
+                    <div className={`${styles.orderStatus} ${getStatusClass(order.status)}`}>
+                      {getStatusLabel(order.status)}
+                    </div>
+                  </div>
+                );
+              })
+            ) : (
+              <div className={styles.emptyState}>
+                <p>Chưa có đơn hàng nào</p>
               </div>
-            ))}
+            )}
           </div>
         </Card>
       </div>
