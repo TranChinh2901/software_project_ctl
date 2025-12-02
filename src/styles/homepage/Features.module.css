@@ -1,0 +1,128 @@
+/* ===== FEATURES SECTION ===== */
+.featuresSection {
+  width: 100%;
+  background: #fff;
+  padding: 40px 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.featuresContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 30px;
+  padding: 0 20px;
+}
+
+.featureItem {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.iconWrapper {
+  flex-shrink: 0;
+  width: 60px;
+  height: 60px;
+  background: #ff6347;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 28px;
+}
+
+.featureContent {
+  flex: 1;
+}
+
+.featureTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: #333;
+  margin: 0 0 5px 0;
+  line-height: 1.3;
+}
+
+.featureDescription {
+  font-size: 13px;
+  color: #666;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* ===== RESPONSIVE ===== */
+
+/* Large Desktop (1440px+) */
+@media (min-width: 1440px) {
+  .featuresContainer {
+    gap: 40px;
+  }
+
+  .iconWrapper {
+    width: 65px;
+    height: 65px;
+    font-size: 30px;
+  }
+
+  .featureTitle {
+    font-size: 17px;
+  }
+
+  .featureDescription {
+    font-size: 14px;
+  }
+}
+
+/* Tablet Landscape (1024px - 1199px) */
+@media (max-width: 1199px) and (min-width: 1024px) {
+  .featuresContainer {
+    gap: 25px;
+  }
+
+  .iconWrapper {
+    width: 55px;
+    height: 55px;
+    font-size: 26px;
+  }
+
+  .featureTitle {
+    font-size: 15px;
+  }
+
+  .featureDescription {
+    font-size: 12px;
+  }
+}
+
+/* Tablet Portrait (768px - 1023px) */
+@media (max-width: 1023px) and (min-width: 768px) {
+  .featuresSection {
+    padding: 35px 0;
+  }
+
+  .featuresContainer {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    row-gap: 25px;
+  }
+
+  .iconWrapper {
+    width: 55px;
+    height: 55px;
+    font-size: 25px;
+  }
+
+  .featureTitle {
+    font-size: 15px;
+  }
+}
+
+/* Mobile - Hide features completely for cleaner look */
+@media (max-width: 767px) {
+  .featuresSection {
+    display: none;
+  }
+}
