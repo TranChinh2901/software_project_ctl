@@ -14,6 +14,10 @@ import {
   MdFilterList,
   MdCategory,
   MdBusiness,
+  MdChevronLeft,
+  MdChevronRight,
+  MdFirstPage,
+  MdLastPage,
 } from "react-icons/md";
 import { productApi, categoryApi, brandApi } from "@/lib/api";
 import PageContainer from "@/components/admin/PageContainer";
@@ -38,22 +42,72 @@ export default function Products() {
   const [selectedBrandId, setSelectedBrandId] = useState<string>("");
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
+  const [totalItems, setTotalItems] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  
+  const [stats, setStats] = useState({
+    total: 0,
+    active: 0,
+    inStock: 0,
+    outOfStock: 0,
+  });
+
+  const fetchStats = async () => {
+    try {
+      const params: Record<string, unknown> = { limit: 1000 };
+      if (searchDebounce) params.search = searchDebounce;
+      if (selectedCategoryId) params.category_id = parseInt(selectedCategoryId);
+      if (selectedBrandId) params.brand_id = parseInt(selectedBrandId);
+      
+      const response = await productApi.getAll(params);
+      const allProducts = response.data?.products || response.data || [];
+      const productsArray = Array.isArray(allProducts) ? allProducts : [];
+      
+      setStats({
+        total: productsArray.length,
+        active: productsArray.filter((p: Product) => p.status === ProductStatus.ACTIVE).length,
+        inStock: productsArray.filter((p: Product) => 
+          (p.stock_quantity !== undefined && p.stock_quantity !== null && p.stock_quantity > 0) 
+          && p.status !== ProductStatus.OUT_OF_STOCK
+        ).length,
+        outOfStock: productsArray.filter((p: Product) => 
+          p.status === ProductStatus.OUT_OF_STOCK 
+          || p.stock_quantity === undefined 
+          || p.stock_quantity === null 
+          || p.stock_quantity === 0
+        ).length,
+      });
+    } catch (error) {
+      console.error("Error fetching stats:", error);
+    }
+  };
 
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      
-      // Build params for backend API
-      const params: Record<string, unknown> = {};
+      const params: Record<string, unknown> = {
+        page: currentPage,
+        limit: itemsPerPage,
+      };
       
       if (searchDebounce) params.search = searchDebounce;
       if (selectedCategoryId) params.category_id = parseInt(selectedCategoryId);
       if (selectedBrandId) params.brand_id = parseInt(selectedBrandId);
       
       const response = await productApi.getAll(params);
-      const productsData =
-        response.data?.products || response.data || [];
+      const productsData = response.data?.products || response.data || [];
       setProducts(Array.isArray(productsData) ? productsData : []);
+      
+      if (response.data?.total !== undefined) {
+        setTotalItems(response.data.total);
+        setTotalPages(response.data.totalPages || Math.ceil(response.data.total / itemsPerPage));
+      } else {
+        setTotalItems(productsData.length);
+        setTotalPages(1);
+      }
     } catch (error) {
       console.error("Error fetching products:", error);
       toast.error("Không thể tải danh sách sản phẩm");
@@ -87,7 +141,6 @@ export default function Products() {
     fetchBrands();
   }, []);
 
-  // Debounce search term
   useEffect(() => {
     const timer = setTimeout(() => {
       setSearchDebounce(searchTerm);
@@ -99,7 +152,23 @@ export default function Products() {
   useEffect(() => {
     fetchProducts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchDebounce, selectedCategoryId, selectedBrandId, currentPage, itemsPerPage]);
+  useEffect(() => {
+    fetchStats();
+    setCurrentPage(1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchDebounce, selectedCategoryId, selectedBrandId]);
+
+  const handlePageChange = (page: number) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
+  const handleItemsPerPageChange = (newLimit: number) => {
+    setItemsPerPage(newLimit);
+    setCurrentPage(1);
+  };
 
   const handleDeleteProduct = async (productId: number) => {
     if (!confirm("Bạn có chắc chắn muốn xóa sản phẩm này?")) return;
@@ -108,6 +177,7 @@ export default function Products() {
       await productApi.delete(productId);
       toast.success("Xóa sản phẩm thành công");
       fetchProducts();
+      fetchStats(); 
     } catch (error) {
       console.error("Error deleting product:", error);
       const err = error as {
@@ -136,23 +206,8 @@ export default function Products() {
 
   const handleModalSuccess = () => {
     fetchProducts();
+    fetchStats(); 
   };
-
-  // Stats are calculated from all products (already filtered by backend)
-  const totalProducts = products.length;
-  const activeProducts = products.filter(
-    (p) => p.status === ProductStatus.ACTIVE
-  ).length;
-  const inStock = products.filter(
-    (p) => (p.stock_quantity !== undefined && p.stock_quantity !== null && p.stock_quantity > 0) 
-          && p.status !== ProductStatus.OUT_OF_STOCK
-  ).length;
-  const outOfStock = products.filter(
-    (p) => p.status === ProductStatus.OUT_OF_STOCK 
-          || p.stock_quantity === undefined 
-          || p.stock_quantity === null 
-          || p.stock_quantity === 0
-  ).length;
 
   return (
     <PageContainer
@@ -190,11 +245,11 @@ export default function Products() {
             </div>
             <div className={styles.statInfo}>
               <div className={styles.statLabel}>
-                {selectedCategoryId || selectedBrandId
+                {selectedCategoryId || selectedBrandId || searchDebounce
                   ? "Sản phẩm đã lọc"
                   : "Tổng sản phẩm"}
               </div>
-              <div className={styles.statValue}>{totalProducts}</div>
+              <div className={styles.statValue}>{stats.total}</div>
             </div>
           </div>
         </Card>
@@ -209,7 +264,7 @@ export default function Products() {
             </div>
             <div className={styles.statInfo}>
               <div className={styles.statLabel}>Đang bán</div>
-              <div className={styles.statValue}>{activeProducts}</div>
+              <div className={styles.statValue}>{stats.active}</div>
             </div>
           </div>
         </Card>
@@ -224,7 +279,7 @@ export default function Products() {
             </div>
             <div className={styles.statInfo}>
               <div className={styles.statLabel}>Còn hàng</div>
-              <div className={styles.statValue}>{inStock}</div>
+              <div className={styles.statValue}>{stats.inStock}</div>
             </div>
           </div>
         </Card>
@@ -239,7 +294,7 @@ export default function Products() {
             </div>
             <div className={styles.statInfo}>
               <div className={styles.statLabel}>Hết hàng</div>
-              <div className={styles.statValue}>{outOfStock}</div>
+              <div className={styles.statValue}>{stats.outOfStock}</div>
             </div>
           </div>
         </Card>
@@ -478,6 +533,85 @@ export default function Products() {
             </table>
           )}
         </div>
+        
+        {/* Pagination */}
+        {!loading && products.length > 0 && (
+          <div className={styles.pagination}>
+            <div className={styles.paginationInfo}>
+              <span>Hiển thị</span>
+              <select
+                value={itemsPerPage}
+                onChange={(e) => handleItemsPerPageChange(Number(e.target.value))}
+                className={styles.limitSelect}
+              >
+                <option value={5}>5</option>
+                <option value={10}>10</option>
+                <option value={20}>20</option>
+                <option value={50}>50</option>
+              </select>
+              <span>/ {totalItems} sản phẩm</span>
+            </div>
+            
+            <div className={styles.paginationControls}>
+              <button
+                className={styles.pageButton}
+                onClick={() => handlePageChange(1)}
+                disabled={currentPage === 1}
+                title="Trang đầu"
+              >
+                <MdFirstPage />
+              </button>
+              <button
+                className={styles.pageButton}
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                title="Trang trước"
+              >
+                <MdChevronLeft />
+              </button>
+              
+              <div className={styles.pageNumbers}>
+                {Array.from({ length: totalPages }, (_, i) => i + 1)
+                  .filter(page => {
+                    if (totalPages <= 5) return true;
+                    if (page === 1 || page === totalPages) return true;
+                    if (Math.abs(page - currentPage) <= 1) return true;
+                    return false;
+                  })
+                  .map((page, index, arr) => (
+                    <span key={page}>
+                      {index > 0 && arr[index - 1] !== page - 1 && (
+                        <span className={styles.pageEllipsis}>...</span>
+                      )}
+                      <button
+                        className={`${styles.pageNumber} ${currentPage === page ? styles.activePage : ''}`}
+                        onClick={() => handlePageChange(page)}
+                      >
+                        {page}
+                      </button>
+                    </span>
+                  ))}
+              </div>
+              
+              <button
+                className={styles.pageButton}
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                title="Trang sau"
+              >
+                <MdChevronRight />
+              </button>
+              <button
+                className={styles.pageButton}
+                onClick={() => handlePageChange(totalPages)}
+                disabled={currentPage === totalPages}
+                title="Trang cuối"
+              >
+                <MdLastPage />
+              </button>
+            </div>
+          </div>
+        )}
       </Card>
 
       {modalOpen && (

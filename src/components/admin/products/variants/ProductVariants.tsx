@@ -167,7 +167,6 @@ export default function ProductVariants({ productId, productPrice = 0 }: Product
 
     try {
       if (editingVariant) {
-        // Update
         const dto: UpdateProductVariantDto = {
           size: formData.size,
           color_id: formData.color_id ? parseInt(formData.color_id) : undefined,
@@ -270,15 +269,13 @@ export default function ProductVariants({ productId, productPrice = 0 }: Product
 
   return (
     <div className={styles.container}>
-      {/* Bulk Variant Generator */}
       <div className={styles.bulkGenerator}>
-        <h4>⚡ Tạo variants hàng loạt</h4>
+        <h4>Tạo variants hàng loạt</h4>
         <p className={styles.bulkDescription}>
           Chọn màu sắc và size, hệ thống tự động tạo tất cả biến thể với giá từ sản phẩm gốc
         </p>
 
         <div className={styles.bulkForm}>
-          {/* Colors Selection */}
           <div className={styles.bulkFormGroup}>
             <label>Chọn màu sắc:</label>
             <div className={styles.checkboxGrid}>
@@ -309,7 +306,6 @@ export default function ProductVariants({ productId, productPrice = 0 }: Product
             </div>
           </div>
 
-          {/* Sizes Selection */}
           <div className={styles.bulkFormGroup}>
             <label>Chọn size:</label>
             <div className={styles.checkboxGrid}>
@@ -331,8 +327,6 @@ export default function ProductVariants({ productId, productPrice = 0 }: Product
               ))}
             </div>
           </div>
-
-          {/* Quantity Input */}
           <div className={styles.bulkFormGroup}>
             <label>Số lượng chung:</label>
             <input
@@ -345,9 +339,8 @@ export default function ProductVariants({ productId, productPrice = 0 }: Product
             />
           </div>
 
-          {/* Info notice */}
           <div className={styles.bulkInfoBox}>
-            <p>💡 <strong>Lưu ý:</strong></p>
+            <p><strong>Lưu ý:</strong></p>
             <ul>
               <li>Giá của variants sẽ lấy từ <strong>giá sản phẩm gốc</strong> ({new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(productPrice)})</li>
               <li>Tất cả variants sẽ có <strong>cùng số lượng</strong> mà bạn nhập ở trên</li>

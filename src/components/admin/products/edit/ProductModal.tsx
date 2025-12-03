@@ -66,14 +66,10 @@ export default function ProductModal({
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const fileInputRef = useRef<HTMLInputElement>(null);
-  
-  // Gallery state
   const [galleryImages, setGalleryImages] = useState<ProductGallery[]>([]);
   const [galleryFiles, setGalleryFiles] = useState<File[]>([]);
   const [galleryPreviews, setGalleryPreviews] = useState<string[]>([]);
   const galleryInputRef = useRef<HTMLInputElement>(null);
-  
-  // Tab state
   const [activeTab, setActiveTab] = useState<'info' | 'variants'>('info');
 
   useEffect(() => {

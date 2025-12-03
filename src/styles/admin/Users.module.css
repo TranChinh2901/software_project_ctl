@@ -407,10 +407,109 @@
   cursor: not-allowed;
 }
 
+/* New Pagination Styles */
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #e5e7eb;
+  background: #fafafa;
+}
+
 .paginationInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   font-size: 0.875rem;
   color: #6b7280;
-  font-weight: 500;
+}
+
+.limitSelect {
+  padding: 0.375rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  background: #fff;
+  cursor: pointer;
+  outline: none;
+}
+
+.limitSelect:focus {
+  border-color: #ff6347;
+}
+
+.paginationControls {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.pageButton {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #fff;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.pageButton:hover:not(:disabled) {
+  border-color: #ff6347;
+  color: #ff6347;
+}
+
+.pageButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pageButton svg {
+  width: 20px;
+  height: 20px;
+}
+
+.pageNumbers {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin: 0 0.5rem;
+}
+
+.pageNumber {
+  min-width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #fff;
+  color: #374151;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.pageNumber:hover {
+  border-color: #ff6347;
+  color: #ff6347;
+}
+
+.pageNumber.activePage {
+  background: #ff6347;
+  border-color: #ff6347;
+  color: #fff;
+}
+
+.pageEllipsis {
+  padding: 0 0.5rem;
+  color: #6b7280;
 }
 
 /* Responsive */
@@ -443,5 +542,18 @@
   .userInfo {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .pagination {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .paginationInfo {
+    order: 2;
+  }
+
+  .paginationControls {
+    order: 1;
   }
 }
