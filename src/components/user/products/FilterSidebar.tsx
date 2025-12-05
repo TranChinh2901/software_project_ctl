@@ -35,11 +35,20 @@ const FilterSidebar = ({
     colors: true,
     sizes: true,
   });
+  
+  const [expandedBrands, setExpandedBrands] = useState<Record<string, boolean>>({});
 
   const toggleSection = (section: 'categories' | 'colors' | 'sizes') => {
     setExpandedSections(prev => ({
       ...prev,
       [section]: !prev[section]
+    }));
+  };
+
+  const toggleBrand = (brandName: string) => {
+    setExpandedBrands(prev => ({
+      ...prev,
+      [brandName]: !prev[brandName]
     }));
   };
 
@@ -72,7 +81,9 @@ const FilterSidebar = ({
         >
           <h3>Danh mục sản phẩm</h3>
           <span className={`${styles.expandIcon} ${expandedSections.categories ? styles.expanded : ''}`}>
-            ▼
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="6,9 12,15 18,9"></polyline>
+            </svg>
           </span>
         </div>
         
@@ -80,26 +91,35 @@ const FilterSidebar = ({
           <div className={styles.filterContent}>
             {Object.entries(categoriesByBrand).map(([brandName, brandCategories]) => (
               <div key={brandName} className={styles.categoryGroup}>
-                <div className={styles.categoryGroupHeader}>
+                <div 
+                  className={styles.categoryGroupHeader}
+                  onClick={() => toggleBrand(brandName)}
+                >
                   <span className={styles.brandNameLabel}>{brandName}</span>
-                  <span className={styles.expandIcon}>▼</span>
+                  <span className={`${styles.expandIcon} ${expandedBrands[brandName] ? styles.expanded : ''}`}>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="6,9 12,15 18,9"></polyline>
+                    </svg>
+                  </span>
                 </div>
-                <div className={styles.categoryList}>
-                  {brandCategories.map((category) => (
-                    <label 
-                      key={category.id} 
-                      className={`${styles.filterItem} ${selectedCategories.includes(category.id) ? styles.filterItemActive : ''}`}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={selectedCategories.includes(category.id)}
-                        onChange={() => onCategoryChange(category.id)}
-                        className={styles.filterCheckbox}
-                      />
-                      <span className={styles.filterLabel}>{category.name_category}</span>
-                    </label>
-                  ))}
-                </div>
+                {expandedBrands[brandName] && (
+                  <div className={styles.categoryList}>
+                    {brandCategories.map((category) => (
+                      <label 
+                        key={category.id} 
+                        className={`${styles.filterItem} ${selectedCategories.includes(category.id) ? styles.filterItemActive : ''}`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={selectedCategories.includes(category.id)}
+                          onChange={() => onCategoryChange(category.id)}
+                          className={styles.filterCheckbox}
+                        />
+                        <span className={styles.filterLabel}>{category.name_category}</span>
+                      </label>
+                    ))}
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -114,7 +134,9 @@ const FilterSidebar = ({
         >
           <h3>Màu phổ biến</h3>
           <span className={`${styles.expandIcon} ${expandedSections.colors ? styles.expanded : ''}`}>
-            ▼
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="6,9 12,15 18,9"></polyline>
+            </svg>
           </span>
         </div>
         
@@ -148,7 +170,9 @@ const FilterSidebar = ({
         >
           <h3>Size</h3>
           <span className={`${styles.expandIcon} ${expandedSections.sizes ? styles.expanded : ''}`}>
-            ▼
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="6,9 12,15 18,9"></polyline>
+            </svg>
           </span>
         </div>
         
