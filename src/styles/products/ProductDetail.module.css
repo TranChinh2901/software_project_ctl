@@ -1,13 +1,10 @@
-/* ====================================
-   PRODUCT DETAIL STYLES
-   ==================================== */
+
 .productDetailContainer {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
+  /* padding: 20px; */
 }
 
-/* Breadcrumb */
 .breadcrumb {
   display: flex;
   align-items: center;

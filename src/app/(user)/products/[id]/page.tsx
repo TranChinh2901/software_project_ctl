@@ -8,6 +8,7 @@ import { ProductGallery } from '@/types/product-gallery';
 import { ProductVariant, SizeType } from '@/types/product-variant';
 import { productApi, productGalleryApi, productVariantApi } from '@/lib/api';
 import styles from '@/styles/products/ProductDetail.module.css';
+import Breadcrumb from '@/components/breadcrumb/breadcrumb';
 
 const ProductDetailPage = () => {
   const params = useParams();
@@ -31,7 +32,6 @@ const ProductDetailPage = () => {
       setError(null);
 
       try {
-        // Fetch product details
         const productRes = await productApi.getById(productId);
         const productData = productRes?.data?.data || productRes?.data;
         
@@ -40,15 +40,12 @@ const ProductDetailPage = () => {
           setSelectedImage(productData.image_product || '');
         }
 
-        // Fetch gallery
         const galleryRes = await productGalleryApi.getAll();
         const allGallery = galleryRes?.data?.data || galleryRes?.data || [];
         const productGallery = allGallery.filter(
           (g: ProductGallery) => g.product_id === productId
         );
         setGallery(productGallery);
-
-        // Fetch variants
         const variantsRes = await productVariantApi.getByProduct(productId);
         const variantsData = variantsRes?.data?.data || variantsRes?.data || [];
         setVariants(variantsData);
@@ -64,11 +61,8 @@ const ProductDetailPage = () => {
     fetchProductData();
   }, [productId]);
 
-  // Get unique sizes and colors from variants
   const availableSizes = [...new Set(variants.map(v => v.size).filter((s): s is SizeType => s !== undefined))];
   const availableColors = [...new Set(variants.map(v => v.color?.name_color).filter((c): c is string => c !== undefined))];
-
-  // Calculate discount
   let discountPercent = 0;
   if (product?.discount && product.discount > 0) {
     discountPercent = product.discount;
@@ -89,7 +83,6 @@ const ProductDetailPage = () => {
   };
 
   const handleAddToCart = () => {
-    // TODO: Implement add to cart logic
     console.log('Add to cart:', {
       productId,
       quantity,
@@ -121,14 +114,7 @@ const ProductDetailPage = () => {
 
   return (
     <div className={styles.productDetailContainer}>
-      {/* Breadcrumb */}
-      <div className={styles.breadcrumb}>
-        <Link href="/">Trang chủ</Link>
-        <span>/</span>
-        <Link href="/products">Sản phẩm</Link>
-        <span>/</span>
-        <span className={styles.currentPage}>{product.name_product}</span>
-      </div>
+         <Breadcrumb items={[{ label: 'Trang chủ', href: '/' }, { label: 'Sản phẩm' }, { label: product.name_product }]} />
 
       <div className={styles.productContent}>
         {/* Left - Images */}
@@ -198,12 +184,10 @@ const ProductDetailPage = () => {
             )}
           </div>
 
-          {/* Short Description */}
           {product.small_description && (
             <p className={styles.shortDescription}>{product.small_description}</p>
           )}
 
-          {/* Size Selection */}
           {availableSizes.length > 0 && (
             <div className={styles.optionSection}>
               <h3 className={styles.optionLabel}>Kích thước:</h3>
@@ -221,7 +205,6 @@ const ProductDetailPage = () => {
             </div>
           )}
 
-          {/* Color Selection */}
           {availableColors.length > 0 && (
             <div className={styles.optionSection}>
               <h3 className={styles.optionLabel}>Màu sắc:</h3>
@@ -239,7 +222,6 @@ const ProductDetailPage = () => {
             </div>
           )}
 
-          {/* Quantity */}
           <div className={styles.optionSection}>
             <h3 className={styles.optionLabel}>Số lượng:</h3>
             <div className={styles.quantitySelector}>
@@ -260,7 +242,6 @@ const ProductDetailPage = () => {
             </div>
           </div>
 
-          {/* Add to Cart Button */}
           <div className={styles.actionButtons}>
             <button className={styles.addToCartBtn} onClick={handleAddToCart}>
               Thêm vào giỏ hàng
@@ -270,7 +251,6 @@ const ProductDetailPage = () => {
             </button>
           </div>
 
-          {/* Product Meta Description */}
           {product.meta_description && (
             <div className={styles.metaDescription}>
               <h3>Mô tả sản phẩm</h3>
@@ -278,7 +258,6 @@ const ProductDetailPage = () => {
             </div>
           )}
 
-          {/* Category Info */}
           {product.category && (
             <div className={styles.categoryInfo}>
               <span>Danh mục: </span>

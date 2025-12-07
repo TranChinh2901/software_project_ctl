@@ -11,6 +11,7 @@ import { Category } from '@/types/category';
 import { Color } from '@/types/color';
 import { ProductGallery } from '@/types/product-gallery';
 import { SizeType } from '@/types/product-variant';
+import { ProductStatus } from '@/enums/product/product.enum';
 import styles from '../../../styles/products/Product.module.css';
 
 interface ApiResponse<T> {
@@ -20,27 +21,21 @@ interface ApiResponse<T> {
 }
 
 const ProductsPages = () => {
-  // Data states
   const [brands, setBrands] = useState<Brand[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [colors, setColors] = useState<Color[]>([]);
   const [galleries, setGalleries] = useState<Record<number, ProductGallery[]>>({});
-  
-  // Filter states
   const [selectedBrand, setSelectedBrand] = useState<number | null>(null);
   const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
   const [selectedColors, setSelectedColors] = useState<number[]>([]);
   const [selectedSizes, setSelectedSizes] = useState<SizeType[]>([]);
   const [sortBy, setSortBy] = useState('default');
-  
-  // UI states
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [categoryName, setCategoryName] = useState('Sản phẩm');
 
-  // Fetch initial data
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -85,12 +80,25 @@ const ProductsPages = () => {
         });
 
         setBrands(Array.isArray(brandsData) ? brandsData : []);
-        setProducts(Array.isArray(productsData) ? productsData : []);
-        setFilteredProducts(Array.isArray(productsData) ? productsData : []);
+        
+        const activeProducts = Array.isArray(productsData) 
+          ? productsData.filter((product: Product) => {
+              const statusValue = String(product.status).toLowerCase();
+              const isActive = product.status === ProductStatus.ACTIVE || statusValue === 'active';
+              const isNotDeleted = !product.is_deleted;
+              
+              console.log(`Product ${product.id} (${product.name_product}): status=${product.status}, is_deleted=${product.is_deleted}, isActive=${isActive}`);
+              
+              return isActive && isNotDeleted;
+            })
+          : [];
+        
+        console.log('Active products count:', activeProducts.length);
+        
+        setProducts(activeProducts);
+        setFilteredProducts(activeProducts);
         setCategories(Array.isArray(categoriesData) ? categoriesData : []);
         setColors(Array.isArray(colorsData) ? colorsData : []);
-
-        // Group galleries by product_id
         if (Array.isArray(galleriesData)) {
           const galleryMap: Record<number, ProductGallery[]> = {};
           galleriesData.forEach((gallery: ProductGallery) => {
@@ -112,11 +120,10 @@ const ProductsPages = () => {
     fetchData();
   }, []);
 
-  // Apply filters
   const applyFilters = useCallback(async () => {
     let filtered = [...products];
 
-    // Filter by brand (through category)
+    // fillter brand 
     if (selectedBrand) {
       const brandCategories = categories.filter(cat => cat.brand?.id === selectedBrand);
       const brandCategoryIds = brandCategories.map(cat => cat.id);
@@ -130,14 +137,12 @@ const ProductsPages = () => {
       setCategoryName('Sản phẩm');
     }
 
-    // Filter by categories
+    // filllter category
     if (selectedCategories.length > 0) {
       filtered = filtered.filter(product => 
         product.category && selectedCategories.includes(product.category.id)
       );
     }
-
-    // Filter by colors and sizes (need to check variants)
     if (selectedColors.length > 0 || selectedSizes.length > 0) {
       const productIdsToKeep: number[] = [];
       
@@ -164,15 +169,13 @@ const ProductsPages = () => {
             }
           }
         } catch {
-          // If can't fetch variants, include the product
           productIdsToKeep.push(product.id);
         }
       }
 
       filtered = filtered.filter(product => productIdsToKeep.includes(product.id));
     }
-
-    // Apply sorting
+    // Sort
     switch (sortBy) {
       case 'price_asc':
         filtered.sort((a, b) => a.price - b.price);
@@ -200,10 +203,8 @@ const ProductsPages = () => {
     applyFilters();
   }, [applyFilters]);
 
-  // Handlers
   const handleBrandSelect = (brandId: number | null) => {
     setSelectedBrand(brandId);
-    // Reset category filter when brand changes
     if (brandId !== selectedBrand) {
       setSelectedCategories([]);
     }
@@ -245,7 +246,6 @@ const ProductsPages = () => {
     setSortBy(value);
   };
 
-  // Get filtered categories based on selected brand
   const filteredCategories = selectedBrand
     ? categories.filter(cat => cat.brand?.id === selectedBrand)
     : categories;
@@ -253,8 +253,6 @@ const ProductsPages = () => {
   return (
     <div className={styles.productContainer}>
       <Breadcrumb items={[{ label: 'Trang chủ', href: '/' }, { label: 'Sản phẩm' }]} />
-      
-      {/* Error Message */}
       {error && (
         <div style={{ 
           padding: '20px', 
@@ -267,17 +265,12 @@ const ProductsPages = () => {
           <p style={{ margin: 0, color: '#856404' }}>⚠️ {error}</p>
         </div>
       )}
-
-      {/* Brand Slider */}
       <BrandSlider
         brands={brands}
         selectedBrand={selectedBrand}
         onBrandSelect={handleBrandSelect}
       />
-
-      {/* Main Content */}
       <div className={styles.mainContent}>
-        {/* Products Column */}
         <div className={styles.productsColumn}>
           <ProductList
             products={filteredProducts}
@@ -288,8 +281,6 @@ const ProductsPages = () => {
             loading={loading}
           />
         </div>
-
-        {/* Filter Sidebar */}
         <div className={styles.categoriesColumn}>
           <FilterSidebar
             categories={filteredCategories}

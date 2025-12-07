@@ -74,10 +74,8 @@ const BlogPages = () => {
       </div>
 
       <div className={styles.blogLayout}>
-        {/* LEFT SIDE - Main Blog List or Detail */}
         <div className={styles.leftSide}>
           {selectedBlog ? (
-            // Blog Detail View
             <div className={styles.blogDetail}>
               <button onClick={handleBackToList} className={styles.backButton}>
                 <MdArrowBack /> Quay lại danh sách
@@ -110,7 +108,6 @@ const BlogPages = () => {
               />
             </div>
           ) : (
-            // Blog List View
             <div className={styles.blogListWrapper}>
               {blogs.length > 0 ? (
                 blogs.map((blog) => (
@@ -148,8 +145,6 @@ const BlogPages = () => {
             </div>
           )}
         </div>
-
-        {/* RIGHT SIDE - Sidebar (Always visible) */}
         <aside className={styles.rightSide}>
           <div className={styles.sidebarWidget}>
             <h3 className={styles.widgetTitle}>Bài viết khác</h3>

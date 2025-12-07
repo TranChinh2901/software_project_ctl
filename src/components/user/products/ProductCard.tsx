@@ -62,8 +62,6 @@ const ProductCard = ({ product, gallery, onAddToWishlist }: ProductCardProps) =>
             -{discountPercent}%
           </span>
         )}
-
-        {/* Wishlist Button */}
         <button 
           className={`${styles.wishlistBtn} ${isWishlisted ? styles.wishlisted : ''}`}
           onClick={handleWishlistClick}
@@ -81,13 +79,10 @@ const ProductCard = ({ product, gallery, onAddToWishlist }: ProductCardProps) =>
           </svg>
         </button>
 
-        {/* Options Button */}
         <Link href={`/products/${product.id}`} className={styles.optionsBtn}>
           Tùy chọn
         </Link>
       </div>
-
-      {/* Color Variants */}
       {colorImages.length > 0 && (
         <div className={styles.colorVariants}>
           {colorImages.map((img, index) => (
@@ -103,8 +98,6 @@ const ProductCard = ({ product, gallery, onAddToWishlist }: ProductCardProps) =>
           ))}
         </div>
       )}
-
-      {/* Product Info */}
       <div className={styles.productInfo}>
         <h3 className={styles.productName}>
           <Link href={`/products/${product.id}`}>

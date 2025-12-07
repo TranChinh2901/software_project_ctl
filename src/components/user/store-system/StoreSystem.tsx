@@ -82,7 +82,6 @@ const StoreSystem = () => {
     <div className={styles.container}>
       <Breadcrumb items={[{ label: 'Trang chủ', href: '/' }, { label: 'Hệ thống cửa hàng' }]} />
       
-      {/* Header Section */}
       <div className={styles.headerSection}>
         <div className={styles.headerCard}>
           <MdStore className={styles.headerIcon} />
@@ -107,11 +106,8 @@ const StoreSystem = () => {
         </div>
       </div>
 
-      {/* Main Content */}
       <div className={styles.mainContent}>
-        {/* Left Sidebar - Store List */}
         <div className={styles.sidebar}>
-          {/* Filter */}
           <div className={styles.filterSection}>
             <label htmlFor="city-select">Chọn tỉnh thành</label>
             <select 

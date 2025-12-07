@@ -15,7 +15,6 @@ export default function CartSummary() {
         </div>
         <div className="flex justify-between">
           <span>Phí vận chuyển:</span>
-          {/* <span>{shipping === 0 ? 'Miễn phí' : `${shipping.toLocaleString('vi-VN')} ₫`}</span> */}
         </div>
         <div className="border-t pt-4">
           <div className="flex justify-between text-xl font-bold">

@@ -23,7 +23,7 @@ const FilterSidebar = ({
   categories,
   colors,
   selectedCategories,
-  selectedColors,
+  selectedColors, 
   selectedSizes,
   onCategoryChange,
   onColorChange,
@@ -52,7 +52,6 @@ const FilterSidebar = ({
     }));
   };
 
-  // Group categories by brand
   const categoriesByBrand = categories.reduce((acc, category) => {
     const brandName = category.brand?.name_brand || 'Khác';
     if (!acc[brandName]) {
@@ -66,14 +65,11 @@ const FilterSidebar = ({
 
   return (
     <div className={styles.filterSidebar}>
-      {/* Clear Filters Button */}
       {hasActiveFilters && (
         <button className={styles.clearFiltersBtn} onClick={onClearFilters}>
           Xóa bộ lọc
         </button>
       )}
-
-      {/* Categories Section */}
       <div className={styles.filterSection}>
         <div 
           className={styles.filterHeader} 
@@ -126,7 +122,6 @@ const FilterSidebar = ({
         )}
       </div>
 
-      {/* Colors Section */}
       <div className={styles.filterSection}>
         <div 
           className={styles.filterHeader} 
@@ -162,7 +157,6 @@ const FilterSidebar = ({
         )}
       </div>
 
-      {/* Size Section */}
       <div className={styles.filterSection}>
         <div 
           className={styles.filterHeader} 

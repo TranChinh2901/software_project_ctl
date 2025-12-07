@@ -1,4 +1,5 @@
 'use client';
+import { useState, useEffect } from 'react';
 import { Product } from '@/types/product';
 import { ProductGallery } from '@/types/product-gallery';
 import ProductCard from './ProductCard';
@@ -11,6 +12,7 @@ interface ProductListProps {
   sortBy: string;
   onSortChange: (value: string) => void;
   loading?: boolean;
+  itemsPerPage?: number;
 }
 
 const ProductList = ({ 
@@ -19,13 +21,69 @@ const ProductList = ({
   categoryName = 'Sản phẩm',
   sortBy,
   onSortChange,
-  loading = false
+  loading = false,
+  itemsPerPage = 9
 }: ProductListProps) => {
+  const [currentPage, setCurrentPage] = useState(1);
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [products.length, sortBy]);
+
+  const totalPages = Math.ceil(products.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentProducts = products.slice(startIndex, endIndex);
+
+  const getPageNumbers = () => {
+    const pages: (number | string)[] = [];
+    const maxVisiblePages = 5;
+
+    if (totalPages <= maxVisiblePages) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      pages.push(1);
+
+      if (currentPage > 3) {
+        pages.push('...');
+      }
+
+      const start = Math.max(2, currentPage - 1);
+      const end = Math.min(totalPages - 1, currentPage + 1);
+
+      for (let i = start; i <= end; i++) {
+        if (!pages.includes(i)) {
+          pages.push(i);
+        }
+      }
+
+      if (currentPage < totalPages - 2) {
+        pages.push('...');
+      }
+
+      if (!pages.includes(totalPages)) {
+        pages.push(totalPages);
+      }
+    }
+
+    return pages;
+  };
+
+  const handlePageChange = (page: number) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+      window.scrollTo({ top: 200, behavior: 'smooth' });
+    }
+  };
+
   return (
     <div className={styles.productListContainer}>
-      {/* Header */}
       <div className={styles.productListHeader}>
-        <h2 className={styles.categoryTitle}>{categoryName}</h2>
+        <div className={styles.headerLeft}>
+          <h2 className={styles.categoryTitle}>{categoryName}</h2>
+          <span className={styles.productCount}>({products.length} sản phẩm)</span>
+        </div>
         
         <div className={styles.sortWrapper}>
           <label htmlFor="sortSelect" className={styles.sortLabel}>Sắp xếp theo</label>
@@ -45,7 +103,6 @@ const ProductList = ({
         </div>
       </div>
 
-      {/* Product Grid */}
       {loading ? (
         <div className={styles.loadingGrid}>
           {[...Array(8)].map((_, index) => (
@@ -61,15 +118,61 @@ const ProductList = ({
           <p>Không tìm thấy sản phẩm nào</p>
         </div>
       ) : (
-        <div className={styles.productGrid}>
-          {products.map((product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              gallery={galleries[product.id] || []}
-            />
-          ))}
-        </div>
+        <>
+          <div className={styles.productGrid}>
+            {currentProducts.map((product) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                gallery={galleries[product.id] || []}
+              />
+            ))}
+          </div>
+
+          {totalPages > 1 && (
+            <div className={styles.pagination}>
+              <button
+                className={`${styles.pageBtn} ${styles.pageNavBtn}`}
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <polyline points="15,18 9,12 15,6"></polyline>
+                </svg>
+              </button>
+
+              {getPageNumbers().map((page, index) => (
+                typeof page === 'number' ? (
+                  <button
+                    key={index}
+                    className={`${styles.pageBtn} ${currentPage === page ? styles.pageBtnActive : ''}`}
+                    onClick={() => handlePageChange(page)}
+                  >
+                    {page}
+                  </button>
+                ) : (
+                  <span key={index} className={styles.pageEllipsis}>{page}</span>
+                )
+              ))}
+
+              <button
+                className={`${styles.pageBtn} ${styles.pageNavBtn}`}
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <polyline points="9,6 15,12 9,18"></polyline>
+                </svg>
+              </button>
+            </div>
+          )}
+
+          {totalPages > 1 && (
+            <div className={styles.pageInfo}>
+              Hiển thị {startIndex + 1} - {Math.min(endIndex, products.length)} trong {products.length} sản phẩm
+            </div>
+          )}
+        </>
       )}
     </div>
   );

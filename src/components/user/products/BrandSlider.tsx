@@ -8,12 +8,20 @@ interface BrandSliderProps {
   brands: Brand[];
   selectedBrand: number | null;
   onBrandSelect: (brandId: number | null) => void;
+  autoScrollInterval?: number;
 }
 
-const BrandSlider = ({ brands, selectedBrand, onBrandSelect }: BrandSliderProps) => {
+const BrandSlider = ({ 
+  brands, 
+  selectedBrand, 
+  onBrandSelect,
+  autoScrollInterval = 3000 
+}: BrandSliderProps) => {
   const sliderRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const autoScrollRef = useRef<NodeJS.Timeout | null>(null);
 
   const checkScrollButtons = useCallback(() => {
     if (sliderRef.current) {
@@ -22,6 +30,46 @@ const BrandSlider = ({ brands, selectedBrand, onBrandSelect }: BrandSliderProps)
       setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 5);
     }
   }, []);
+
+  const autoScroll = useCallback(() => {
+    if (sliderRef.current && !isHovered) {
+      const { scrollLeft, scrollWidth, clientWidth } = sliderRef.current;
+      const isAtEnd = scrollLeft >= scrollWidth - clientWidth - 5;
+      
+      if (isAtEnd) {
+        sliderRef.current.scrollTo({
+          left: 0,
+          behavior: 'smooth'
+        });
+      } else {
+        const itemWidth = 190;
+        sliderRef.current.scrollBy({
+          left: itemWidth,
+          behavior: 'smooth'
+        });
+      }
+    }
+  }, [isHovered]);
+
+  useEffect(() => {
+    if (brands.length > 0) {
+      autoScrollRef.current = setInterval(autoScroll, autoScrollInterval);
+    }
+    
+    return () => {
+      if (autoScrollRef.current) {
+        clearInterval(autoScrollRef.current);
+      }
+    };
+  }, [autoScroll, autoScrollInterval, brands.length]);
+
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+  };
 
   useEffect(() => {
     checkScrollButtons();
@@ -40,8 +88,8 @@ const BrandSlider = ({ brands, selectedBrand, onBrandSelect }: BrandSliderProps)
 
   const scroll = (direction: 'left' | 'right') => {
     if (sliderRef.current) {
-      const itemWidth = 190; // width of brand item + gap
-      const scrollAmount = itemWidth * 2; // scroll 2 items at a time
+      const itemWidth = 190; 
+      const scrollAmount = itemWidth * 2; 
       sliderRef.current.scrollBy({
         left: direction === 'left' ? -scrollAmount : scrollAmount,
         behavior: 'smooth'
@@ -51,14 +99,18 @@ const BrandSlider = ({ brands, selectedBrand, onBrandSelect }: BrandSliderProps)
 
   const handleBrandClick = (brandId: number) => {
     if (selectedBrand === brandId) {
-      onBrandSelect(null); // Deselect if already selected
+      onBrandSelect(null); 
     } else {
       onBrandSelect(brandId);
     }
   };
 
   return (
-    <div className={styles.brandSliderContainer}>
+    <div 
+      className={styles.brandSliderContainer}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
       <button 
         className={`${styles.sliderButton} ${styles.sliderButtonLeft}`}
         onClick={() => scroll('left')}
