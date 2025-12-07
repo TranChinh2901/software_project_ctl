@@ -13,13 +13,11 @@ import { ProductGallery } from '@/types/product-gallery';
 import { SizeType } from '@/types/product-variant';
 import { ProductStatus } from '@/enums/product/product.enum';
 import styles from '../../../styles/products/Product.module.css';
-
 interface ApiResponse<T> {
   data?: T;
   products?: T;
   message?: string;
 }
-
 const ProductsPages = () => {
   const [brands, setBrands] = useState<Brand[]>([]);
   const [products, setProducts] = useState<Product[]>([]);

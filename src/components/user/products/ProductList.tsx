@@ -22,7 +22,7 @@ const ProductList = ({
   sortBy,
   onSortChange,
   loading = false,
-  itemsPerPage = 9
+  itemsPerPage = 6
 }: ProductListProps) => {
   const [currentPage, setCurrentPage] = useState(1);
   useEffect(() => {
