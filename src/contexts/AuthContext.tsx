@@ -1,8 +1,8 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { User } from '@/types/auth';
 import { useRouter } from 'next/navigation';
+import { User } from '@/types';
 
 interface AuthContextType {
   user: User | null;
@@ -20,7 +20,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
-  // Load user from localStorage khi app khởi động
   useEffect(() => {
     const loadUser = () => {
       try {
@@ -32,7 +31,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
       } catch (error) {
         console.error('Error loading user from localStorage:', error);
-        // Nếu có lỗi, xóa dữ liệu cũ
         localStorage.removeItem('user');
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
@@ -45,25 +43,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const login = (accessToken: string, refreshToken: string, userData: User) => {
-    // Lưu vào localStorage
     localStorage.setItem('accessToken', accessToken);
     localStorage.setItem('refreshToken', refreshToken);
     localStorage.setItem('user', JSON.stringify(userData));
-    
-    // Cập nhật state
+    //updte state
     setUser(userData);
   };
 
   const logout = () => {
-    // Xóa khỏi localStorage
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('user');
     
-    // Reset state
     setUser(null);
     
-    // Redirect về trang chủ
     router.push('/');
   };
 

@@ -10,10 +10,13 @@ import { productApi, productGalleryApi, productVariantApi } from '@/lib/api';
 import styles from '@/styles/products/ProductDetail.module.css';
 import Breadcrumb from '@/components/breadcrumb/breadcrumb';
 import ProductCard from '@/components/user/products/ProductCard';
+import { useWishlist } from '@/contexts/WishlistContext';
+import toast from 'react-hot-toast';
 
 const ProductDetailPage = () => {
   const params = useParams();
   const productId = Number(params.id);
+  const { isInWishlist, toggleWishlist } = useWishlist();
 
   const [product, setProduct] = useState<Product | null>(null);
   const [gallery, setGallery] = useState<ProductGallery[]>([]);
@@ -25,9 +28,11 @@ const ProductDetailPage = () => {
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isWishlisted, setIsWishlisted] = useState(false);
   const [activeTab, setActiveTab] = useState<'description' | 'policy' | 'reviews'>('description');
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+
+  // Check if product is in wishlist
+  const isWishlisted = product ? isInWishlist(product.id) : false;
 
   // Build image array from product + gallery
   const allImages = [
@@ -354,8 +359,17 @@ const ProductDetailPage = () => {
             </button>
             <button 
               className={`${styles.wishlistBtn} ${isWishlisted ? styles.active : ''}`}
-              onClick={() => setIsWishlisted(!isWishlisted)}
-              aria-label="Add to wishlist"
+              onClick={() => {
+                if (product) {
+                  toggleWishlist(product);
+                  if (isWishlisted) {
+                    toast.success('Đã xóa khỏi danh sách yêu thích');
+                  } else {
+                    toast.success('Đã thêm vào danh sách yêu thích');
+                  }
+                }
+              }}
+              aria-label={isWishlisted ? "Xóa khỏi yêu thích" : "Thêm vào yêu thích"}
             >
               <svg width="20" height="20" viewBox="0 0 24 24" fill={isWishlisted ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2">
                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>

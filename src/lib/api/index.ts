@@ -2,8 +2,6 @@ import apiClient from './apiClient';
 import { LoginDto, RegisterDto, AuthResponse, RegisterResponse, UpdateProfileDto } from '@/types/auth';
 
 // ====================================
-// AUTH API
-// ====================================
 export const authApi = {
   login: async (credentials: LoginDto): Promise<AuthResponse> => {
     const response = await apiClient.post('/auth/login', credentials);
@@ -33,12 +31,10 @@ export const authApi = {
 };
 
 // ====================================
-// USER API
-// ====================================
 export const userApi = {
   getAll: async (params?: Record<string, unknown>) => {
     const response = await apiClient.get('/auth/users', { params });
-    return response; // apiClient đã trả về response.data rồi
+    return response; 
   },
   
   getById: async (id: number) => {
@@ -96,8 +92,6 @@ export const productApi = {
 };
 
 // ====================================
-// CATEGORY API
-// ====================================
 export const categoryApi = {
   getAll: (params?: Record<string, unknown>) => {
     return apiClient.get('/categories', { params });
@@ -128,8 +122,7 @@ export const categoryApi = {
   },
 };
 
-// ====================================
-// BRAND API
+
 // ====================================
 export const brandApi = {
   getAll: (params?: Record<string, unknown>) => {
@@ -160,6 +153,8 @@ export const brandApi = {
     return apiClient.delete(`/brands/${id}`);
   },
 };
+
+// =====================================
 
 export const blogApi = {
   getAll: (params?: Record<string, unknown>) => {
@@ -227,8 +222,6 @@ export const bannerApi = {
 };
 
 // ====================================
-// VOUCHER API
-// ====================================
 export const voucherApi = {
   getAll: async () => {
     const response = await apiClient.get('/vouchers');
@@ -256,9 +249,7 @@ export const voucherApi = {
   },
 };
 
-// ====================================
-// ====================================
-// ORDER API
+
 // ====================================
 export const orderApi = {
   getAll: (params?: Record<string, unknown>) => {
@@ -287,8 +278,6 @@ export const orderApi = {
 };
 
 // ====================================
-// COLOR API
-// ====================================
 export const colorApi = {
   getAll: (params?: Record<string, unknown>) => {
     return apiClient.get('/colors', { params });
@@ -311,8 +300,7 @@ export const colorApi = {
   },
 };
 
-// ====================================
-// REVIEW API
+
 // ====================================
 export const reviewApi = {
   getAll: (params?: Record<string, unknown>) => {
@@ -340,8 +328,7 @@ export const reviewApi = {
   },
 };
 
-// ====================================
-// PRODUCT GALLERY API
+
 // ====================================
 export const productGalleryApi = {
   getAll: () => {
@@ -361,8 +348,7 @@ export const productGalleryApi = {
   },
 };
 
-// ====================================
-// PRODUCT VARIANT API
+
 // ====================================
 export const productVariantApi = {
   getAll: (params?: Record<string, unknown>) => {

@@ -1,19 +1,20 @@
 'use client';
-import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Product } from '@/types/product';
 import { ProductGallery } from '@/types/product-gallery';
+import { useWishlist } from '@/contexts/WishlistContext';
 import styles from '../../../styles/products/Product.module.css';
+import toast from 'react-hot-toast';
 
 interface ProductCardProps {
   product: Product;
   gallery?: ProductGallery[];
-  onAddToWishlist?: (productId: number) => void;
 }
 
-const ProductCard = ({ product, gallery, onAddToWishlist }: ProductCardProps) => {
-  const [isWishlisted, setIsWishlisted] = useState(false);
+const ProductCard = ({ product, gallery }: ProductCardProps) => {
+  const { isInWishlist, toggleWishlist } = useWishlist();
+  const isWishlisted = isInWishlist(product.id);
   
   const colorImages = gallery?.slice(0, 3) || [];
   
@@ -30,9 +31,12 @@ const ProductCard = ({ product, gallery, onAddToWishlist }: ProductCardProps) =>
   const handleWishlistClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setIsWishlisted(!isWishlisted);
-    if (onAddToWishlist) {
-      onAddToWishlist(product.id);
+    toggleWishlist(product);
+    
+    if (isWishlisted) {
+      toast.success('Đã xóa khỏi danh sách yêu thích');
+    } else {
+      toast.success('Đã thêm vào danh sách yêu thích');
     }
   };
 
@@ -65,7 +69,7 @@ const ProductCard = ({ product, gallery, onAddToWishlist }: ProductCardProps) =>
         <button 
           className={`${styles.wishlistBtn} ${isWishlisted ? styles.wishlisted : ''}`}
           onClick={handleWishlistClick}
-          aria-label="Add to wishlist"
+          aria-label={isWishlisted ? "Xóa khỏi yêu thích" : "Thêm vào yêu thích"}
         >
           <svg 
             width="20" 

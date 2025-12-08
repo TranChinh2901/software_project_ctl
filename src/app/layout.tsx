@@ -1,30 +1,9 @@
-// import type { Metadata } from 'next';
-// import './globals.css';
-
-// export const metadata: Metadata = {
-//   title: 'Software E-commerce',
-//   description: 'Cửa hàng phần mềm và thiết bị công nghệ',
-// };
-
-// export default function RootLayout({
-//   children,
-// }: {
-//   children: React.ReactNode;
-// }) {
-//   return (
-//     <html lang="vi">
-//       <body>
-//         {children}
-//       </body>
-//     </html>
-//   );
-// }
-
 
 import type { Metadata } from "next";
 import { Inter, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { WishlistProvider } from "@/contexts/WishlistContext";
 import { Toaster } from "react-hot-toast";
 
 const inter = Inter({
@@ -52,14 +31,15 @@ export default function RootLayout({
     <html lang="vi">
       <body className={`${inter.variable} ${robotoMono.variable}`}>
         <AuthProvider>
-          {children}
-          <Toaster 
-            position="top-right"
-            toastOptions={{
-              duration: 3000,
-              style: {
-                background: '#363636',
-                color: '#fff',
+          <WishlistProvider>
+            {children}
+            <Toaster 
+              position="top-right"
+              toastOptions={{
+                duration: 3000,
+                style: {
+                  background: '#363636',
+                  color: '#fff',
               },
               success: {
                 duration: 3000,
@@ -76,7 +56,8 @@ export default function RootLayout({
                 },
               },
             }}
-          />
+            />
+          </WishlistProvider>
         </AuthProvider>
       </body>
     </html>
