@@ -4,6 +4,7 @@ import { Inter, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { WishlistProvider } from "@/contexts/WishlistContext";
+import { CartProvider } from "@/contexts/CartContext";
 import { Toaster } from "react-hot-toast";
 
 const inter = Inter({
@@ -32,31 +33,33 @@ export default function RootLayout({
       <body className={`${inter.variable} ${robotoMono.variable}`}>
         <AuthProvider>
           <WishlistProvider>
-            {children}
-            <Toaster 
-              position="top-right"
-              toastOptions={{
-                duration: 3000,
-                style: {
-                  background: '#363636',
-                  color: '#fff',
-              },
-              success: {
-                duration: 3000,
-                iconTheme: {
-                  primary: '#4ade80',
-                  secondary: '#fff',
+            <CartProvider>
+              {children}
+              <Toaster 
+                position="top-right"
+                toastOptions={{
+                  duration: 3000,
+                  style: {
+                    background: '#363636',
+                    color: '#fff',
                 },
-              },
-              error: {
-                duration: 4000,
-                iconTheme: {
-                  primary: '#ef4444',
-                  secondary: '#fff',
+                success: {
+                  duration: 3000,
+                  iconTheme: {
+                    primary: '#4ade80',
+                    secondary: '#fff',
+                  },
                 },
-              },
-            }}
-            />
+                error: {
+                  duration: 4000,
+                  iconTheme: {
+                    primary: '#ef4444',
+                    secondary: '#fff',
+                  },
+                },
+              }}
+              />
+            </CartProvider>
           </WishlistProvider>
         </AuthProvider>
       </body>

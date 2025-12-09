@@ -1,18 +1,31 @@
+'use client';
+
 import CartItems from '@/components/user/cart/CartItems';
 import CartSummary from '@/components/user/cart/CartSummary';
+import Breadcrumb from '@/components/breadcrumb/breadcrumb';
+import { useCart } from '@/contexts/CartContext';
+import styles from '@/styles/products/Cart.module.css';
 
 export default function CartPage() {
+  const { cart } = useCart();
+  const isEmpty = cart.length === 0;
+
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">Giỏ hàng</h1>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2">
-          <CartItems />
+    <div className={styles.cartPageContainer}>
+      <Breadcrumb items={[{ label: 'Trang chủ', href: '/' }, { label: 'Giỏ hàng' }]} />
+      
+      {isEmpty ? (
+        <CartItems />
+      ) : (
+        <div className={styles.cartLayout}>
+          <div className={styles.cartItemsSection}>
+            <CartItems />
+          </div>
+          <div className={styles.cartSummarySection}>
+            <CartSummary />
+          </div>
         </div>
-        <div className="lg:col-span-1">
-          <CartSummary />
-        </div>
-      </div>
+      )}
     </div>
   );
 }

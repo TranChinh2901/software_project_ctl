@@ -741,17 +741,23 @@
     gap: 20px;
   }
 
-  .productImages {
-    display: flex;
-    flex-direction: column;
-  }
-
+  /* Sắp xếp lại thứ tự: Ảnh chính -> Thumbnails -> Thông tin sản phẩm */
   .thumbnailGallery {
+    order: 2;
     flex-direction: row;
     max-height: none;
     overflow-x: auto;
-    order: 2;
     padding-bottom: 10px;
+    justify-content: center;
+  }
+
+  .mainImageSection {
+    order: 1;
+  }
+
+  .productInfo {
+    order: 3;
+    padding: 0;
   }
 
   .thumbnail {
@@ -759,16 +765,8 @@
     height: 75px;
   }
 
-  .mainImageSection {
-    order: 1;
-  }
-
   .mainImageWrapper {
     aspect-ratio: 1;
-  }
-
-  .productInfo {
-    padding: 0;
   }
 
   .productHeader {
@@ -967,14 +965,24 @@
   color: #333;
 }
 
+/* Đảm bảo ảnh trong description responsive */
+.productDescription img,
+.descriptionContent img {
+  max-width: 100%;
+  height: auto;
+}
+
 /* Description Collapse */
 .descriptionWrapper {
   position: relative;
+  overflow: hidden;
 }
 
 .descriptionContent {
   overflow: hidden;
   transition: max-height 0.3s ease;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .descriptionContent.collapsed {
@@ -1226,6 +1234,58 @@
   .relatedTitle {
     font-size: 20px;
   }
+
+  /* Description responsive */
+  .productDescription {
+    padding: 15px;
+  }
+
+  .productDescription h3 {
+    font-size: 16px;
+  }
+
+  .productDescription p {
+    font-size: 14px;
+    line-height: 1.7;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .productDescription img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .descriptionContent {
+    overflow-x: hidden;
+  }
+
+  .descriptionContent img {
+    max-width: 100%;
+    height: auto !important;
+  }
+
+  .returnPolicy {
+    padding: 15px;
+  }
+
+  .returnPolicy h3 {
+    font-size: 14px;
+  }
+
+  .returnPolicy p,
+  .returnPolicy ul li {
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .policyTitle {
+    font-size: 16px;
+  }
+
+  .policyIntro {
+    font-size: 13px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -1241,6 +1301,47 @@
   .tabBtn {
     font-size: 13px;
     padding: 12px 0;
+  }
+
+  /* Description responsive 480px */
+  .productDescription {
+    padding: 10px;
+  }
+
+  .productDescription h3 {
+    font-size: 15px;
+  }
+
+  .productDescription p {
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .descriptionContent img {
+    max-width: 100%;
+    height: auto !important;
+    display: block;
+  }
+
+  .tabContent {
+    padding: 15px 0;
+  }
+
+  .returnPolicy {
+    padding: 10px;
+  }
+
+  .returnPolicy h3 {
+    font-size: 13px;
+  }
+
+  .returnPolicy p,
+  .returnPolicy ul li {
+    font-size: 12px;
+  }
+
+  .policyTitle {
+    font-size: 14px;
   }
 
   .relatedSection {

@@ -1,34 +1,67 @@
 'use client';
 
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useCart } from '@/contexts/CartContext';
+import styles from '@/styles/products/Cart.module.css';
+
 export default function CartSummary() {
-  const subtotal = 101000000;
-  const shipping = 0;
+  const router = useRouter();
+  const { cart, getCartTotal, getCartCount } = useCart();
+
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat('vi-VN').format(price) + 'đ';
+  };
+
+  const subtotal = getCartTotal();
+  const shipping = 0; 
   const total = subtotal + shipping;
+  const itemCount = getCartCount();
+
+  const handleCheckout = () => {
+    if (cart.length === 0) return;
+    router.push('/checkout');
+  };
+
+  if (cart.length === 0) {
+    return null;
+  }
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
-      <h2 className="text-xl font-bold mb-6">Tổng đơn hàng</h2>
-      <div className="space-y-4 mb-6">
-        <div className="flex justify-between">
+    <div className={styles.cartSummary}>
+      <h2 className={styles.summaryTitle}>Tổng đơn hàng</h2>
+      
+      <div className={styles.summaryDetails}>
+        <div className={styles.summaryRow}>
+          <span>Số lượng sản phẩm:</span>
+          <span>{itemCount}</span>
+        </div>
+        <div className={styles.summaryRow}>
           <span>Tạm tính:</span>
-          <span>{subtotal.toLocaleString('vi-VN')} ₫</span>
+          <span>{formatPrice(subtotal)}</span>
         </div>
-        <div className="flex justify-between">
+        <div className={styles.summaryRow}>
           <span>Phí vận chuyển:</span>
+          <span>{shipping === 0 ? 'Miễn phí' : formatPrice(shipping)}</span>
         </div>
-        <div className="border-t pt-4">
-          <div className="flex justify-between text-xl font-bold">
-            <span>Tổng cộng:</span>
-            <span className="text-blue-600">{total.toLocaleString('vi-VN')} ₫</span>
-          </div>
+        
+        <div className={styles.summaryTotal}>
+          <span>Tổng cộng:</span>
+          <span className={styles.totalPrice}>{formatPrice(total)}</span>
         </div>
       </div>
-      <button className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 font-semibold">
-        Tiến hành thanh toán
-      </button>
-      <button className="w-full mt-3 border border-gray-300 py-3 rounded-lg hover:bg-gray-50">
-        Tiếp tục mua hàng
-      </button>
+
+      <div className={styles.summaryActions}>
+        <button 
+          className={styles.checkoutBtn}
+          onClick={handleCheckout}
+        >
+          Tiến hành thanh toán
+        </button>
+        <Link href="/products" className={styles.continueBtn}>
+          Tiếp tục mua hàng
+        </Link>
+      </div>
     </div>
   );
 }

@@ -15,6 +15,8 @@ import { VscInbox } from 'react-icons/vsc'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
+import { useCart } from '@/contexts/CartContext'
+import { useWishlist } from '@/contexts/WishlistContext'
 import { RoleType } from '@/enums'
 import toast from 'react-hot-toast'
 
@@ -22,6 +24,10 @@ export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false)
   const router = useRouter()
   const { user, isAuthenticated, logout } = useAuth()
+  const { getCartCount } = useCart()
+  const { wishlistCount } = useWishlist()
+
+  const cartCount = getCartCount()
 
   function handleLogout(e: React.MouseEvent) {
     e.preventDefault()
@@ -94,6 +100,9 @@ export default function Header() {
             <Link href="/wishlist" className={styles.iconItem}>
               <FaRegHeart className={styles.iconBottom} />
               <span>Yêu thích</span>
+              {wishlistCount > 0 && (
+                <span className={styles.cartBadge}>{wishlistCount}</span>
+              )}
             </Link>
             <div className={styles.accountDropdown}>
               <div className={styles.iconItem}>
@@ -126,7 +135,9 @@ export default function Header() {
             <Link href="/cart" className={styles.iconItem}>
               <VscInbox className={styles.iconBottom} />
               <span>Giỏ hàng</span>
-              <span className={styles.cartBadge}>3</span>
+              {cartCount > 0 && (
+                <span className={styles.cartBadge}>{cartCount}</span>
+              )}
             </Link>
           </div>
         </div>
@@ -219,13 +230,18 @@ export default function Header() {
                   <Link href="/wishlist" onClick={closeMobileMenu} className={styles.iconLink}>
                     <FaRegHeart className={styles.mobileIcon} />
                     Yêu thích
+                    {wishlistCount > 0 && (
+                      <span className={styles.mobileBadge}>{wishlistCount}</span>
+                    )}
                   </Link>
                 </li>
                 <li>
                   <Link href="/cart" onClick={closeMobileMenu} className={styles.iconLink}>
                     <VscInbox className={styles.mobileIcon} />
                     Giỏ hàng
-                    <span className={styles.mobileBadge}>3</span>
+                    {cartCount > 0 && (
+                      <span className={styles.mobileBadge}>{cartCount}</span>
+                    )}
                   </Link>
                 </li>
               </ul>

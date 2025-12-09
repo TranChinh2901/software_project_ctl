@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Product } from '@/types/product';
@@ -11,12 +11,15 @@ import styles from '@/styles/products/ProductDetail.module.css';
 import Breadcrumb from '@/components/breadcrumb/breadcrumb';
 import ProductCard from '@/components/user/products/ProductCard';
 import { useWishlist } from '@/contexts/WishlistContext';
+import { useCart } from '@/contexts/CartContext';
 import toast from 'react-hot-toast';
 
 const ProductDetailPage = () => {
   const params = useParams();
+  const router = useRouter();
   const productId = Number(params.id);
   const { isInWishlist, toggleWishlist } = useWishlist();
+  const { addToCart, isAuthenticated } = useCart();
 
   const [product, setProduct] = useState<Product | null>(null);
   const [gallery, setGallery] = useState<ProductGallery[]>([]);
@@ -31,10 +34,8 @@ const ProductDetailPage = () => {
   const [activeTab, setActiveTab] = useState<'description' | 'policy' | 'reviews'>('description');
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
 
-  // Check if product is in wishlist
   const isWishlisted = product ? isInWishlist(product.id) : false;
 
-  // Build image array from product + gallery
   const allImages = [
     ...(product?.image_product ? [{ id: 'main', url: product.image_product }] : []),
     ...gallery.map(g => ({ id: g.id.toString(), url: g.image_url }))
@@ -68,11 +69,9 @@ const ProductDetailPage = () => {
         const variantsData = variantsRes?.data?.data || variantsRes?.data || [];
         setVariants(variantsData);
 
-        // Fetch related products (same category) - no limit
         if (productData?.category?.id) {
           const relatedRes = await productApi.getAll({ category_id: productData.category.id, limit: 100 });
           const relatedData = relatedRes?.data?.data?.products || relatedRes?.data?.products || [];
-          // Filter out current product
           setRelatedProducts(relatedData.filter((p: Product) => p.id !== productId));
         }
 
@@ -89,7 +88,6 @@ const ProductDetailPage = () => {
 
   const availableSizes = [...new Set(variants.map(v => v.size).filter((s): s is SizeType => s !== undefined))];
   
-  // Get color data with images if available
   const colorData = variants.reduce((acc, v) => {
     if (v.color && v.color.name_color && !acc.find(c => c.name === v.color?.name_color)) {
       acc.push({
@@ -122,12 +120,49 @@ const ProductDetailPage = () => {
   };
 
   const handleAddToCart = () => {
-    console.log('Add to cart:', {
-      productId,
-      quantity,
-      selectedSize,
-      selectedColor
-    });
+    if (!isAuthenticated) {
+      toast.error('Vui lòng đăng nhập để thêm vào giỏ hàng');
+      return;
+    }
+
+    if (!product) return;
+
+    if (availableSizes.length > 0 && !selectedSize) {
+      toast.error('Vui lòng chọn kích thước');
+      return;
+    }
+
+    if (colorData.length > 0 && !selectedColor) {
+      toast.error('Vui lòng chọn màu sắc');
+      return;
+    }
+    const selectedColorData = colorData.find(c => c.name === selectedColor);
+    const colorImage = selectedColorData?.image || undefined;
+
+    addToCart(product, quantity, selectedSize || undefined, selectedColor || undefined, colorImage);
+  };
+
+  const handleBuyNow = () => {
+    if (!isAuthenticated) {
+      toast.error('Vui lòng đăng nhập để mua hàng');
+      return;
+    }
+
+    if (!product) return;
+    if (availableSizes.length > 0 && !selectedSize) {
+      toast.error('Vui lòng chọn kích thước');
+      return;
+    }
+
+    if (colorData.length > 0 && !selectedColor) {
+      toast.error('Vui lòng chọn màu sắc');
+      return;
+    }
+    const selectedColorData = colorData.find(c => c.name === selectedColor);
+    const colorImage = selectedColorData?.image || undefined;
+
+    addToCart(product, quantity, selectedSize || undefined, selectedColor || undefined, colorImage);
+    router.push('/checkout');
   };
 
   if (loading) {
@@ -156,7 +191,6 @@ const ProductDetailPage = () => {
       <Breadcrumb items={[{ label: 'Trang chủ', href: '/' }, { label: 'Sản phẩm', href: '/products' }, { label: product.name_product }]} />
 
       <div className={styles.productContent}>
-        {/* Left - Thumbnail Gallery (Vertical) */}
         <div className={styles.thumbnailGallery}>
           {allImages.map((img, index) => (
             <div 
@@ -175,7 +209,6 @@ const ProductDetailPage = () => {
           ))}
         </div>
 
-        {/* Center - Main Image */}
         <div className={styles.mainImageSection}>
           <div className={styles.mainImageWrapper}>
             {selectedImage ? (
@@ -190,7 +223,6 @@ const ProductDetailPage = () => {
               <div className={styles.imagePlaceholder}>No Image</div>
             )}
             
-            {/* Navigation Arrows */}
             {allImages.length > 1 && (
               <>
                 <button 
@@ -215,7 +247,6 @@ const ProductDetailPage = () => {
             )}
           </div>
 
-          {/* Share Section */}
           <div className={styles.shareSection}>
             <span className={styles.shareLabel}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -385,7 +416,7 @@ const ProductDetailPage = () => {
             </button>
           </div>
 
-          <button className={styles.buyNowBtn}>
+          <button className={styles.buyNowBtn} onClick={handleBuyNow}>
             Mua ngay
           </button>
 
