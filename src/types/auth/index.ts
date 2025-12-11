@@ -11,6 +11,9 @@ export interface RegisterDto {
 }
 
 export interface AuthResponse {
+  user(accessToken: (accessToken: any, refreshToken: any, user: any) => unknown, refreshToken: (accessToken: (accessToken: any, refreshToken: any, user: any) => unknown, refreshToken: any, user: any) => unknown, user: any): unknown;
+  refreshToken(accessToken: (accessToken: any, refreshToken: any, user: any) => unknown, refreshToken: any, user: any): unknown;
+  accessToken(accessToken: any, refreshToken: any, user: any): unknown;
   success: boolean;
   message: string;
   data: {
@@ -38,6 +41,8 @@ export interface RegisterResponse {
 }
 
 export interface UpdateProfileDto {
+  gender: string | number | readonly string[] | undefined;
+  date_of_birth: string | number | readonly string[] | undefined;
   username?: string;
   email?: string;
   full_name?: string;

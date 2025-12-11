@@ -13,7 +13,7 @@ const Homepages = () => {
       {/* Features Section */}
       <Features />
 
-      {/* Other homepage sections can be added here */}
+    
     </div>
   );
 };

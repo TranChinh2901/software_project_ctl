@@ -1,198 +1,261 @@
-'use client';
+"use client";
 
-import { Order } from '@/types/order';
-import { OrderStatus, PaymentStatus } from '@/enums';
-import { MdClose, MdCheckCircle, MdCancel, MdLocalShipping } from 'react-icons/md';
-import styles from '@/styles/admin/Orders.module.css';
+import Image from "next/image";
+import { MdClose, MdPerson, MdLocationOn, MdPhone, MdEmail, MdNotes } from "react-icons/md";
+import { OrderStatus, PaymentStatus } from "@/enums";
+import styles from "@/styles/admin/Orders.module.css";
+
+interface OrderItem {
+  id: number;
+  order_id: number;
+  product_id: number;
+  quantity: number;
+  price: number;
+  product?: {
+    id: number;
+    name_product: string;
+    image_product?: string;
+  };
+}
+
+interface Order {
+  id: number;
+  user_id: number;
+  total_amount: number;
+  note?: string;
+  status: OrderStatus;
+  cancel_reason?: string;
+  payment_method: string;
+  payment_status: PaymentStatus;
+  created_at: string;
+  updated_at: string;
+  order_items?: OrderItem[];
+  user?: {
+    id: number;
+    fullname?: string;
+    full_name?: string;
+    email: string;
+  };
+  shipping_address?: {
+    id: number;
+    address: string;
+    phone: string;
+  };
+}
 
 interface OrderDetailModalProps {
   order: Order;
   onClose: () => void;
+  onUpdateStatus: (status: OrderStatus) => void;
 }
 
-export default function OrderDetailModal({ order, onClose }: OrderDetailModalProps) {
-  const getStatusLabel = (status: string) => {
-    switch (status) {
-      case OrderStatus.PENDING: return 'Chờ xử lý';
-      case OrderStatus.CONFIRMED: return 'Đã xác nhận';
-      case OrderStatus.SHIPPING: return 'Đang giao';
-      case OrderStatus.COMPLETED: return 'Hoàn thành';
-      case OrderStatus.CANCELLED: return 'Đã hủy';
-      default: return status;
-    }
+export default function OrderDetailModal({
+  order,
+  onClose,
+  onUpdateStatus,
+}: OrderDetailModalProps) {
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat("vi-VN").format(price) + "đ";
   };
 
-  const getPaymentStatusLabel = (status: string) => {
-    switch (status) {
-      case PaymentStatus.UNPAID: return 'Chưa thanh toán';
-      case PaymentStatus.PAID: return 'Đã thanh toán';
-      case PaymentStatus.REFUNDED: return 'Đã hoàn tiền';
-      default: return status;
-    }
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString("vi-VN", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
   };
+
+  const getStatusConfig = (status: OrderStatus) => {
+    const config = {
+      [OrderStatus.PENDING]: { label: "Chờ xử lý", className: styles.statusPending },
+      [OrderStatus.CONFIRMED]: { label: "Đã xác nhận", className: styles.statusConfirmed },
+      [OrderStatus.SHIPPING]: { label: "Đang giao", className: styles.statusShipping },
+      [OrderStatus.COMPLETED]: { label: "Hoàn thành", className: styles.statusCompleted },
+      [OrderStatus.CANCELLED]: { label: "Đã hủy", className: styles.statusCancelled },
+    };
+    return config[status] || { label: status, className: "" };
+  };
+
+  const getPaymentStatusConfig = (status: PaymentStatus) => {
+    const config = {
+      [PaymentStatus.UNPAID]: { label: "Chưa thanh toán", className: styles.paymentUnpaid },
+      [PaymentStatus.PAID]: { label: "Đã thanh toán", className: styles.paymentPaid },
+      [PaymentStatus.REFUNDED]: { label: "Đã hoàn tiền", className: styles.paymentRefunded },
+    };
+    return config[status] || { label: status, className: "" };
+  };
+
+  const statusConfig = getStatusConfig(order.status);
+  const paymentConfig = getPaymentStatusConfig(order.payment_status);
+
+  const getNextStatuses = (currentStatus: OrderStatus): OrderStatus[] => {
+    const statusFlow: Record<OrderStatus, OrderStatus[]> = {
+      [OrderStatus.PENDING]: [OrderStatus.CONFIRMED, OrderStatus.CANCELLED],
+      [OrderStatus.CONFIRMED]: [OrderStatus.SHIPPING, OrderStatus.CANCELLED],
+      [OrderStatus.SHIPPING]: [OrderStatus.COMPLETED, OrderStatus.CANCELLED],
+      [OrderStatus.COMPLETED]: [],
+      [OrderStatus.CANCELLED]: [],
+    };
+    return statusFlow[currentStatus] || [];
+  };
+
+  const nextStatuses = getNextStatuses(order.status);
 
   return (
     <div className={styles.modalOverlay} onClick={onClose}>
       <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
         <div className={styles.modalHeader}>
           <h2>Chi tiết đơn hàng #{order.id}</h2>
-          <button onClick={onClose} className={styles.closeButton}>
+          <button className={styles.closeBtn} onClick={onClose}>
             <MdClose />
           </button>
         </div>
 
         <div className={styles.modalBody}>
-          {/* Order Info */}
-          <div className={styles.section}>
-            <h3>Thông tin đơn hàng</h3>
-            <div className={styles.infoGrid}>
-              <div className={styles.infoItem}>
-                <span className={styles.label}>Mã đơn hàng:</span>
-                <span className={styles.value}>#{order.id}</span>
-              </div>
-              <div className={styles.infoItem}>
-                <span className={styles.label}>Ngày đặt:</span>
-                <span className={styles.value}>
-                  {new Date(order.created_at).toLocaleString('vi-VN')}
-                </span>
-              </div>
-              <div className={styles.infoItem}>
-                <span className={styles.label}>Trạng thái:</span>
-                <span className={styles.value}>{getStatusLabel(order.status)}</span>
-              </div>
-              <div className={styles.infoItem}>
-                <span className={styles.label}>Thanh toán:</span>
-                <span className={styles.value}>
-                  {getPaymentStatusLabel((order as any).payment_status || 'unpaid')}
-                </span>
-              </div>
-              <div className={styles.infoItem}>
-                <span className={styles.label}>Phương thức:</span>
-                <span className={styles.value}>{order.payment_method}</span>
-              </div>
+          {/* Order Status */}
+          <div className={styles.detailSection}>
+            <h3 className={styles.sectionTitle}>Trạng thái đơn hàng</h3>
+            <div className={styles.statusRow}>
+              <span className={`${styles.statusBadge} ${statusConfig.className}`}>
+                {statusConfig.label}
+              </span>
+              <span className={`${styles.paymentBadge} ${paymentConfig.className}`}>
+                {paymentConfig.label}
+              </span>
+              <span className={styles.paymentMethod}>{order.payment_method}</span>
             </div>
+            {order.cancel_reason && (
+              <div className={styles.cancelReason}>
+                <strong>Lý do hủy:</strong> {order.cancel_reason}
+              </div>
+            )}
           </div>
 
           {/* Customer Info */}
-          <div className={styles.section}>
-            <h3>Thông tin khách hàng</h3>
+          <div className={styles.detailSection}>
+            <h3 className={styles.sectionTitle}>Thông tin khách hàng</h3>
             <div className={styles.infoGrid}>
               <div className={styles.infoItem}>
-                <span className={styles.label}>Họ tên:</span>
-                <span className={styles.value}>
-                  {order.shipping_address?.fullname || order.user?.fullname || 'N/A'}
-                </span>
+                <MdPerson className={styles.infoIcon} />
+                <div>
+                  <label>Họ tên</label>
+                  <span>{order.user?.fullname || order.user?.full_name || "N/A"}</span>
+                </div>
               </div>
               <div className={styles.infoItem}>
-                <span className={styles.label}>Số điện thoại:</span>
-                <span className={styles.value}>
-                  {order.shipping_address?.phone || 'N/A'}
-                </span>
+                <MdEmail className={styles.infoIcon} />
+                <div>
+                  <label>Email</label>
+                  <span>{order.user?.email || "N/A"}</span>
+                </div>
               </div>
               <div className={styles.infoItem}>
-                <span className={styles.label}>Email:</span>
-                <span className={styles.value}>{order.user?.email || 'N/A'}</span>
+                <MdPhone className={styles.infoIcon} />
+                <div>
+                  <label>Điện thoại</label>
+                  <span>{order.shipping_address?.phone || "N/A"}</span>
+                </div>
+              </div>
+              <div className={styles.infoItem}>
+                <MdLocationOn className={styles.infoIcon} />
+                <div>
+                  <label>Địa chỉ</label>
+                  <span>{order.shipping_address?.address || "N/A"}</span>
+                </div>
               </div>
             </div>
           </div>
-
-          {/* Shipping Address */}
-          {order.shipping_address && (
-            <div className={styles.section}>
-              <h3>Địa chỉ giao hàng</h3>
-              <p className={styles.address}>
-                {order.shipping_address.address}, {order.shipping_address.ward},{' '}
-                {order.shipping_address.district}, {order.shipping_address.city}
-              </p>
-            </div>
-          )}
 
           {/* Order Items */}
-          <div className={styles.section}>
-            <h3>Sản phẩm</h3>
+          <div className={styles.detailSection}>
+            <h3 className={styles.sectionTitle}>Sản phẩm ({order.order_items?.length || 0})</h3>
             <div className={styles.orderItems}>
-              {order.order_items && order.order_items.length > 0 ? (
-                order.order_items.map((item, index) => (
-                  <div key={index} className={styles.orderItem}>
-                    <div className={styles.itemInfo}>
-                      <span className={styles.itemName}>
-                        {item.product?.name_product || `Product #${item.product_id}`}
-                      </span>
-                      <span className={styles.itemQuantity}>x{item.quantity}</span>
+              {order.order_items?.map((item) => (
+                <div key={item.id} className={styles.orderItem}>
+                  <div className={styles.itemImage}>
+                    {item.product?.image_product ? (
+                      <Image
+                        src={item.product.image_product}
+                        alt={item.product.name_product}
+                        width={60}
+                        height={60}
+                        style={{ objectFit: "cover", borderRadius: "8px" }}
+                      />
+                    ) : (
+                      <div className={styles.imagePlaceholder}>No Image</div>
+                    )}
+                  </div>
+                  <div className={styles.itemInfo}>
+                    <div className={styles.itemName}>
+                      {item.product?.name_product || `Sản phẩm #${item.product_id}`}
                     </div>
-                    <div className={styles.itemPrice}>
-                      {new Intl.NumberFormat('vi-VN', {
-                        style: 'currency',
-                        currency: 'VND'
-                      }).format(item.price * item.quantity)}
+                    <div className={styles.itemMeta}>
+                      <span>SL: {item.quantity}</span>
+                      <span>Đơn giá: {formatPrice(item.price)}</span>
                     </div>
                   </div>
-                ))
-              ) : (
-                <p>Không có sản phẩm</p>
-              )}
-            </div>
-          </div>
-
-          {/* Order Summary */}
-          <div className={styles.section}>
-            <h3>Tổng kết</h3>
-            <div className={styles.summary}>
-              <div className={styles.summaryRow}>
-                <span>Tạm tính:</span>
-                <span>
-                  {new Intl.NumberFormat('vi-VN', {
-                    style: 'currency',
-                    currency: 'VND'
-                  }).format(order.subtotal || order.total_amount)}
-                </span>
-              </div>
-              <div className={styles.summaryRow}>
-                <span>Phí vận chuyển:</span>
-                <span>
-                  {new Intl.NumberFormat('vi-VN', {
-                    style: 'currency',
-                    currency: 'VND'
-                  }).format(order.shipping_fee || 0)}
-                </span>
-              </div>
-              {order.discount && order.discount > 0 && (
-                <div className={styles.summaryRow}>
-                  <span>Giảm giá:</span>
-                  <span className={styles.discount}>
-                    -{new Intl.NumberFormat('vi-VN', {
-                      style: 'currency',
-                      currency: 'VND'
-                    }).format(order.discount)}
-                  </span>
+                  <div className={styles.itemTotal}>
+                    {formatPrice(item.price * item.quantity)}
+                  </div>
                 </div>
-              )}
-              <div className={`${styles.summaryRow} ${styles.total}`}>
-                <span>Tổng cộng:</span>
-                <span>
-                  {new Intl.NumberFormat('vi-VN', {
-                    style: 'currency',
-                    currency: 'VND'
-                  }).format(order.total_amount)}
-                </span>
-              </div>
+              ))}
             </div>
           </div>
 
-          {/* Notes */}
-          {order.notes && (
-            <div className={styles.section}>
-              <h3>Ghi chú</h3>
-              <p className={styles.notes}>{order.notes}</p>
+          {/* Order Note */}
+          {order.note && (
+            <div className={styles.detailSection}>
+              <h3 className={styles.sectionTitle}>
+                <MdNotes /> Ghi chú
+              </h3>
+              <p className={styles.orderNote}>{order.note}</p>
             </div>
           )}
+
+          {/* Order Summary */}
+          <div className={styles.detailSection}>
+            <h3 className={styles.sectionTitle}>Tổng đơn hàng</h3>
+            <div className={styles.orderSummary}>
+              <div className={styles.summaryRow}>
+                <span>Ngày đặt hàng:</span>
+                <span>{formatDate(order.created_at)}</span>
+              </div>
+              <div className={styles.summaryRow}>
+                <span>Cập nhật lần cuối:</span>
+                <span>{formatDate(order.updated_at)}</span>
+              </div>
+              <div className={`${styles.summaryRow} ${styles.totalRow}`}>
+                <span>Tổng tiền:</span>
+                <span className={styles.totalAmount}>{formatPrice(order.total_amount)}</span>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div className={styles.modalFooter}>
-          <button onClick={onClose} className={styles.closeBtn}>
-            Đóng
-          </button>
-        </div>
+        {/* Modal Footer */}
+        {nextStatuses.length > 0 && (
+          <div className={styles.modalFooter}>
+            <div className={styles.updateStatusSection}>
+              <span>Cập nhật trạng thái:</span>
+              {nextStatuses.map((status) => (
+                <button
+                  key={status}
+                  className={`${styles.statusBtn} ${
+                    status === OrderStatus.CANCELLED
+                      ? styles.cancelStatusBtn
+                      : styles.nextStatusBtn
+                  }`}
+                  onClick={() => onUpdateStatus(status)}
+                >
+                  {getStatusConfig(status).label}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1,5 +1,7 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
+import { useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 import Breadcrumb from '@/components/breadcrumb/breadcrumb';
 import BrandSlider from './BrandSlider';
 import ProductList from './ProductList';
@@ -19,6 +21,9 @@ interface ApiResponse<T> {
   message?: string;
 }
 const ProductsPages = () => {
+  const searchParams = useSearchParams();
+  const searchQuery = searchParams.get('search') || '';
+  
   const [brands, setBrands] = useState<Brand[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
@@ -38,10 +43,14 @@ const ProductsPages = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
+        const productParams: Record<string, unknown> = {};
+        if (searchQuery) {
+          productParams.search = searchQuery;
+        }
         
         const [brandsRes, productsRes, categoriesRes, colorsRes, galleriesRes] = await Promise.all([
           brandApi.getAll(),
-          productApi.getAll(),
+          productApi.getAll(productParams),
           categoryApi.getAll(),
           colorApi.getAll(),
           productGalleryApi.getAll(),
@@ -116,12 +125,11 @@ const ProductsPages = () => {
     };
 
     fetchData();
-  }, []);
+  }, [searchQuery]);
 
   const applyFilters = useCallback(async () => {
     let filtered = [...products];
 
-    // fillter brand 
     if (selectedBrand) {
       const brandCategories = categories.filter(cat => cat.brand?.id === selectedBrand);
       const brandCategoryIds = brandCategories.map(cat => cat.id);
@@ -135,7 +143,6 @@ const ProductsPages = () => {
       setCategoryName('Sản phẩm');
     }
 
-    // filllter category
     if (selectedCategories.length > 0) {
       filtered = filtered.filter(product => 
         product.category && selectedCategories.includes(product.category.id)
@@ -250,7 +257,37 @@ const ProductsPages = () => {
 
   return (
     <div className={styles.productContainer}>
-      <Breadcrumb items={[{ label: 'Trang chủ', href: '/' }, { label: 'Sản phẩm' }]} />
+      <Breadcrumb items={[
+        { label: 'Trang chủ', href: '/' }, 
+        { label: searchQuery ? `Tìm kiếm: "${searchQuery}"` : 'Sản phẩm' }
+      ]} />
+      {searchQuery && (
+        <div style={{ 
+          padding: '16px 20px', 
+          backgroundColor: '#fff5f3', 
+          border: '1px solid #ffe0db', 
+          borderRadius: '8px', 
+          marginBottom: '20px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between'
+        }}>
+          <p style={{ margin: 0, color: '#333' }}>
+            🔍 Kết quả tìm kiếm cho <strong>&quot;{searchQuery}&quot;</strong>: {filteredProducts.length} sản phẩm
+          </p>
+          <Link 
+            href="/products" 
+            style={{ 
+              color: '#ff6347', 
+              textDecoration: 'none',
+              fontSize: '14px',
+              fontWeight: 500
+            }}
+          >
+            Xóa bộ lọc
+          </Link>
+        </div>
+      )}
       {error && (
         <div style={{ 
           padding: '20px', 

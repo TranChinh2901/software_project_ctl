@@ -10,6 +10,7 @@ import { UpdateProfileDto } from "@/types/auth";
 import { GenderType } from "@/enums";
 import { authApi } from "@/lib/api";
 import Breadcrumb from "../breadcrumb/breadcrumb";
+import UserOrders from "@/components/user/profile/UserOrders";
 
 const SIDEBAR_ITEMS = [
   { id: "profile", label: "Thông tin tài khoản" },
@@ -412,22 +413,7 @@ export default function Profile() {
             )}
 
             {/* Orders Tab */}
-            {activeTab === "orders" && (
-              <>
-                <div className={styles.contentHeader}>
-                  <h2 className={styles.contentTitle}>ĐỌN HÀNG CỦA BẠN</h2>
-                </div>
-                
-                <div className={styles.contentBody}>
-                  <div className={styles.emptyState}>
-                    <p>🛒 Bạn chưa có đơn hàng nào</p>
-                    <Link href="/products" className={styles.shopButton}>
-                      Mua sắm ngay
-                    </Link>
-                  </div>
-                </div>
-              </>
-            )}
+            {activeTab === "orders" && <UserOrders />}
 
             {/* Addresses Tab */}
             {activeTab === "addresses" && (

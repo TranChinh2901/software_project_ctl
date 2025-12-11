@@ -19,9 +19,11 @@ import { useCart } from '@/contexts/CartContext'
 import { useWishlist } from '@/contexts/WishlistContext'
 import { RoleType } from '@/enums'
 import toast from 'react-hot-toast'
+import SearchDropdown from './SearchDropdown'
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false)
+  const [mobileSearchQuery, setMobileSearchQuery] = useState('')
   const router = useRouter()
   const { user, isAuthenticated, logout } = useAuth()
   const { getCartCount } = useCart()
@@ -43,6 +45,15 @@ export default function Header() {
 
   function closeMobileMenu() {
     setMobileMenuOpen(false)
+  }
+
+  function handleMobileSearch(e: React.FormEvent) {
+    e.preventDefault()
+    if (mobileSearchQuery.trim()) {
+      router.push(`/products?search=${encodeURIComponent(mobileSearchQuery.trim())}`)
+      closeMobileMenu()
+      setMobileSearchQuery('')
+    }
   }
   return (
     <div className={styles.headerRoot}>
@@ -77,15 +88,8 @@ export default function Header() {
               />
             </Link>
           </div>
-          <div className={styles.searchBox}>
-            <input
-              type="text"
-              placeholder="Tìm kiếm..."
-              className={styles.searchInput}
-            />
-            <button className={styles.searchBtn}>
-              <FaSearch />
-            </button>
+          <div className={styles.desktopSearchWrapper}>
+            <SearchDropdown />
           </div>
           <button 
             className={`${styles.mobileMenuBtn} ${mobileMenuOpen ? styles.open : ''}`}
@@ -148,7 +152,7 @@ export default function Header() {
             <li><Link href="/blogs">Tin tức</Link></li>
             <li><Link href="/contact">Liên hệ</Link></li>
             <li><Link href="/store-system">Hệ thống cửa hàng</Link></li>
-            <li><Link href="/kiem-tra">Kiểm tra đơn hàng</Link></li>
+            <li><Link href="/profile/orders">Kiểm tra đơn hàng</Link></li>
             <li><Link href="/chi-tiet">Chi tiết sản phẩm</Link></li>
           </ul>
         </nav>
@@ -199,16 +203,18 @@ export default function Header() {
             </div>
             <div className={styles.mobileSearchSection}>
               <h3>Tìm kiếm</h3>
-              <div className={styles.searchBox}>
+              <form onSubmit={handleMobileSearch} className={styles.searchBox}>
                 <input
                   type="text"
                   placeholder="Tìm kiếm sản phẩm..."
                   className={styles.searchInput}
+                  value={mobileSearchQuery}
+                  onChange={(e) => setMobileSearchQuery(e.target.value)}
                 />
-                <button className={styles.searchBtn}>
+                <button type="submit" className={styles.searchBtn}>
                   <FaSearch />
                 </button>
-              </div>
+              </form>
             </div>
 
             <div className={styles.mobileMenuSection}>
@@ -225,7 +231,7 @@ export default function Header() {
               <h3>Dịch vụ</h3>
               <ul className={styles.mobileMenuLinks}>
                 <li><Link href="/store-system" onClick={closeMobileMenu}>Hệ thống cửa hàng</Link></li>
-                <li><Link href="/kiem-tra" onClick={closeMobileMenu}>Kiểm tra đơn hàng</Link></li>
+                <li><Link href="/profile/orders" onClick={closeMobileMenu}>Kiểm tra đơn hàng</Link></li>
                 <li>
                   <Link href="/wishlist" onClick={closeMobileMenu} className={styles.iconLink}>
                     <FaRegHeart className={styles.mobileIcon} />

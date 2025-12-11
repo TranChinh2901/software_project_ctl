@@ -518,6 +518,12 @@
   }
 }
 
+/* Desktop Search Wrapper */
+.desktopSearchWrapper {
+  flex: 2;
+  display: block;
+}
+
 /* Mobile - hiện hamburger menu */
 @media (max-width: 768px) {
   /* Hiện mobile menu button */
@@ -536,6 +542,11 @@
   
   .searchBox {
     display: none;
+  }
+  
+  /* Ẩn desktop search wrapper trên mobile */
+  .desktopSearchWrapper {
+    display: none !important;
   }
 
   .headerBottomContainer {

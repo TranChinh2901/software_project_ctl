@@ -1,4 +1,4 @@
-import { OrderStatus, PaymentMethod } from '@/enums';
+import { OrderStatus, PaymentMethod, PaymentStatus } from '@/enums';
 
 import { Product } from '../product';
 import { User } from '../user';
@@ -8,7 +8,6 @@ import { User } from '../user';
 // ====================================
 
 export interface Order {
-  payment_status(payment_status: any): import("react").ReactNode;
   id: number;
   user_id: number;
   user?: User;
@@ -19,8 +18,10 @@ export interface Order {
   discount?: number;
   status: OrderStatus;
   payment_method: PaymentMethod;
+  payment_status: PaymentStatus;
   shipping_address: ShippingAddress;
   notes?: string;
+  cancel_reason?: string;
   created_at: string;
   updated_at: string;
 }

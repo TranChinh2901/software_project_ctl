@@ -16,7 +16,7 @@ const ProductCard = ({ product, gallery }: ProductCardProps) => {
   const { isInWishlist, toggleWishlist } = useWishlist();
   const isWishlisted = isInWishlist(product.id);
   
-  const colorImages = gallery?.slice(0, 3) || [];
+  const colorImages = gallery?.slice(0, 4) || [];
   
   let discountPercent = 0;
   if (product.discount && product.discount > 0) {
@@ -32,14 +32,12 @@ const ProductCard = ({ product, gallery }: ProductCardProps) => {
     e.preventDefault();
     e.stopPropagation();
     toggleWishlist(product);
-    
     if (isWishlisted) {
       toast.success('Đã xóa khỏi danh sách yêu thích');
     } else {
       toast.success('Đã thêm vào danh sách yêu thích');
     }
   };
-
   return (
     <div className={styles.productCard}>
       <div className={styles.productImageContainer}>

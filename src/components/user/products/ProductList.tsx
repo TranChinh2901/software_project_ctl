@@ -33,11 +33,9 @@ const ProductList = ({
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentProducts = products.slice(startIndex, endIndex);
-
   const getPageNumbers = () => {
     const pages: (number | string)[] = [];
     const maxVisiblePages = 5;
-
     if (totalPages <= maxVisiblePages) {
       for (let i = 1; i <= totalPages; i++) {
         pages.push(i);
@@ -48,7 +46,6 @@ const ProductList = ({
       if (currentPage > 3) {
         pages.push('...');
       }
-
       const start = Math.max(2, currentPage - 1);
       const end = Math.min(totalPages - 1, currentPage + 1);
 
@@ -57,16 +54,13 @@ const ProductList = ({
           pages.push(i);
         }
       }
-
       if (currentPage < totalPages - 2) {
         pages.push('...');
       }
-
       if (!pages.includes(totalPages)) {
         pages.push(totalPages);
       }
     }
-
     return pages;
   };
 
@@ -76,7 +70,6 @@ const ProductList = ({
       window.scrollTo({ top: 200, behavior: 'smooth' });
     }
   };
-
   return (
     <div className={styles.productListContainer}>
       <div className={styles.productListHeader}>

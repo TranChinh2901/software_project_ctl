@@ -260,6 +260,11 @@ export const orderApi = {
     return apiClient.get(`/orders/${id}`);
   },
   
+  // Lấy đơn hàng của user đang đăng nhập
+  getUserOrders: () => {
+    return apiClient.get('/orders/user/orders');
+  },
+  
   create: (data: Record<string, unknown>) => {
     return apiClient.post('/orders', data);
   },
@@ -269,7 +274,7 @@ export const orderApi = {
   },
   
   cancel: (id: number, reason: string) => {
-    return apiClient.put(`/orders/${id}/cancel`, { cancel_reason: reason });
+    return apiClient.post(`/orders/${id}/cancel`, { cancel_reason: reason });
   },
   
   delete: (id: number) => {
@@ -373,5 +378,54 @@ export const productVariantApi = {
   
   delete: (id: number) => {
     return apiClient.delete(`/product-variants/${id}`);
+  },
+};
+
+// ====================================
+// MOMO PAYMENT API
+// ====================================
+export interface CreateMomoPaymentRequest {
+  order_id: number;
+  amount: number;
+  orderInfo?: string;
+}
+
+export interface MomoPaymentResponse {
+  partnerCode: string;
+  orderId: string;
+  requestId: string;
+  amount: number;
+  responseTime: number;
+  message: string;
+  resultCode: number;
+  payUrl: string;
+  deeplink?: string;
+  qrCodeUrl?: string;
+}
+
+export interface VerifyPaymentRequest {
+  orderId: string;
+  resultCode: number;
+  transId?: string;
+  amount?: number;
+  extraData?: string;
+}
+
+export const momoApi = {
+  createPayment: async (data: CreateMomoPaymentRequest): Promise<MomoPaymentResponse> => {
+    const response = await apiClient.post('/momo/create-payment', data) as { data: MomoPaymentResponse };
+    // Response format: { success: true, message: '...', data: { payUrl, resultCode, ... } }
+    return response.data;
+  },
+  
+  checkStatus: async (orderId: string) => {
+    const response = await apiClient.get(`/momo/check-status/${orderId}`);
+    return response;
+  },
+
+  // Verify và cập nhật payment status khi redirect từ MoMo
+  verifyPayment: async (data: VerifyPaymentRequest) => {
+    const response = await apiClient.post('/momo/verify-payment', data);
+    return response;
   },
 };
