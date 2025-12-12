@@ -35,7 +35,6 @@ export default function ReviewDetailModal({ review, onClose, onApprove, onDelete
         </div>
 
         <div className={styles.modalBody}>
-          {/* User Info */}
           <div className={styles.section}>
             <h3>Thông tin người đánh giá</h3>
             <div className={styles.userDetail}>
@@ -51,7 +50,6 @@ export default function ReviewDetailModal({ review, onClose, onApprove, onDelete
             </div>
           </div>
 
-          {/* Product Info */}
           <div className={styles.section}>
             <h3>Sản phẩm</h3>
             <p className={styles.productName}>
@@ -59,20 +57,17 @@ export default function ReviewDetailModal({ review, onClose, onApprove, onDelete
             </p>
           </div>
 
-          {/* Rating */}
           <div className={styles.section}>
             <h3>Đánh giá</h3>
             {renderStars(review.rating)}
             <p className={styles.ratingText}>{review.rating}/5 sao</p>
           </div>
 
-          {/* Comment */}
           <div className={styles.section}>
             <h3>Nội dung</h3>
             <p className={styles.commentDetail}>{review.comment}</p>
           </div>
 
-          {/* Status */}
           <div className={styles.section}>
             <h3>Trạng thái</h3>
             {review.is_approved ? (
@@ -86,7 +81,6 @@ export default function ReviewDetailModal({ review, onClose, onApprove, onDelete
             )}
           </div>
 
-          {/* Dates */}
           <div className={styles.section}>
             <h3>Thời gian</h3>
             <div className={styles.dateInfo}>

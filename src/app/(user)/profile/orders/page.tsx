@@ -144,9 +144,6 @@ export default function UserOrdersPage() {
         { label: "Đơn hàng của tôi" }
       ]} />
 
-      {/* <h1 className={styles.pageTitle}>Đơn hàng của tôi</h1> */}
-
-      {/* Status Tabs */}
       <div className={styles.statusTabs}>
         {statusTabs.map((tab) => (
           <button
@@ -163,8 +160,6 @@ export default function UserOrdersPage() {
           </button>
         ))}
       </div>
-
-      {/* Orders List */}
       <div className={styles.ordersList}>
         {loading ? (
           <div className={styles.loading}>
@@ -187,7 +182,6 @@ export default function UserOrdersPage() {
 
             return (
               <div key={order.id} className={styles.orderCard}>
-                {/* Order Header */}
                 <div className={styles.orderHeader}>
                   <div className={styles.orderInfo}>
                     <span className={styles.orderId}>Đơn hàng #{order.id}</span>
@@ -198,7 +192,6 @@ export default function UserOrdersPage() {
                   </span>
                 </div>
 
-                {/* Order Items */}
                 <div className={styles.orderItems}>
                   {order.order_items?.slice(0, 2).map((item) => (
                     <div key={item.id} className={styles.orderItem}>
@@ -234,8 +227,6 @@ export default function UserOrdersPage() {
                     </div>
                   )}
                 </div>
-
-                {/* Order Footer */}
                 <div className={styles.orderFooter}>
                   <div className={styles.orderTotal}>
                     <span>Tổng tiền:</span>
@@ -263,8 +254,6 @@ export default function UserOrdersPage() {
                     )}
                   </div>
                 </div>
-
-                {/* Cancel Reason */}
                 {order.status === OrderStatus.CANCELLED && order.cancel_reason && (
                   <div className={styles.cancelReason}>
                     <strong>Lý do hủy:</strong> {order.cancel_reason}

@@ -115,7 +115,6 @@ export default function OrderDetailModal({
         </div>
 
         <div className={styles.modalBody}>
-          {/* Order Status */}
           <div className={styles.detailSection}>
             <h3 className={styles.sectionTitle}>Trạng thái đơn hàng</h3>
             <div className={styles.statusRow}>
@@ -134,7 +133,6 @@ export default function OrderDetailModal({
             )}
           </div>
 
-          {/* Customer Info */}
           <div className={styles.detailSection}>
             <h3 className={styles.sectionTitle}>Thông tin khách hàng</h3>
             <div className={styles.infoGrid}>
@@ -169,7 +167,6 @@ export default function OrderDetailModal({
             </div>
           </div>
 
-          {/* Order Items */}
           <div className={styles.detailSection}>
             <h3 className={styles.sectionTitle}>Sản phẩm ({order.order_items?.length || 0})</h3>
             <div className={styles.orderItems}>
@@ -205,7 +202,6 @@ export default function OrderDetailModal({
             </div>
           </div>
 
-          {/* Order Note */}
           {order.note && (
             <div className={styles.detailSection}>
               <h3 className={styles.sectionTitle}>
@@ -215,7 +211,6 @@ export default function OrderDetailModal({
             </div>
           )}
 
-          {/* Order Summary */}
           <div className={styles.detailSection}>
             <h3 className={styles.sectionTitle}>Tổng đơn hàng</h3>
             <div className={styles.orderSummary}>
@@ -235,7 +230,6 @@ export default function OrderDetailModal({
           </div>
         </div>
 
-        {/* Modal Footer */}
         {nextStatuses.length > 0 && (
           <div className={styles.modalFooter}>
             <div className={styles.updateStatusSection}>

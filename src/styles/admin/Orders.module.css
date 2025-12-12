@@ -29,27 +29,27 @@
 }
 
 .iconTotal {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #6b7280;
   color: white;
 }
 
 .iconPending {
-  background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+  background: #f59e0b;
   color: white;
 }
 
 .iconShipping {
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  background: #3b82f6;
   color: white;
 }
 
 .iconCompleted {
-  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+  background: #10b981;
   color: white;
 }
 
 .iconCancelled {
-  background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+  background: #ef4444;
   color: white;
 }
 
@@ -341,21 +341,21 @@
 }
 
 .viewBtn {
-  background: #e0e7ff;
-  color: #4f46e5;
+  background: #f3f4f6;
+  color: #6b7280;
 }
 
 .viewBtn:hover {
-  background: #c7d2fe;
+  background: #e5e7eb;
 }
 
 .deleteBtn {
-  background: #fee2e2;
-  color: #dc2626;
+  background: #f3f4f6;
+  color: #6b7280;
 }
 
 .deleteBtn:hover {
-  background: #fecaca;
+  background: #fee2e2;
 }
 
 /* Loading & Empty State */

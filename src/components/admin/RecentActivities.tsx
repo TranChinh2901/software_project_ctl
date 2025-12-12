@@ -34,7 +34,6 @@ export default function RecentActivities() {
   const fetchRecentActivities = async () => {
     try {
       setLoading(true);
-      // lấy râ 5 sản phẩm mới nhất
       const productsRes = await productApi.getAll({
         sort: 'newest',
         limit: 5

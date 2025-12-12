@@ -20,10 +20,14 @@ import toast from 'react-hot-toast';
 
 interface Order {
   id: number;
-  order_code: string;
-  total_price: number;
+  total_amount: number;
   status: string;
+  payment_status: string;
   created_at: string;
+  user?: {
+    fullname?: string;
+    email?: string;
+  };
 }
 
 export default function AdminDashboard() {
@@ -43,22 +47,27 @@ export default function AdminDashboard() {
       const [productsResponse, usersResponse, ordersResponse] = await Promise.all([
         productApi.getAll(),
         userApi.getAll(),
-        orderApi.getAll()
+        orderApi.getAll({ limit: 1000 })
       ]);
       
-      const productsData = productsResponse.data?.products || productsResponse.data || [];
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const productsRes = (productsResponse as any)?.data;
+      const productsData = productsRes?.products || productsRes || [];
       const products = Array.isArray(productsData) ? productsData : [];
-      
-      const usersData = usersResponse.data?.users || usersResponse.data || [];
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const usersRes = (usersResponse as any)?.data;
+      const usersData = usersRes?.users || usersRes || [];
       const users = Array.isArray(usersData) ? usersData : [];
-      
-      const ordersData = ordersResponse.data?.orders || ordersResponse.data || [];
-      const orders = Array.isArray(ordersData) ? ordersData : [];
-      
-      const totalRevenue = orders.reduce((sum: number, order: { total_price: number }) => {
-        return sum + (order.total_price || 0);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const ordersRes = (ordersResponse as any)?.data;
+      const ordersData = ordersRes?.data || ordersRes?.orders || ordersRes || [];
+      const orders: Order[] = Array.isArray(ordersData) ? ordersData : [];
+      const totalRevenue = orders.reduce((sum: number, order: Order) => {
+        if (order.payment_status === 'paid' || order.status === 'completed') {
+          return sum + (Number(order.total_amount) || 0);
+        }
+        return sum;
       }, 0);
-      
       const sortedOrders = [...orders].sort((a: Order, b: Order) => {
         return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
       });
@@ -214,11 +223,11 @@ export default function AdminDashboard() {
                       <MdShoppingCart />
                     </div>
                     <div className={styles.orderInfo}>
-                      <div className={styles.orderTitle}>{order.order_code}</div>
+                      <div className={styles.orderTitle}>Đơn hàng #{order.id}</div>
                       <div className={styles.orderDate}>{getTimeAgo(order.created_at)}</div>
                     </div>
                     <div className={styles.orderAmount}>
-                      {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(order.total_price)}
+                      {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(order.total_amount) || 0)}
                     </div>
                     <div className={`${styles.orderStatus} ${getStatusClass(order.status)}`}>
                       {getStatusLabel(order.status)}

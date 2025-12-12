@@ -86,7 +86,6 @@ export default function Profile() {
     }
   };
 
-  // Handle password change
   const handleChangePassword = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -137,11 +136,8 @@ export default function Profile() {
   return (
     <div className={styles.profilePage}>
       <div className={styles.container}>
-        {/* Breadcrumb */}
-      
     <Breadcrumb items={[{ label: "Trang chủ", href: "/" }, { label: "Hồ sơ" }]} />
         <div className={styles.profileLayout}>
-          {/* Sidebar */}
           <div className={styles.sidebar}>
             <div className={styles.sidebarHeader}>
               <h2 className={styles.sidebarTitle}>TRANG TÀI KHOẢN</h2>
@@ -167,9 +163,7 @@ export default function Profile() {
             </nav>
           </div>
 
-          {/* Main Content */}
           <div className={styles.mainContent}>
-            {/* Profile Tab */}
             {activeTab === "profile" && (
               <>
                 <div className={styles.contentHeader}>
@@ -178,7 +172,6 @@ export default function Profile() {
                 
                 <div className={styles.contentBody}>
                   {!isEditing ? (
-                    // View Mode
                     <>
                       {user ? (
                         <div className={styles.profileInfo}>
@@ -234,7 +227,6 @@ export default function Profile() {
                       </div>
                     </>
                   ) : (
-                    // Edit Mode
                     <form onSubmit={handleUpdateProfile} className={styles.editForm}>
                       <div className={styles.formGrid}>
                         <div className={styles.formGroup}>

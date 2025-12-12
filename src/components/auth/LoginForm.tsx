@@ -36,9 +36,7 @@ export default function LoginForm() {
         router.push('/');
       }
     } catch (error: unknown) {
-    //   console.error('Login error:', error);
       if (error && typeof error === 'object' && 'response' in error) {
-        // const err = error as { response?: { data?: { message?: string } } };
         toast.error( "Đăng nhập thất bại");
       } else {
         toast.error("Đăng nhập thất bại");

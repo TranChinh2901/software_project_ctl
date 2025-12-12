@@ -127,7 +127,6 @@ export default function Reviews() {
 
   return (
     <PageContainer title="Quản lý đánh giá">
-      {/* Stats Cards */}
       <div className={styles.statsGrid}>
         <Card className={styles.statCard}>
           <div className={styles.statContent}>
@@ -178,7 +177,6 @@ export default function Reviews() {
         </Card>
       </div>
 
-      {/* Filters */}
       <Card>
         <div className={styles.filterSection}>
           <div className={styles.filterGroup}>
@@ -225,8 +223,6 @@ export default function Reviews() {
           </Button>
         </div>
       </Card>
-
-      {/* Reviews List */}
       <div className={styles.reviewsList}>
         {reviews.length === 0 ? (
           <Card>
@@ -298,7 +294,6 @@ export default function Reviews() {
         )}
       </div>
 
-      {/* Detail Modal */}
       {detailModalOpen && selectedReview && (
         <ReviewDetailModal
           review={selectedReview}

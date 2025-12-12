@@ -15,7 +15,7 @@
   width: 40px;
   height: 40px;
   border: 3px solid #f0f0f0;
-  border-top-color: #a855f7;
+  border-top-color: #ff6347;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -48,7 +48,7 @@
 .shopButton {
   display: inline-block;
   padding: 0.75rem 1.5rem;
-  background: linear-gradient(135deg, #a855f7, #7c3aed);
+  background: #ff6347;
   color: white;
   text-decoration: none;
   border-radius: 8px;
@@ -217,7 +217,7 @@
 
 .itemPrice {
   font-weight: 600;
-  color: #a855f7;
+  color: #ff6347;
 }
 
 .moreItems {
@@ -253,7 +253,7 @@
 }
 
 .orderTotal strong {
-  color: #a855f7;
+  color: #ff6347;
   font-size: 1.1rem;
 }
 

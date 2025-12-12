@@ -89,7 +89,6 @@ export default function ProductModal({
       setImageFile(null);
       setErrors({});
       
-      // Load gallery images for this product
       loadGalleryImages(product.id);
     } else {
       setFormData({
@@ -284,7 +283,6 @@ export default function ProductModal({
       }
       
       if (formData.meta_description) {
-        // Don't trim HTML content, just clean empty tags
         const cleanedHtml = formData.meta_description.replace(/<p><\/p>/g, '');
         if (cleanedHtml && cleanedHtml !== '<p></p>') {
           formDataToSend.append('meta_description', cleanedHtml);
@@ -318,7 +316,6 @@ export default function ProductModal({
         toast.success('Thêm sản phẩm thành công!');
       }
 
-      // Upload gallery images if any
       if (galleryFiles.length > 0 && productId) {
         await uploadGalleryImages(productId);
       }
@@ -344,7 +341,6 @@ export default function ProductModal({
           </button>
         </div>
 
-        {/* Tabs */}
         <div className={styles.tabs}>
           <button
             type="button"
@@ -367,9 +363,7 @@ export default function ProductModal({
           {activeTab === 'info' && (
           <div className={styles.formBody}>
             <div className={styles.mainContent}>
-              {/* Left Side - Images */}
               <div className={styles.imagesColumn}>
-                {/* Main Product Image */}
                 <div className={styles.imageSection}>
                   <label className={styles.label}>
                     <MdImage /> Hình ảnh chính
@@ -403,14 +397,11 @@ export default function ProductModal({
                     style={{ display: 'none' }}
                   />
                 </div>
-
-                {/* Gallery Section */}
                 <div className={styles.gallerySection}>
                   <label className={styles.label}>
                     <MdCollections /> Thư viện ảnh
                   </label>
                   <div className={styles.galleryGrid}>
-                    {/* Existing gallery images (if editing) */}
                     {product && galleryImages.map((image) => (
                       <div key={image.id} className={styles.galleryItem}>
                         <img src={image.image_url} alt="Gallery" />
@@ -424,7 +415,6 @@ export default function ProductModal({
                       </div>
                     ))}
 
-                    {/* New gallery previews */}
                     {galleryPreviews.map((preview, index) => (
                       <div key={`preview-${index}`} className={styles.galleryItem}>
                         <img src={preview} alt={`Preview ${index + 1}`} />
@@ -439,7 +429,6 @@ export default function ProductModal({
                       </div>
                     ))}
 
-                    {/* Add button */}
                     <div
                       className={styles.galleryAddBtn}
                       onClick={() => galleryInputRef.current?.click()}
@@ -462,9 +451,7 @@ export default function ProductModal({
                 </div>
               </div>
 
-              {/* Right Side - Product Information */}
               <div className={styles.fieldsSection}>
-              {/* Product Name */}
               <div className={styles.formGroup}>
                 <label className={styles.label}>
                   <MdShoppingBag /> Tên sản phẩm *
@@ -482,7 +469,6 @@ export default function ProductModal({
                 )}
               </div>
 
-              {/* Category */}
               <div className={styles.formGroup}>
                 <label className={styles.label}>
                   <MdCategory /> Danh mục *
@@ -504,8 +490,6 @@ export default function ProductModal({
                   <span className={styles.error}>{errors.category_id}</span>
                 )}
               </div>
-
-              {/* Price Fields */}
               <div className={styles.formRow}>
                 <div className={styles.formGroup}>
                   <label className={styles.label}>
@@ -544,7 +528,6 @@ export default function ProductModal({
                 </div>
               </div>
 
-              {/* Stock & Discount */}
               <div className={styles.formRow}>
                 <div className={styles.formGroup}>
                   <label className={styles.label}>
@@ -578,7 +561,6 @@ export default function ProductModal({
                 </div>
               </div>
 
-              {/* Status */}
               <div className={styles.formGroup}>
                 <label className={styles.label}>Trạng thái</label>
                 <select
@@ -593,7 +575,6 @@ export default function ProductModal({
                 </select>
               </div>
 
-              {/* Small Description */}
               <div className={styles.formGroup}>
                 <label className={styles.label}>
                   <MdDescription /> Mô tả ngắn
@@ -608,7 +589,6 @@ export default function ProductModal({
                 />
               </div>
 
-              {/* Meta Description */}
               <div className={styles.formGroup}>
                 <label className={styles.label}>
                   <MdDescription /> Mô tả chi tiết

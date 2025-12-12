@@ -56,7 +56,6 @@ const WishlistCard = ({ product, onRemove }: { product: Product; onRemove: () =>
           </span>
         )}
         
-        {/* Nút X để xóa khỏi wishlist */}
         <button 
           className={`${styles.wishlistBtn} ${styles.wishlisted}`}
           onClick={handleRemoveClick}
@@ -118,7 +117,6 @@ const Wishlist = () => {
       <div className={wishlistStyles.wishlistContainer}>
            <Breadcrumb items={[{ label: 'Trang chủ', href: '/' }, { label: 'Yêu thích' }]} />
       
-        {/* <h1 className={wishlistStyles.title}>Danh sách yêu thích</h1> */}
         <div className={wishlistStyles.emptyState}>
           <div className={wishlistStyles.emptyIcon}>
             <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">

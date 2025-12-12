@@ -118,7 +118,6 @@ export default function Categories() {
     (c) => c.image_category
   ).length;
 
-  // Get unique brands count
   const uniqueBrands = new Set(
     categories.filter((c) => c.brand).map((c) => c.brand!.id)
   ).size;

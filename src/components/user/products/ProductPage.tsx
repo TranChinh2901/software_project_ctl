@@ -180,7 +180,6 @@ const ProductsPages = () => {
 
       filtered = filtered.filter(product => productIdsToKeep.includes(product.id));
     }
-    // Sort
     switch (sortBy) {
       case 'price_asc':
         filtered.sort((a, b) => a.price - b.price);

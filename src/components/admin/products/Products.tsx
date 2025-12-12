@@ -475,7 +475,6 @@ export default function Products() {
                       {(() => {
                         const statusValue = product.status as string;
                         
-                        // Determine display based on stock first, then status
                         let displayText = "Đang bán";
                         let statusClass = styles.statusActive;
                         
@@ -534,7 +533,6 @@ export default function Products() {
           )}
         </div>
         
-        {/* Pagination */}
         {!loading && products.length > 0 && (
           <div className={styles.pagination}>
             <div className={styles.paginationInfo}>

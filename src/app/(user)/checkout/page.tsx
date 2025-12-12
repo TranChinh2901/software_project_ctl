@@ -39,7 +39,6 @@ export default function CheckoutPage() {
     note: ''
   });
 
-  // Redirect nếu chưa đăng nhập
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
       toast.error('Vui lòng đăng nhập để thanh toán');
@@ -47,7 +46,6 @@ export default function CheckoutPage() {
     }
   }, [authLoading, isAuthenticated, router]);
 
-  // Pre-fill thông tin user nếu có
   useEffect(() => {
     if (user) {
       setShippingInfo(prev => ({
@@ -63,7 +61,7 @@ export default function CheckoutPage() {
   };
 
   const subtotal = getCartTotal();
-  const shippingFee = 0; // Miễn phí
+  const shippingFee = 0; 
   const total = subtotal + shippingFee;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -112,7 +110,6 @@ export default function CheckoutPage() {
     setIsLoading(true);
 
     try {
-      // Tạo order với shipping address inline
       const orderData = {
         user_id: user?.id,
         items: cart.map(item => ({
@@ -141,9 +138,7 @@ export default function CheckoutPage() {
         throw new Error('Không thể tạo đơn hàng');
       }
 
-      // Xử lý theo phương thức thanh toán
       if (paymentMethod === PaymentMethod.MOMO) {
-        // Tạo thanh toán MoMo
         const momoResponse = await momoApi.createPayment({
           order_id: orderId,
           amount: total,
@@ -153,18 +148,15 @@ export default function CheckoutPage() {
         console.log('MoMo Response:', momoResponse);
 
         if (momoResponse && momoResponse.resultCode === 0 && momoResponse.payUrl) {
-          // Lưu orderId vào localStorage để check sau
           localStorage.setItem('pending_order_id', orderId.toString());
           
-          // Redirect đến trang thanh toán MoMo
           toast.success('Đang chuyển đến trang thanh toán MoMo...');
           window.location.href = momoResponse.payUrl;
-          return; // Quan trọng: return để không chạy code phía dưới
+          return;
         } else {
           throw new Error(momoResponse?.message || 'Lỗi tạo thanh toán MoMo');
         }
       } else {
-        // COD - Thanh toán khi nhận hàng
         clearCart();
         toast.success('Đặt hàng thành công!');
         router.push(`/profile/orders/${orderId}`);
@@ -178,7 +170,6 @@ export default function CheckoutPage() {
     }
   };
 
-  // Loading state
   if (authLoading) {
     return (
       <div className={styles.checkoutContainer}>
@@ -189,8 +180,6 @@ export default function CheckoutPage() {
       </div>
     );
   }
-
-  // Empty cart
   if (cart.length === 0) {
     return (
       <div className={styles.checkoutContainer}>
@@ -218,9 +207,7 @@ export default function CheckoutPage() {
       <h1 className={styles.checkoutTitle}>Thanh toán</h1>
 
       <form onSubmit={handleSubmit} className={styles.checkoutLayout}>
-        {/* Left - Form */}
         <div className={styles.checkoutForm}>
-          {/* Shipping Info */}
           <div className={styles.formSection}>
             <h2 className={styles.sectionTitle}>Thông tin giao hàng</h2>
             <div className={styles.formGrid}>
@@ -260,7 +247,7 @@ export default function CheckoutPage() {
                   value={shippingInfo.city}
                   onChange={handleInputChange}
                   className={styles.formInput}
-                  placeholder="TP. Hồ Chí Minh"
+                  placeholder="TP. Đà Năngx"
                 />
               </div>
               <div className={styles.formGroup}>
@@ -273,7 +260,7 @@ export default function CheckoutPage() {
                   value={shippingInfo.district}
                   onChange={handleInputChange}
                   className={styles.formInput}
-                  placeholder="Quận 1"
+                  placeholder="Quận Thanh Khê"
                 />
               </div>
               <div className={styles.formGroup}>
@@ -284,7 +271,7 @@ export default function CheckoutPage() {
                   value={shippingInfo.ward}
                   onChange={handleInputChange}
                   className={styles.formInput}
-                  placeholder="Phường Bến Nghé"
+                  placeholder="Xã, Phường,...."
                 />
               </div>
               <div className={`${styles.formGroup} ${styles.formGroupFull}`}>
@@ -313,11 +300,9 @@ export default function CheckoutPage() {
             </div>
           </div>
 
-          {/* Payment Methods */}
           <div className={styles.formSection}>
             <h2 className={styles.sectionTitle}>Phương thức thanh toán</h2>
             <div className={styles.paymentMethods}>
-              {/* COD */}
               <label 
                 className={`${styles.paymentOption} ${paymentMethod === PaymentMethod.COD ? styles.active : ''}`}
               >
@@ -338,7 +323,6 @@ export default function CheckoutPage() {
                 </div>
               </label>
 
-              {/* MoMo */}
               <label 
                 className={`${styles.paymentOption} ${paymentMethod === PaymentMethod.MOMO ? styles.active : ''}`}
               >
@@ -359,7 +343,6 @@ export default function CheckoutPage() {
                 </div>
               </label>
 
-              {/* VNPay */}
               <label 
                 className={`${styles.paymentOption} ${paymentMethod === PaymentMethod.VNPAY ? styles.active : ''}`}
               >
@@ -383,7 +366,6 @@ export default function CheckoutPage() {
           </div>
         </div>
 
-        {/* Right - Order Summary */}
         <div className={styles.orderSummary}>
           <h2 className={styles.summaryTitle}>Đơn hàng của bạn</h2>
           
@@ -445,11 +427,11 @@ export default function CheckoutPage() {
                 Đang xử lý...
               </>
             ) : paymentMethod === PaymentMethod.MOMO ? (
-              '💳 Thanh toán với MoMo'
+              'Thanh toán với MoMo'
             ) : paymentMethod === PaymentMethod.VNPAY ? (
-              '💳 Thanh toán với VNPay'
+              ' Thanh toán với VNPay'
             ) : (
-              '🚚 Đặt hàng (COD)'
+              ' Đặt hàng (COD)'
             )}
           </button>
         </div>

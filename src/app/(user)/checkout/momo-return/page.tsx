@@ -7,6 +7,7 @@ import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { momoApi } from '@/lib/api';
 import styles from '@/styles/products/Checkout.module.css';
+import { MdDone } from 'react-icons/md';
 
 function MomoReturnContent() {
   const searchParams = useSearchParams();
@@ -21,7 +22,6 @@ function MomoReturnContent() {
   const [transactionId, setTransactionId] = useState<string | null>(null);
   const [amount, setAmount] = useState<string | null>(null);
 
-  // Gọi API verify payment khi redirect từ MoMo
   useEffect(() => {
     const verifyPayment = async () => {
       if (hasVerified.current) return;
@@ -32,7 +32,6 @@ function MomoReturnContent() {
       const amountParam = searchParams.get('amount');
       const extraData = searchParams.get('extraData');
       
-      // Chỉ verify khi thanh toán thành công và đã đăng nhập
       if (resultCode === '0' && isAuthenticated && momoOrderId) {
         hasVerified.current = true;
         
@@ -48,7 +47,6 @@ function MomoReturnContent() {
           console.log('Payment verified successfully');
         } catch (error) {
           console.error('Error verifying payment:', error);
-          // Không hiển thị lỗi cho user vì payment đã thành công ở MoMo
         }
       }
     };
@@ -56,43 +54,34 @@ function MomoReturnContent() {
     verifyPayment();
   }, [searchParams, isAuthenticated]);
 
-  // Xử lý clear cart khi thanh toán thành công
   useEffect(() => {
     const resultCode = searchParams.get('resultCode');
     const successParam = searchParams.get('success');
     const isSuccess = resultCode === '0' || successParam === 'true';
     
-    // Chỉ clear cart 1 lần khi thành công và có user
     if (isSuccess && user?.id && !hasCleared.current) {
       hasCleared.current = true;
       
-      // Xóa trực tiếp localStorage cart của user
       localStorage.removeItem(`cart_user_${user.id}`);
       
-      // Clear cart context
       clearCart();
       
-      // Xóa pending order id
       localStorage.removeItem('pending_order_id');
     }
   }, [searchParams, clearCart, user]);
 
   useEffect(() => {
-    // MoMo sẽ redirect với các params này
     const resultCode = searchParams.get('resultCode');
     const momoMessage = searchParams.get('message');
     const extraData = searchParams.get('extraData');
     const transId = searchParams.get('transId');
     const amountParam = searchParams.get('amount');
     
-    // Fallback từ backend redirect
     const successParam = searchParams.get('success');
     const orderIdParam = searchParams.get('order_id');
     
-    // Lấy orderId từ localStorage nếu không có
     const storedOrderId = localStorage.getItem('pending_order_id');
     
-    // Parse extraData để lấy order_id gốc
     let orderIdFromExtra: string | null = null;
     if (extraData) {
       try {
@@ -103,14 +92,9 @@ function MomoReturnContent() {
       }
     }
     
-    // Set order ID (ưu tiên: extraData > param > localStorage)
     setOrderId(orderIdFromExtra || orderIdParam || storedOrderId);
     setTransactionId(transId);
     setAmount(amountParam);
-    
-    // Xác định trạng thái thanh toán
-    // resultCode = 0 là thành công (từ MoMo direct)
-    // success = 'true' là từ backend redirect
     if (resultCode === '0' || successParam === 'true') {
       setStatus('success');
       setMessage(momoMessage || 'Thanh toán thành công');
@@ -154,7 +138,7 @@ function MomoReturnContent() {
         {status === 'success' ? (
           <>
             <div className={`${styles.resultIcon} ${styles.resultIconSuccess}`}>
-              ✓
+              <MdDone />
             </div>
             <h1 className={`${styles.resultTitle} ${styles.resultTitleSuccess}`}>
               Thanh toán thành công!

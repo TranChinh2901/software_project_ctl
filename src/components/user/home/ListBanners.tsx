@@ -16,7 +16,6 @@ const ListBanners = () => {
     fetchBanners();
   }, []);
 
-  // Auto slide every 5 seconds
   useEffect(() => {
     if (banners.length === 0) return;
 
@@ -33,7 +32,6 @@ const ListBanners = () => {
       const response = await bannerApi.getAll();
       const bannersData = response.data?.banners || response.data || [];
       
-      // Filter only active banners and sort by display_order
       const activeBanners = Array.isArray(bannersData)
         ? bannersData
             .filter((banner: Banner) => banner.status === 'active')
@@ -76,7 +74,6 @@ const ListBanners = () => {
   return (
     <section className={styles.bannerSection}>
       <div className={styles.sliderContainer}>
-        {/* Banner Slides */}
         <div className={styles.sliderWrapper}>
           {banners.map((banner, index) => (
             <div
@@ -112,8 +109,6 @@ const ListBanners = () => {
             </div>
           ))}
         </div>
-
-        {/* Navigation Arrows */}
         {banners.length > 1 && (
           <>
             <button
@@ -133,7 +128,6 @@ const ListBanners = () => {
           </>
         )}
 
-        {/* Dots Navigation */}
         {banners.length > 1 && (
           <div className={styles.dotsContainer}>
             {banners.map((_, index) => (

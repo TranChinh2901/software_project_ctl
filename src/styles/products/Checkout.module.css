@@ -1,7 +1,7 @@
 .checkoutContainer {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem 1rem;
+  /* padding: 0 10px; */
 }
 
 .checkoutTitle {
@@ -18,6 +18,7 @@
 }
 
 @media (max-width: 968px) {
+  
   .checkoutLayout {
     grid-template-columns: 1fr;
   }
@@ -51,6 +52,11 @@
 }
 
 @media (max-width: 600px) {
+  .checkoutContainer {
+ 
+  padding: 0 10px;
+}
+
   .formGrid {
     grid-template-columns: 1fr;
   }
@@ -88,8 +94,8 @@
 .formInput:focus,
 .formTextarea:focus {
   outline: none;
-  border-color: #a855f7;
-  box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
+  border-color: #FF6347;
+  /* box-shadow: 0 0 0 3px rgba(255, 99, 71, 0.1); */
 }
 
 .formTextarea {
@@ -97,7 +103,6 @@
   resize: vertical;
 }
 
-/* ===== Payment Methods ===== */
 .paymentMethods {
   display: flex;
   flex-direction: column;
@@ -117,19 +122,19 @@
 }
 
 .paymentOption:hover {
-  border-color: #a855f7;
+  border-color: #ff6347;
   background: #faf5ff;
 }
 
 .paymentOption.active {
-  border-color: #a855f7;
-  background: #faf5ff;
+  border-color: #ff6347;
+  background: #fff5f6;
 }
 
 .paymentRadio {
   width: 20px;
   height: 20px;
-  accent-color: #a855f7;
+  accent-color: #ad5f70;
 }
 
 .paymentIcon {
@@ -264,7 +269,7 @@
 .summaryItemPrice {
   font-size: 0.85rem;
   font-weight: 600;
-  color: #a855f7;
+  color: #FF6347;
 }
 
 /* ===== Summary Totals ===== */
@@ -293,15 +298,14 @@
 }
 
 .totalAmount {
-  color: #a855f7;
+  color: #FF6347;
 }
 
-/* ===== Submit Button ===== */
 .submitBtn {
   width: 100%;
   padding: 1rem;
   margin-top: 1.5rem;
-  background: linear-gradient(135deg, #a855f7, #7c3aed);
+  background: #ff6347;
   color: white;
   border: none;
   border-radius: 10px;
@@ -315,25 +319,9 @@
   gap: 0.5rem;
 }
 
-.submitBtn:hover:not(:disabled) {
-  background: linear-gradient(135deg, #9333ea, #6d28d9);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
-}
 
-.submitBtn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
 
-.submitBtnMomo {
-  background: linear-gradient(135deg, #d82d8b, #a50064);
-}
 
-.submitBtnMomo:hover:not(:disabled) {
-  background: linear-gradient(135deg, #c02580, #8a0055);
-  box-shadow: 0 4px 15px rgba(216, 45, 139, 0.4);
-}
 
 /* ===== Loading ===== */
 .loading {
@@ -405,7 +393,7 @@
 /* ===== MoMo Return Page ===== */
 .returnContainer {
   max-width: 600px;
-  margin: 2rem auto;
+  margin: 0 auto;
   padding: 2rem;
   text-align: center;
 }
@@ -414,7 +402,8 @@
   background: #fff;
   border-radius: 16px;
   padding: 3rem 2rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border: 0.1px solid rgb(235, 235, 235);
+  /* box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); */
 }
 
 .resultIcon {
@@ -429,7 +418,7 @@
 }
 
 .resultIconSuccess {
-  background: linear-gradient(135deg, #4ade80, #22c55e);
+  background: #1cbb56;
   color: white;
 }
 
@@ -495,8 +484,8 @@
 
 .viewOrderBtn {
   padding: 0.875rem 1.5rem;
-  background: linear-gradient(135deg, #a855f7, #7c3aed);
-  color: white;
+  background: #fee2e2;;
+  color: #dc2626;
   border: none;
   border-radius: 8px;
   font-weight: 600;
@@ -505,10 +494,6 @@
   transition: all 0.3s ease;
 }
 
-.viewOrderBtn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
-}
 
 .continueBtn {
   padding: 0.875rem 1.5rem;

@@ -28,11 +28,8 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<number | null>(null);
 
-  // Load wishlist khi user thay đổi (login/logout)
   useEffect(() => {
     if (authLoading) return;
-
-    // Chỉ load wishlist nếu đã đăng nhập
     if (user?.id) {
       const storageKey = getWishlistKey(user.id);
       try {
@@ -49,15 +46,12 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
       }
       setCurrentUserId(user.id);
     } else {
-      // Chưa đăng nhập thì clear wishlist
       setWishlist([]);
       setCurrentUserId(null);
     }
 
     setIsLoaded(true);
   }, [user, authLoading]);
-
-  // Lưu wishlist vào localStorage khi thay đổi
   useEffect(() => {
     if (!isLoaded || authLoading || !currentUserId) return;
 

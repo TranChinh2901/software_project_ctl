@@ -21,10 +21,10 @@ import { orderApi } from "@/lib/api";
 import PageContainer from "@/components/admin/PageContainer";
 import Button from "@/components/admin/Button";
 import Card from "@/components/admin/Card";
-import OrderDetailModal from "./OrderDetailModal";
 import styles from "@/styles/admin/Orders.module.css";
 import toast from "react-hot-toast";
 import { OrderStatus, PaymentMethod, PaymentStatus } from "@/enums";
+import OrderDetailModal from "./OrderDetailModal";
 
 interface OrderItem {
   id: number;
@@ -355,7 +355,6 @@ export default function Orders() {
         </Button>
       }
     >
-      {/* Stats */}
       <div className={styles.statsGrid}>
         <Card>
           <div className={styles.statContent}>
@@ -414,7 +413,6 @@ export default function Orders() {
         </Card>
       </div>
 
-      {/* Filters */}
       <Card className={styles.filterCard}>
         <div className={styles.filterContainer}>
           <div className={styles.searchBox}>
@@ -446,7 +444,6 @@ export default function Orders() {
         </div>
       </Card>
 
-      {/* Orders Table */}
       <Card>
         <div className={styles.tableContainer}>
           {loading ? (
@@ -558,7 +555,6 @@ export default function Orders() {
         {renderPagination()}
       </Card>
 
-      {/* Order Detail Modal */}
       {modalOpen && selectedOrder && (
         <OrderDetailModal
           order={selectedOrder}

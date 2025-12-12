@@ -103,7 +103,6 @@ export default function Colors() {
 
   return (
     <PageContainer title="Quản lý màu sắc">
-      {/* Stats */}
       <div className={styles.statsGrid}>
         <Card className={styles.statCard}>
           <div className={styles.statContent}>
@@ -118,7 +117,6 @@ export default function Colors() {
         </Card>
       </div>
 
-      {/* Toolbar */}
       <Card>
         <div className={styles.toolbar}>
           <div className={styles.searchGroup}>
@@ -142,7 +140,6 @@ export default function Colors() {
         </div>
       </Card>
 
-      {/* Colors Table */}
       <Card>
         <div className={styles.tableContainer}>
           <table className={styles.table}>
@@ -213,7 +210,6 @@ export default function Colors() {
         </div>
       </Card>
 
-      {/* Modal */}
       {modalOpen && (
         <ColorModal
           color={selectedColor}

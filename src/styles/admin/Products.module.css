@@ -357,7 +357,10 @@
   font-size: 1.125rem;
   color: #6b7280;
   background: transparent;
+  background: #f3f4f6;
 }
+  /* background: #f3f4f6;
+  color: #6b7280; */
 
 .editButton:hover {
   background: #e5e7eb;

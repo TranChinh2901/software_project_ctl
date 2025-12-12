@@ -62,7 +62,6 @@ export default function CategoryModal({
       setImageFile(null);
       setErrors({});
     } else if (isOpen) {
-      // Reset form for create mode
       setFormData({
         name_category: '',
         description_category: '',
@@ -105,7 +104,6 @@ export default function CategoryModal({
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    // Clear error when user types
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: '' }));
     }
@@ -114,13 +112,11 @@ export default function CategoryModal({
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Validate file type
       if (!file.type.startsWith('image/')) {
         toast.error('Vui lòng chọn file ảnh');
         return;
       }
 
-      // Validate file size (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
         toast.error('Kích thước ảnh không được vượt quá 5MB');
         return;
@@ -161,11 +157,9 @@ export default function CategoryModal({
       }
 
       if (category) {
-        // Update existing category
         await categoryApi.update(category.id, formDataToSend);
         toast.success('Cập nhật danh mục thành công!');
       } else {
-        // Create new category
         await categoryApi.create(formDataToSend);
         toast.success('Thêm danh mục thành công!');
       }
@@ -199,7 +193,6 @@ export default function CategoryModal({
         <form onSubmit={handleSubmit}>
           <div className={styles.modalBody}>
             <div className={styles.form}>
-              {/* Tên danh mục */}
               <div className={styles.formGroup}>
                 <label className={styles.label}>
                   <MdCategory />
@@ -221,7 +214,6 @@ export default function CategoryModal({
                 )}
               </div>
 
-              {/* Thương hiệu */}
               <div className={styles.formGroup}>
                 <label className={styles.label}>
                   <MdBusiness />
@@ -248,7 +240,6 @@ export default function CategoryModal({
                 )}
               </div>
 
-              {/* Mô tả */}
               <div className={styles.formGroup}>
                 <label className={styles.label}>
                   <MdDescription />
@@ -263,8 +254,6 @@ export default function CategoryModal({
                   rows={4}
                 />
               </div>
-
-              {/* Image Upload */}
               <div className={styles.formGroup}>
                 <label className={styles.label}>
                   <MdImage />

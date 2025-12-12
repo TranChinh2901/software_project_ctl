@@ -93,7 +93,6 @@ export default function ProductVariants({ productId, productPrice = 0 }: Product
     }
   };
 
-  // Bulk generate variants
   const handleBulkGenerate = async () => {
     if (!productId) {
       toast.error('Vui lòng lưu sản phẩm trước');
@@ -110,10 +109,8 @@ export default function ProductVariants({ productId, productPrice = 0 }: Product
       let createdCount = 0;
       let skippedCount = 0;
 
-      // Generate all combinations
       for (const colorId of selectedColors) {
         for (const size of selectedSizes) {
-          // Check if variant already exists
           const exists = variants.some(
             (v) => v.color?.id === colorId && v.size === size
           );
@@ -127,8 +124,8 @@ export default function ProductVariants({ productId, productPrice = 0 }: Product
             product_id: productId,
             size: size,
             color_id: colorId,
-            price: productPrice, // Use product's price
-            quantity: bulkQuantity ? parseInt(bulkQuantity) : 0, // Use bulk quantity or default 0
+            price: productPrice, 
+            quantity: bulkQuantity ? parseInt(bulkQuantity) : 0, 
           };
 
           await productVariantApi.create(dto as unknown as Record<string, unknown>);
@@ -138,7 +135,6 @@ export default function ProductVariants({ productId, productPrice = 0 }: Product
 
       toast.success(`Tạo ${createdCount} variants! (Bỏ qua ${skippedCount} trùng)`);
       
-      // Reset form
       setSelectedColors([]);
       setSelectedSizes([]);
       setBulkQuantity('');
@@ -178,7 +174,6 @@ export default function ProductVariants({ productId, productPrice = 0 }: Product
         console.log('✅ Update response:', response);
         toast.success('Cập nhật variant thành công!');
       } else {
-        // Create
         const dto: CreateProductVariantDto = {
           product_id: productId,
           size: formData.size,
@@ -203,7 +198,6 @@ export default function ProductVariants({ productId, productPrice = 0 }: Product
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     
-    // If user selects "create-new", open color modal
     if (name === 'color_id' && value === 'create-new') {
       console.log('🎨 Opening color modal...');
       setShowColorModal(true);
@@ -237,13 +231,10 @@ export default function ProductVariants({ productId, productPrice = 0 }: Product
 
       toast.success('Thêm màu mới thành công!');
       
-      // Refresh colors list
       await fetchColors();
       
-      // Auto-select the newly created color
       setFormData((prev) => ({ ...prev, color_id: newColor.id.toString() }));
       
-      // Reset and close color modal
       setNewColorData({ name_color: '', hex_code: '' });
       setShowColorModal(false);
     } catch (error: unknown) {
@@ -434,7 +425,6 @@ export default function ProductVariants({ productId, productPrice = 0 }: Product
         </div>
       )}
 
-      {/* Variant Modal */}
       {showModal && (
         <div className={styles.modalOverlay} onClick={() => setShowModal(false)}>
           <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
@@ -523,7 +513,6 @@ export default function ProductVariants({ productId, productPrice = 0 }: Product
         </div>
       )}
 
-      {/* Color Creation Modal */}
       {showColorModal && (
         <div className={styles.colorModalOverlay} onClick={() => setShowColorModal(false)}>
           <div className={styles.modalContentSmall} onClick={(e) => e.stopPropagation()}>

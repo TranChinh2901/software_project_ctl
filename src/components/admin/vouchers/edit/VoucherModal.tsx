@@ -29,7 +29,6 @@ export default function VoucherModal({ isOpen, onClose, onSuccess, voucher }: Vo
 
   useEffect(() => {
     if (voucher) {
-      // Chuyển đổi date sang format YYYY-MM-DD cho input date
       const expiryDate = voucher.expiry_date 
         ? new Date(voucher.expiry_date).toISOString().split('T')[0]
         : '';

@@ -377,7 +377,6 @@ export default function Users() {
           )}
         </div>
 
-        {/* Pagination */}
         {!loading && users.length > 0 && (
           <div className={styles.pagination}>
             <div className={styles.paginationInfo}>
