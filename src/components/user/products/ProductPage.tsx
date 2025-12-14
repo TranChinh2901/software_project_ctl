@@ -55,37 +55,16 @@ const ProductsPages = () => {
           colorApi.getAll(),
           productGalleryApi.getAll(),
         ]);
-
-        console.log('API Responses:', {
-          brands: brandsRes,
-          products: productsRes,
-          categories: categoriesRes,
-          colors: colorsRes,
-          galleries: galleriesRes
-        });
         const brandsData = (brandsRes as any)?.data || brandsRes;
-        
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const productsResponse = (productsRes as any)?.data;
         const productsData = productsResponse?.products || productsResponse || productsRes;
-        
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const categoriesData = (categoriesRes as any)?.data || categoriesRes;
-        
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const colorsData = (colorsRes as any)?.data || colorsRes;
-        
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const galleriesData = (galleriesRes as any)?.data || galleriesRes;
-
-        console.log('Extracted Data:', {
-          brands: brandsData,
-          products: productsData,
-          categories: categoriesData,
-          colors: colorsData,
-          galleries: galleriesData
-        });
-
         setBrands(Array.isArray(brandsData) ? brandsData : []);
         
         const activeProducts = Array.isArray(productsData) 
@@ -94,14 +73,9 @@ const ProductsPages = () => {
               const isActive = product.status === ProductStatus.ACTIVE || statusValue === 'active';
               const isNotDeleted = !product.is_deleted;
               
-              console.log(`Product ${product.id} (${product.name_product}): status=${product.status}, is_deleted=${product.is_deleted}, isActive=${isActive}`);
-              
               return isActive && isNotDeleted;
             })
           : [];
-        
-        console.log('Active products count:', activeProducts.length);
-        
         setProducts(activeProducts);
         setFilteredProducts(activeProducts);
         setCategories(Array.isArray(categoriesData) ? categoriesData : []);

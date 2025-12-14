@@ -13,6 +13,7 @@ import ProductCard from '@/components/user/products/ProductCard';
 import { useWishlist } from '@/contexts/WishlistContext';
 import { useCart } from '@/contexts/CartContext';
 import toast from 'react-hot-toast';
+import SizeGuideModal from './guide/SizeGuideModal';
 
 const ProductDetailPage = () => {
   const params = useParams();
@@ -20,6 +21,8 @@ const ProductDetailPage = () => {
   const productId = Number(params.id);
   const { isInWishlist, toggleWishlist } = useWishlist();
   const { addToCart, isAuthenticated } = useCart();
+  const [showSizeGuide, setShowSizeGuide] = useState(false);
+  
 
   const [product, setProduct] = useState<Product | null>(null);
   const [gallery, setGallery] = useState<ProductGallery[]>([]);
@@ -42,6 +45,8 @@ const ProductDetailPage = () => {
   ];
 
   const selectedImage = allImages[selectedImageIndex]?.url || '';
+
+
 
   useEffect(() => {
     const fetchProductData = async () => {
@@ -99,6 +104,9 @@ const ProductDetailPage = () => {
     return acc;
   }, [] as { name: string; image: string | null }[]);
 
+const handleClick = () => {
+  setShowSizeGuide(true);
+};
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('vi-VN').format(price) + 'đ';
   };
@@ -354,7 +362,6 @@ const ProductDetailPage = () => {
             </div>
           )}
 
-          {/* Quantity Section */}
           <div className={styles.optionSection}>
             <h3 className={styles.optionLabel}>Số lượng:</h3>
             <div className={styles.quantitySection}>
@@ -374,12 +381,15 @@ const ProductDetailPage = () => {
                   +
                 </button>
               </div>
-              <span className={styles.sizeGuide}>
+              <span className={styles.sizeGuide} onClick={handleClick}>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M21 3H3v18h18V3zM3 9h18M9 21V9"/>
                 </svg>
                 Hướng dẫn chọn size
               </span>
+               {showSizeGuide && (
+        <SizeGuideModal onClose={() => setShowSizeGuide(false)} />
+      )}
             </div>
           </div>
 

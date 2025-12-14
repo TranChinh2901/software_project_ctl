@@ -12,7 +12,6 @@ interface Product {
   stock_quantity: number;
   created_at: string;
 }
-
 interface User {
   id: number;
   fullname: string;
@@ -20,7 +19,6 @@ interface User {
   role: string;
   created_at: string;
 }
-
 interface Activity {
   type: 'product' | 'user';
   data: Product | User;
