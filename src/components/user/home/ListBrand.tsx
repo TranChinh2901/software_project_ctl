@@ -9,7 +9,7 @@ interface ListBrandProps {
   brands: Brand[];
   loading?: boolean;
 }
-
+  
 const ListBrand = ({ brands, loading }: ListBrandProps) => {
   if (loading) {
     return (
