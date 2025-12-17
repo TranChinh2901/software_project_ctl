@@ -29,7 +29,6 @@ const ListBlog = () => {
     }
   };
   const handleBlogClick = () => {
-    // when i click blog will navigate to blog detail page
     
   }
    if (loading) {
