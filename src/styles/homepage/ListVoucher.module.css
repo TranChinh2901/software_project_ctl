@@ -243,10 +243,38 @@
 }
 
 
-.h2{
+
+
+.listVoucherContainer {
   text-align: center;
-  margin-bottom: 20px;
-  font-size: 24px;
+  margin-bottom: 32px;
+}
+
+.h2 {
+  font-size: 1.5rem;
   font-weight: 700;
- color: #ff6347;
+  color: #ff6347;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  position: relative;
+  display: inline-block;
+}
+
+.h2::before,
+.h2::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(90deg, #ff6347, transparent);
+}
+
+.h2::before {
+  right: calc(100% + 16px);
+  background: linear-gradient(90deg, transparent, #ff6347);
+}
+
+.h2::after {
+  left: calc(100% + 16px);
 }

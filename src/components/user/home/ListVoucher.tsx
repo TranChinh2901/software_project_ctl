@@ -107,9 +107,11 @@ import styles from '@/styles/homepage/ListVoucher.module.css';
 
 const ListVoucher = () => {
   return (
-    <h2 className={styles.h2}>
-     LIST VOUCHER
+   <div className={styles.listVoucherContainer}>
+     <h2 className={styles.h2}>
+     DÀNH RIÊNG CHO BẠN 
     </h2>
+   </div>
   )
 }
 
