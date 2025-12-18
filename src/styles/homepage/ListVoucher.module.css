@@ -1,6 +1,5 @@
-/* Voucher Section */
+
 .voucherSection {
-  /* padding: 40px 0; */
   background: #fff;
 }
 
@@ -42,7 +41,6 @@
   background: linear-gradient(90deg, #ffb6a6 0%, #ff6347 100%);
 }
 
-/* Voucher Grid */
 .voucherGrid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -66,7 +64,6 @@
   box-shadow: 0 8px 25px rgba(255, 99, 71, 0.4);
 }
 
-/* Decorative circles */
 .voucherCard::before,
 .voucherCard::after {
   content: '';
@@ -243,4 +240,13 @@
   .headerLine {
     max-width: 50px;
   }
+}
+
+
+.h2{
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: 700;
+ color: #ff6347;
 }

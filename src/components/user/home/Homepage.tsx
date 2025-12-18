@@ -8,14 +8,15 @@ import ListBrand from './ListBrand';
 import ListProducts from './ListProducts';
 import { brandApi, voucherApi, productApi } from '@/lib/api';
 import { Brand } from '@/types/brand';
-// import { Voucher } from '@/types/voucher';
+import { Voucher } from '@/types/voucher';
 import { Product } from '@/types/product';
 import styles from '../../../styles/homepage/Homepage.module.css';
 import ListBlog from './ListBlog';
+import ListVoucher from './ListVoucher';
 
 const Homepages = () => {
   const [brands, setBrands] = useState<Brand[]>([]);
-  // const [vouchers, setVouchers] = useState<Voucher[]>([]);
+  const [vouchers, setVouchers] = useState<Voucher[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [loadingBrands, setLoadingBrands] = useState(true);
   // const [loadingVouchers, setLoadingVouchers] = useState(true);
@@ -70,8 +71,10 @@ const Homepages = () => {
     <div className={styles.homepage}>
       <ListBanners />
       <Features />
+       <ListVoucher />
       <ListBrand brands={brands} loading={loadingBrands} />
       {/* <ListVoucher vouchers={vouchers} loading={loadingVouchers} /> */}
+     
       <ListProducts products={products} loading={loadingProducts} />
       <ListBlog />
     </div>
