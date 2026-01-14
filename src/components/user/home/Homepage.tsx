@@ -11,7 +11,7 @@ import { Brand } from '@/types/brand';
 import { Voucher } from '@/types/voucher';
 import { Product } from '@/types/product';
 import styles from '../../../styles/homepage/Homepage.module.css';
-import ListBlog from './ListBlog';
+// import ListBlog from './ListBlog';
 import ListVoucher from './ListVoucher';
 
 const Homepages = () => {
@@ -76,7 +76,7 @@ const Homepages = () => {
       {/* <ListVoucher vouchers={vouchers} loading={loadingVouchers} /> */}
      
       <ListProducts products={products} loading={loadingProducts} />
-      <ListBlog />
+      {/* <ListBlog /> */}
     </div>
   );
 };

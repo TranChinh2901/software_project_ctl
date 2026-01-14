@@ -33,7 +33,7 @@
     box-sizing: border-box;
 }
 
-.buttonRegister {
+.mainForm button {
     margin-top: 20px;
     width: 100%;
     background-color: #ff6347;
